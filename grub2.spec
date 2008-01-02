@@ -11,6 +11,7 @@ Source1:        ftp://alpha.gnu.org/gnu/grub/grub-1.95.tar.gz.sig
 BuildRequires:  bison
 BuildRequires:  liblzo-devel
 BuildRequires:  libncurses-devel
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description 
 GNU GRUB is a very powerful boot loader, which can load a wide
