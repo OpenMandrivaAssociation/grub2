@@ -1,6 +1,6 @@
 Name:           grub2
 Version:        1.95
-Release:        %mkrel 1
+Release:        %mkrel 3
 Epoch:          0
 Summary:        GRand Unified Bootloader
 License:        GPL
