@@ -40,7 +40,7 @@
 
 Name:           grub2
 Version:        1.98
-Release:        0.3.20080827svn.%mkrel 1
+Release:        0.3.20080827svn.%mkrel 2
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System/Kernel and hardware
