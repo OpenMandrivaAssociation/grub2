@@ -67,7 +67,7 @@ Patch13:        grub2-preserve-symbols-v4.1.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
-BuildRequires:  flex bison ruby binutils
+BuildRequires:  flex bison ruby binutils glibc-static-devel
 BuildRequires:  ncurses-devel liblzo-devel
 
 # grubby
