@@ -91,6 +91,9 @@ set -e
 rm -fr $RPM_BUILD_ROOT
 %makeinstall_std
 
+# (bor) grub.info is harcoded in sources
+mv %{buildroot}%{_infodir}/grub.info %{buildroot}%{_infodir}/grub2.info
+
 # Script that makes part of grub.cfg persist across updates
 install -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/
 
@@ -193,4 +196,7 @@ grub2-mkconfig -o /boot/%{name}/grub.cfg
 # but it takes care of modified persistent part
 %config(noreplace) /boot/%{name}/grub.cfg
 %doc COPYING INSTALL NEWS README THANKS TODO ChangeLog README.Mandriva
-%exclude %{_mandir}
+# %exclude %{_mandir}
+%{_infodir}/%{name}.info*
+%{_mandir}/man1/%{name}-*.1*
+%{_mandir}/man8/%{name}-*.8*
