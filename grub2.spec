@@ -32,6 +32,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:  flex bison ruby binutils glibc-static-devel
 BuildRequires:  ncurses-devel liblzo-devel
 BuildRequires:  freetype2-devel libusb-devel
+BuildRequires:  texinfo
 
 # grubby
 Requires(pre):  mkinitrd
