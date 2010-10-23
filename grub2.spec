@@ -15,7 +15,7 @@
 
 Name:           grub2
 Version:        1.98
-Release:        %mkrel 1.2
+Release:        %mkrel 2
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System/Kernel and hardware
@@ -34,9 +34,8 @@ BuildRequires:  ncurses-devel liblzo-devel
 BuildRequires:  freetype2-devel libusb-devel
 BuildRequires:  help2man texinfo
 
-# grubby
-Requires(pre):  mkinitrd
-Requires(post): mkinitrd
+Requires(preun):  drakxtools-backend
+Requires(post): drakxtools-backend
 
 # TODO: ppc and sparc
 ExclusiveArch:  %{ix86} x86_64
@@ -100,6 +99,7 @@ install -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/
 
 # Ghost config file
 install -d $RPM_BUILD_ROOT/boot/%{name}
+install -d $RPM_BUILD_ROOT/boot/%{name}/locale
 touch $RPM_BUILD_ROOT/boot/%{name}/grub.cfg
 ln -s ../boot/%{name}/grub.cfg $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.cfg
 
@@ -143,21 +143,30 @@ rm -rf $RPM_BUILD_ROOT
 exec >/dev/null 2>&1
 # Create device.map or reuse one from GRUB Legacy
 cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
-        %{name}-mkdevicemap
+        %{_sbindir}/%{name}-mkdevicemap
 # Determine the partition with /boot
 BOOT_PARTITION=$(df -h /boot |(read; awk '{print $1; exit}'))
-# Generate core.img, but don't let it be installed in boot sector
-%{name}-install --grub-setup=/bin/true $BOOT_PARTITION
+# (Re-)Generate core.img, but don't let it be installed in boot sector
+%{_sbindir}/%{name}-install --grub-setup=/bin/true $BOOT_PARTITION
+# Generate grub.cfg and add GRUB2 chainloader to menu on initial install
+if [ $1 = 1 ]; then
+	%{_sbindir}/bootloader-config --action add-entry --image /boot/%{name}/core.img --label 'Chainload GRUB2'
+	%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+fi
 
 
 %preun
 exec >/dev/null
-/sbin/grubby --remove-kernel=/boot/%{name}/core.img
-# XXX Ugly
-rm -f /boot/%{name}/*.mod
-rm -f /boot/%{name}/*.img
-rm -f /boot/%{name}/*.lst
-rm -f /boot/%{name}/device.map
+if [ $1 = 0 ]; then
+	# Remove GRUB2 from bootloader menu on final remove
+	%{_sbindir}/bootloader-config --action remove-entry --image /boot/%{name}/core.img
+	# XXX Ugly
+	rm -f /boot/%{name}/*.mod
+	rm -f /boot/%{name}/*.img
+	rm -f /boot/%{name}/*.lst
+	rm -f /boot/%{name}/*.o
+	rm -f /boot/%{name}/device.map
+fi
 
 %files -f grub.lang
 %defattr(-,root,root,-)
@@ -195,6 +204,7 @@ rm -f /boot/%{name}/device.map
 %{_sysconfdir}/%{name}.cfg
 %{_sysconfdir}/default/grub
 %dir /boot/%{name}
+%dir /boot/%{name}/locale
 # Actually, this is replaced by update-grub from scriptlets,
 # but it takes care of modified persistent part
 %config(noreplace) /boot/%{name}/grub.cfg
