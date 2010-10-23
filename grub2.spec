@@ -15,7 +15,7 @@
 
 Name:           grub2
 Version:        1.98
-Release:        %mkrel 1.1
+Release:        %mkrel 1.2
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System/Kernel and hardware
@@ -120,6 +120,20 @@ done
 # Defaults
 install -m 644 -D %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/default/grub
 
+# Install filetriggers to update grub.cfg on kernel add or remove
+install -d %{buildroot}%{_filetriggers_dir}
+pushd %{buildroot}%{_filetriggers_dir} && {
+	cat > %{name}.filter << EOF
+^./boot/vmlinuz-
+EOF
+	cat > %{name}.script << EOF
+#!/bin/sh
+%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+EOF
+	chmod 0755 %{name}.script
+	popd
+}
+
 %find_lang grub
 
 %clean
@@ -144,18 +158,6 @@ rm -f /boot/%{name}/*.mod
 rm -f /boot/%{name}/*.img
 rm -f /boot/%{name}/*.lst
 rm -f /boot/%{name}/device.map
-
-
-%triggerin -- kernel, kernel-PAE
-exec >/dev/null 2>&1
-# Generate grub.cfg
-grub2-mkconfig -o /boot/%{name}/grub.cfg
-
-%triggerun -- kernel, kernel-PAE
-exec >/dev/null 2>&1
-# Generate grub.cfg
-grub2-mkconfig -o /boot/%{name}/grub.cfg
-
 
 %files -f grub.lang
 %defattr(-,root,root,-)
@@ -201,3 +203,5 @@ grub2-mkconfig -o /boot/%{name}/grub.cfg
 %{_infodir}/%{name}.info*
 %{_mandir}/man1/%{name}-*.1*
 %{_mandir}/man8/%{name}-*.8*
+# RPM filetriggers
+%{_filetriggers_dir}/%{name}.*
