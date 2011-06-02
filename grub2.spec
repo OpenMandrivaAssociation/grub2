@@ -44,7 +44,9 @@ The kernel, in turn, initializes the rest of the operating system (e.g. GNU).
 	CFLAGS=""					\
 	TARGET_LDFLAGS=-static				\
 	--with-platform=pc				\
+%ifarch x86_64
 	--enable-efiemu					\
+%endif
 	--enable-grub-emu-usb				\
 	--program-transform-name=s,grub,%{name},	\
 	--libdir=%{libdir32}				\
