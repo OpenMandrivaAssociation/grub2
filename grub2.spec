@@ -2,7 +2,7 @@
 
 Name:           grub2
 Version:        1.99
-Release:        1
+Release:        2
 Summary:        GNU GRUB is a Multiboot boot loader
 
 Group:          System/Kernel and hardware
@@ -22,6 +22,7 @@ BuildRequires:	liblzo-devel
 BuildRequires:	libusb-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	texinfo
+BuildRequires:	liblzma-devel
 
 Requires(preun):drakxtools-backend
 Requires(post): drakxtools-backend
