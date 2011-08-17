@@ -2,7 +2,7 @@
 
 Name:           grub2
 Version:        1.99
-Release:        2
+Release:        3
 Summary:        GNU GRUB is a Multiboot boot loader
 
 Group:          System/Kernel and hardware
@@ -37,9 +37,15 @@ computer starts. It is responsible for loading and transferring control
 to the operating system kernel software (such as the Hurd or Linux).
 The kernel, in turn, initializes the rest of the operating system (e.g. GNU).
 
+#-----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------
 %prep
 %setup -q -n grub-%{version}
+perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;'	\
+	docs/grub-dev.texi
 
+#-----------------------------------------------------------------------
 %build
 %configure						\
 	CFLAGS=""					\
@@ -52,10 +58,15 @@ The kernel, in turn, initializes the rest of the operating system (e.g. GNU).
 	--program-transform-name=s,grub,%{name},	\
 	--libdir=%{libdir32}				\
 	--libexecdir=%{libdir32}
-%make
+%make all html pdf
 
+#-----------------------------------------------------------------------
 %install
 %makeinstall_std
+%makeinstall_std -C docs install-pdf install-html
+mv -f %{buildroot}%{_docdir}/grub %{buildroot}%{_docdir}/%{name}
+install -m644 COPYING INSTALL NEWS README THANKS TODO ChangeLog	\
+	%{buildroot}%{_docdir}/%{name}
 
 # (bor) grub.info is harcoded in sources
 mv %{buildroot}%{_infodir}/grub.info %{buildroot}%{_infodir}/grub2.info
@@ -133,6 +144,7 @@ if [ $1 = 0 ]; then
     rm -f /boot/%{name}/device.map
 fi
 
+#-----------------------------------------------------------------------
 %files -f grub.lang
 %defattr(-,root,root,-)
 %{libdir32}/%{name}
@@ -148,7 +160,7 @@ fi
 # Actually, this is replaced by update-grub from scriptlets,
 # but it takes care of modified persistent part
 %config(noreplace) /boot/%{name}/grub.cfg
-%doc COPYING INSTALL NEWS README THANKS TODO ChangeLog
+%doc %{_docdir}/%{name}
 %{_infodir}/%{name}.info*
 %{_infodir}/grub-dev.info*
 %{_mandir}/man1/%{name}-*.1*
