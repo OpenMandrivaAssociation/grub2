@@ -1,4 +1,5 @@
 %define		libdir32	%{_exec_prefix}/lib
+%define		unifont		%(echo %{_datadir}/fonts/TTF/unifont/unifont-*.ttf)
 
 Name:           grub2
 Version:        1.99
@@ -11,21 +12,30 @@ URL:            http://www.gnu.org/software/grub/
 Source0:        http://alpha.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
 Source1:        90_persistent
 Source2:        grub.default
+
+# basic test
+Source3:	theme.txt
+Source4:	background.jpg
+Source5:	star_w.jpg
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 BuildRequires:	bison
 BuildRequires:  flex
+BuildRequires:	fonts-ttf-unifont
 BuildRequires:	freetype2-devel
 BuildRequires:	glibc-static-devel
 BuildRequires:	help2man
+BuildRequires:	liblzma-devel
 BuildRequires:	liblzo-devel
 BuildRequires:	libusb-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	texinfo
-BuildRequires:	liblzma-devel
 
 Requires(preun):drakxtools-backend
 Requires(post): drakxtools-backend
+
+Requires:	xorriso
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
@@ -45,20 +55,23 @@ The kernel, in turn, initializes the rest of the operating system (e.g. GNU).
 perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;'	\
 	docs/grub-dev.texi
 
+perl -pi -e "s|(^FONT_SOURCE=)|\$1%{unifont}|;" configure
+
 #-----------------------------------------------------------------------
 %build
 %configure						\
 	CFLAGS=""					\
 	TARGET_LDFLAGS=-static				\
 	--with-platform=pc				\
-%ifarch x86_64
+    %ifarch x86_64
 	--enable-efiemu					\
-%endif
-	--enable-grub-emu-usb				\
+    %endif
 	--program-transform-name=s,grub,%{name},	\
 	--libdir=%{libdir32}				\
 	--libexecdir=%{libdir32}
-%make all html pdf
+%make all
+
+make html pdf
 
 #-----------------------------------------------------------------------
 %install
@@ -111,6 +124,10 @@ EOF
 	popd
 }
 
+%__mkdir_p %{buildroot}/boot/grub2/themes/mandriva
+install -m644 %{SOURCE3} %{SOURCE4} %{SOURCE5}		\
+    %{buildroot}/boot/grub2/themes/mandriva
+
 %find_lang grub
 
 %clean
@@ -151,12 +168,14 @@ fi
 %{libdir32}/grub
 %{_sbindir}/%{name}-*
 %{_bindir}/%{name}-*
+%{_datadir}/%{name}
 %{_sysconfdir}/grub.d
 %{_sysconfdir}/%{name}.cfg
 %{_sysconfdir}/default/grub
 %{_sysconfdir}/bash_completion.d/grub
 %dir /boot/%{name}
 %dir /boot/%{name}/locale
+/boot/%{name}/themes
 # Actually, this is replaced by update-grub from scriptlets,
 # but it takes care of modified persistent part
 %config(noreplace) /boot/%{name}/grub.cfg
