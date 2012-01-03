@@ -40,6 +40,7 @@ BuildRequires:	liblzo-devel
 BuildRequires:	libusb-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	texinfo
+BuildRequires:	texlive
 %if %{with talpo}
 BuildRequires:	talpo
 %endif
