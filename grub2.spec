@@ -1,6 +1,8 @@
 %define		libdir32	%{_exec_prefix}/lib
 %define		unifont		%(echo %{_datadir}/fonts/TTF/unifont/unifont-*.ttf)
 
+%bcond_with	talpo
+
 Name:           grub2
 Version:        1.99
 Release:        3
@@ -18,6 +20,13 @@ Source3:	theme.txt
 Source4:	background.jpg
 Source5:	star_w.jpg
 
+Source6:	grub.melt
+
+# documentation and simple test script for testing grub2 themes
+Source7:	mandriva-grub2-theme-test.sh
+# www.4shared.com/archive/lFCl6wxL/grub_guidetar.html
+Source8:	grub_guide.tar.gz
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 BuildRequires:	bison
@@ -31,6 +40,9 @@ BuildRequires:	liblzo-devel
 BuildRequires:	libusb-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	texinfo
+%if %{with talpo}
+BuildRequires:	talpo
+%endif
 
 Requires(preun):drakxtools-backend
 Requires(post): drakxtools-backend
@@ -57,10 +69,19 @@ perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;'	\
 
 perl -pi -e "s|(^FONT_SOURCE=)|\$1%{unifont}|;" configure
 
+sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure.ac
+
+perl -pi -e 's/-Werror//;' grub-core/Makefile.am
+
 #-----------------------------------------------------------------------
 %build
 %configure						\
-	CFLAGS=""					\
+%if %{with talpo}
+	CC=talpo					\
+	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE6} \
+%else
+	CFLAGS=""                                       \
+%endif
 	TARGET_LDFLAGS=-static				\
 	--with-platform=pc				\
     %ifarch x86_64
@@ -68,7 +89,8 @@ perl -pi -e "s|(^FONT_SOURCE=)|\$1%{unifont}|;" configure
     %endif
 	--program-transform-name=s,grub,%{name},	\
 	--libdir=%{libdir32}				\
-	--libexecdir=%{libdir32}
+	--libexecdir=%{libdir32}			\
+	--disable-werror
 %make all
 
 make html pdf
