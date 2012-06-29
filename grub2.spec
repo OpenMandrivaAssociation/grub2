@@ -4,14 +4,14 @@
 %bcond_with	talpo
 
 Name:           grub2
-Version:        1.99
-Release:        4
+Version:        2.00
+Release:        1
 Summary:        GNU GRUB is a Multiboot boot loader
 
 Group:          System/Kernel and hardware
 License:        GPLv3+
 URL:            http://www.gnu.org/software/grub/
-Source0:        http://alpha.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
+Source0:        http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
 Source1:        90_persistent
 Source2:        grub.default
 
