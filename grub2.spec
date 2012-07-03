@@ -76,6 +76,12 @@ perl -pi -e 's/-Werror//;' grub-core/Makefile.am
 
 #-----------------------------------------------------------------------
 %build
+
+#(proyvind): debugedit will fail on some binaries if linked using gold
+mkdir -p bfd
+ln -s %{_bindir}/ld.bfd bfd/ld
+export PATH=$PWD/bfd:$PATH
+
 %configure						\
 %if %{with talpo}
 	CC=talpo					\
