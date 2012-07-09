@@ -5,7 +5,7 @@
 
 Name:           grub2
 Version:        2.00
-Release:        1
+Release:        2
 Summary:        GNU GRUB is a Multiboot boot loader
 
 Group:          System/Kernel and hardware
@@ -39,6 +39,7 @@ BuildRequires:	liblzma-devel
 BuildRequires:	liblzo-devel
 BuildRequires:	libusb-devel
 BuildRequires:	ncurses-devel
+BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	texinfo
 BuildRequires:	texlive
 %if %{with talpo}
@@ -97,7 +98,8 @@ export PATH=$PWD/bfd:$PATH
 	--program-transform-name=s,grub,%{name},	\
 	--libdir=%{libdir32}				\
 	--libexecdir=%{libdir32}			\
-	--disable-werror
+	--disable-werror				\
+	--enable-device-mapper
 %make all
 
 make html pdf
