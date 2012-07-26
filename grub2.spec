@@ -27,8 +27,6 @@ Source7:	mandriva-grub2-theme-test.sh
 # www.4shared.com/archive/lFCl6wxL/grub_guidetar.html
 Source8:	grub_guide.tar.gz
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-
 BuildRequires:	bison
 BuildRequires:  flex
 BuildRequires:	fonts-ttf-unifont
@@ -40,7 +38,7 @@ BuildRequires:	liblzo-devel
 BuildRequires:	libusb-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	pkgconfig(devmapper)
-BuildRequires:	texinfo
+#BuildRequires:	texinfo
 BuildRequires:	texlive
 %if %{with talpo}
 BuildRequires:	talpo
@@ -161,9 +159,6 @@ install -m644 %{SOURCE3} %{SOURCE4} %{SOURCE5}		\
 
 %find_lang grub
 
-%clean
-rm -rf %{buildroot}
-
 %post
 exec >/dev/null 2>&1
 # Create device.map or reuse one from GRUB Legacy
@@ -195,11 +190,11 @@ fi
 #-----------------------------------------------------------------------
 %files -f grub.lang
 %defattr(-,root,root,-)
-%{libdir32}/%{name}
+#%{libdir32}/%{name}
 %{libdir32}/grub
 %{_sbindir}/%{name}-*
 %{_bindir}/%{name}-*
-%{_datadir}/%{name}
+%{_datadir}/grub
 %{_sysconfdir}/grub.d
 %{_sysconfdir}/%{name}.cfg
 %{_sysconfdir}/default/grub
