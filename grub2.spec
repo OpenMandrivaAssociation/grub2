@@ -5,7 +5,7 @@
 
 Name:           grub2
 Version:        2.00
-Release:        2
+Release:        1
 Summary:        GNU GRUB is a Multiboot boot loader
 
 Group:          System/Kernel and hardware
@@ -99,6 +99,7 @@ export PATH=$PWD/bfd:$PATH
     %ifarch x86_64
 	--enable-efiemu					\
     %endif
+	--with-grubdir=%{name}				\
 	--program-transform-name=s,grub,%{name},	\
 	--libdir=%{libdir32}				\
 	--libexecdir=%{libdir32}			\
