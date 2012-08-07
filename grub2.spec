@@ -26,6 +26,7 @@ Source6:	grub.melt
 Source7:	mandriva-grub2-theme-test.sh
 # www.4shared.com/archive/lFCl6wxL/grub_guidetar.html
 Source8:	grub_guide.tar.gz
+Source9:	grub-lua-rev24.tar.xz
 
 BuildRequires:	bison
 BuildRequires:  flex
@@ -43,6 +44,7 @@ BuildRequires:	texlive
 %if %{with talpo}
 BuildRequires:	talpo
 %endif
+BuildRequires:	autogen
 
 Requires(preun):drakxtools-backend
 Requires(post): drakxtools-backend
@@ -63,7 +65,7 @@ The kernel, in turn, initializes the rest of the operating system (e.g. GNU).
 
 #-----------------------------------------------------------------------
 %prep
-%setup -q -n grub-%{version}
+%setup -q -n grub-%{version} -a9
 perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;'	\
 	docs/grub-dev.texi
 
@@ -72,15 +74,19 @@ perl -pi -e "s|(^FONT_SOURCE=)|\$1%{unifont}|;" configure configure.ac
 sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure.ac
 
 perl -pi -e 's/-Werror//;' grub-core/Makefile.am
+mkdir grub-extras
+mv lua grub-extras
+export GRUB_CONTRIB=./grub-extras
+./autogen.sh
 
 #-----------------------------------------------------------------------
 %build
+export GRUB_CONTRIB=./grub-extras
 
 #(proyvind): debugedit will fail on some binaries if linked using gold
 mkdir -p bfd
 ln -s %{_bindir}/ld.bfd bfd/ld
 export PATH=$PWD/bfd:$PATH
-
 %configure						\
 %if %{with talpo}
 	CC=talpo					\
