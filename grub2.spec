@@ -45,6 +45,7 @@ BuildRequires:	libusb-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	texlive
+BuildRequires:	texinfo
 %if %{with talpo}
 BuildRequires:	talpo
 %endif
