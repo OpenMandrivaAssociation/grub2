@@ -28,6 +28,8 @@ Source7:	mandriva-grub2-theme-test.sh
 Source8:	grub_guide.tar.gz
 Source9:	grub-lua-rev24.tar.xz
 
+Source10:	%{name}.rpmlintrc
+
 BuildRequires:	bison
 BuildRequires:  flex
 BuildRequires:	fonts-ttf-unifont
