@@ -3,17 +3,17 @@
 
 %bcond_with	talpo
 
-Name:           grub2
-Version:        2.00
-Release:        1
-Summary:        GNU GRUB is a Multiboot boot loader
+Name:		grub2
+Version:	2.00
+Release:	1
+Summary:	GNU GRUB is a Multiboot boot loader
 
-Group:          System/Kernel and hardware
-License:        GPLv3+
-URL:            http://www.gnu.org/software/grub/
-Source0:        http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
-Source1:        90_persistent
-Source2:        grub.default
+Group:		System/Kernel and hardware
+License:	GPLv3+
+URL:		http://www.gnu.org/software/grub/
+Source0:	http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
+Source1:	90_persistent
+Source2:	grub.default
 
 # basic test
 Source3:	theme.txt
@@ -33,7 +33,7 @@ Source10:	%{name}.rpmlintrc
 Patch0:		grub-2.00-fix-dejavu-font.patch
 
 BuildRequires:	bison
-BuildRequires:  flex
+BuildRequires:	flex
 BuildRequires:	fonts-ttf-unifont
 BuildRequires:	freetype2-devel
 BuildRequires:	glibc-static-devel
@@ -43,7 +43,6 @@ BuildRequires:	liblzo-devel
 BuildRequires:	libusb-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	pkgconfig(devmapper)
-#BuildRequires:	texinfo
 BuildRequires:	texlive
 %if %{with talpo}
 BuildRequires:	talpo
@@ -51,7 +50,7 @@ BuildRequires:	talpo
 BuildRequires:	autogen
 
 Requires(preun):drakxtools-backend
-Requires(post): drakxtools-backend
+Requires(post):	drakxtools-backend
 
 Requires:	xorriso
 
