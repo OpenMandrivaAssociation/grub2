@@ -30,6 +30,8 @@ Source9:	grub-lua-rev24.tar.xz
 
 Source10:	%{name}.rpmlintrc
 
+Patch0:		grub-2.00-fix-dejavu-font.patch
+
 BuildRequires:	bison
 BuildRequires:  flex
 BuildRequires:	fonts-ttf-unifont
@@ -68,6 +70,7 @@ The kernel, in turn, initializes the rest of the operating system (e.g. GNU).
 #-----------------------------------------------------------------------
 %prep
 %setup -q -n grub-%{version} -a9
+%patch0 -p1 -b .dejavu~
 perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;'	\
 	docs/grub-dev.texi
 
