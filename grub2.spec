@@ -9,7 +9,7 @@
 
 Name:		grub2
 Version:	2.00
-Release:	11
+Release:	12
 Summary:	GNU GRUB is a Multiboot boot loader
 
 Group:		System/Kernel and hardware
@@ -369,7 +369,7 @@ fi
 %endif
 
 %changelog
-* Sat Sep 29 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 2.00-11
+* Sat Sep 29 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 2.00-12
 - fix merge with ROSA package
 - cleanups
 
