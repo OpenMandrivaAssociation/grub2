@@ -31,6 +31,7 @@ Source11:	grub2.rpmlintrc
 Source12:	grub-lua-rev24.tar.xz
 # documentation and simple test script for testing grub2 themes
 Source13:	mandriva-grub2-theme-test.sh
+Source14:	mandriva-background.jpg
 
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
@@ -45,6 +46,7 @@ Patch9:         grub-2.00.Linux.remove.patch
 Patch10:	grub2-mkfont-fix.patch
 Patch11:	grub-2.00-fix-dejavu-font.patch
 Patch12:	grub-2.00-ignore-gnulib-gets-stupidity.patch
+Patch13:	grub2-remove-rosa-logo-from-theme.patch
 
 
 BuildRequires:	bison
@@ -98,9 +100,11 @@ for EFI systems.
 
 #-----------------------------------------------------------------------
 %prep
-%setup -q -n grub-%{version} -a12
+%setup -q -n grub-%{version} -a7 -a12
 %apply_patches
 cp %{SOURCE10} .
+rm rosa/background.png rosa/Logo_Rosa.png
+cp %{SOURCE14} rosa/background.jpg
 
 perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;'	\
 	docs/grub-dev.texi
@@ -260,7 +264,7 @@ EOF
 chmod 755 %{buildroot}%{_filetriggers_dir}/%{name}.script
 
 install -d %{buildroot}/boot/%{name}/themes/
-tar -xf %{SOURCE7} -C %{buildroot}/boot/%{name}/themes
+cp -a rosa %{buildroot}/boot/%{name}/themes/
 
 #mv -f %{buildroot}/%{libdir32}/grub %{buildroot}/%{libdir32}/%{name}
 #mv -f %{buildroot}/%{_datadir}/grub %{buildroot}/%{_datadir}/%{name}
