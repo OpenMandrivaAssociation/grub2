@@ -52,17 +52,17 @@ Patch13:	grub2-remove-rosa-logo-from-theme.patch
 BuildRequires:	bison
 BuildRequires:	flex
 #BuildRequires:	fonts-ttf-unifont
-BuildRequires:	freetype2-devel
-BuildRequires:	glibc-static-devel
-BuildRequires:	help2man
-BuildRequires:	liblzma-devel
-BuildRequires:	liblzo-devel
-BuildRequires:	libusb-devel
-BuildRequires:	ncurses-devel
-BuildRequires:	texinfo
-BuildRequires:	texlive
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	pkgconfig(fuse)
+BuildRequires:	pkgconfig(freetype2)
+BuildRequires:	pkgconfig(liblzma)
+BuildRequires:	pkgconfig(libusb)
+BuildRequires:	pkgconfig(ncursesw)
+BuildRequires:	glibc-static-devel
+BuildRequires:	help2man
+BuildRequires:	liblzo-devel
+BuildRequires:	texinfo
+BuildRequires:	texlive
 BuildRequires:	autogen
 %if %{with talpo}
 BuildRequires:	talpo
@@ -375,6 +375,7 @@ fi
 
 %changelog
 * Fri Dec 21 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 2.00-12
+- use pkgconfig() deps for buildrequires
 - add missing pkgconfig(fuse) buildrequire for grub2-mount to build
 - fix merge with ROSA package
 - cleanups
