@@ -62,6 +62,7 @@ BuildRequires:	ncurses-devel
 BuildRequires:	texinfo
 BuildRequires:	texlive
 BuildRequires:	pkgconfig(devmapper)
+BuildRequires:	pkgconfig(fuse)
 BuildRequires:	autogen
 %if %{with talpo}
 BuildRequires:	talpo
@@ -373,7 +374,8 @@ fi
 %endif
 
 %changelog
-* Sat Sep 29 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 2.00-12
+* Fri Dec 21 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 2.00-12
+- add missing pkgconfig(fuse) buildrequire for grub2-mount to build
 - fix merge with ROSA package
 - cleanups
 
