@@ -47,6 +47,7 @@ Patch10:	grub2-mkfont-fix.patch
 Patch11:	grub-2.00-fix-dejavu-font.patch
 Patch12:	grub-2.00-ignore-gnulib-gets-stupidity.patch
 Patch13:	grub2-remove-rosa-logo-from-theme.patch
+Patch14:	grub-2.00-try-link-against-libncursesw-also.patch
 
 
 BuildRequires:	bison
@@ -375,6 +376,7 @@ fi
 
 %changelog
 * Fri Dec 21 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 2.00-12
+- when linking against ncurses, make sure to try libncursesw also (P14)
 - use pkgconfig() deps for buildrequires
 - add missing pkgconfig(fuse) buildrequire for grub2-mount to build
 - fix merge with ROSA package
