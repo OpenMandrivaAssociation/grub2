@@ -17,7 +17,6 @@ License:	GPLv3+
 URL:		http://www.gnu.org/software/grub/
 Source0:	http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
 Source1:	90_persistent
-Source2:	grub.default
 Source3:	grub.melt
 # www.4shared.com/archive/lFCl6wxL/grub_guidetar.html
 Source4:	grub_guide.tar.gz
