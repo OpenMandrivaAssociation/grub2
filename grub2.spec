@@ -9,7 +9,7 @@
 
 Name:		grub2
 Version:	2.00
-Release:	12
+Release:	13
 Summary:	GNU GRUB is a Multiboot boot loader
 
 Group:		System/Kernel and hardware
@@ -42,7 +42,7 @@ Patch5:		grub2-symlink-is-garbage.patch
 Patch6:		grub2-name-corrections.patch
 Patch7:		grub2-10_linux.patch
 Patch8:		grub2-theme-not_selected_item_box.patch
-Patch9:         grub-2.00.Linux.remove.patch
+Patch9:		grub-2.00.Linux.remove.patch
 Patch10:	grub2-mkfont-fix.patch
 Patch11:	grub-2.00-fix-dejavu-font.patch
 Patch12:	grub-2.00-ignore-gnulib-gets-stupidity.patch
@@ -249,7 +249,18 @@ do
 #        install -m 755 -D $BASE$EXT $TGT
 done
 # Defaults
-install -m644 %{SOURCE2} -D %{buildroot}%{_sysconfdir}/default/grub
+install -d %{buildroot}%{_sysconfdir}/default
+tee %{buildroot}%{_sysconfdir}/default/grub << EOF
+GRUB_GFXPAYLOAD_LINUX=keep
+GRUB_DISABLE_RECOVERY=true
+GRUB_DISTRIBUTOR="%{distribution}"
+GRUB_GFXMODE=1600x1200,1680x1050,1360x768,1280x1024,1280x960,1280x800,1024x768,1024x600,800x600,640x480
+GRUB_DEFAULT=0
+GRUB_TIMEOUT="10"
+GRUB_CMDLINE_LINUX_DEFAULT='splash=silent logo.nologo'
+GRUB_THEME="/boot/grub2/themes/rosa/theme.txt"
+GRUB_BACKGROUND="/boot/grub2/themes/rosa/terminal_background.png"
+EOF
 
 #Add more useful update-grub2 script
 install -m755 %{SOURCE9} -D %{buildroot}%{_sbindir}
