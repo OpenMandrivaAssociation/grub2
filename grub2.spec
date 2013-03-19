@@ -4,12 +4,13 @@
 #%define		unifont		%(echo %{_datadir}/fonts/TTF/unifont/unifont-*.ttf)
 
 %global efi %{ix86} x86_64
+%global optflags %{optflags} -Os
 
 %bcond_with	talpo
 
 Name:		grub2
 Version:	2.00
-Release:	13
+Release:	14
 Summary:	GNU GRUB is a Multiboot boot loader
 
 Group:		System/Kernel and hardware
@@ -47,7 +48,7 @@ Patch11:	grub-2.00-fix-dejavu-font.patch
 Patch12:	grub-2.00-ignore-gnulib-gets-stupidity.patch
 Patch13:	grub2-remove-rosa-logo-from-theme.patch
 Patch14:	grub-2.00-try-link-against-libncursesw-also.patch
-
+Patch15:	grub-r4604-avoid-making-terminal-window-too-small.patch
 
 BuildRequires:	bison
 BuildRequires:	flex
