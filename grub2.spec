@@ -131,7 +131,7 @@ export CONFIGURE_TOP="$PWD"
 
 #(proyvind): debugedit will fail on some binaries if linked using gold
 mkdir -p bfd
-ln -s %{_bindir}/ld.bfd bfd/ld
+ln -sf %{_bindir}/ld.bfd bfd/ld
 export PATH=$PWD/bfd:$PATH
 
 %ifarch %{efi}
