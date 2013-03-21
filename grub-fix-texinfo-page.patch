@@ -1,0 +1,12 @@
+--- grub-2.00/docs/grub-dev.texi~	2013-03-21 03:42:02.280203039 +0100
++++ grub-2.00/docs/grub-dev.texi	2013-03-21 03:42:05.150239736 +0100
+@@ -1394,8 +1394,8 @@ grub_video_blit_glyph (&glyph, color, 0,
+ 
+ @node Bitmap API
+ @section Bitmap API
+-@itemize
+ @subsection grub_video_bitmap_create
++@itemize
+ @item Prototype:
+ @example
+ grub_err_t grub_video_bitmap_create (struct grub_video_bitmap **bitmap, unsigned int width, unsigned int height, enum grub_video_blit_format blit_format)

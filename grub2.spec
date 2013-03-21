@@ -48,7 +48,7 @@ Patch11:	grub-2.00-fix-dejavu-font.patch
 Patch12:	grub-2.00-ignore-gnulib-gets-stupidity.patch
 Patch13:	grub2-remove-rosa-logo-from-theme.patch
 Patch14:	grub-2.00-try-link-against-libncursesw-also.patch
-Patch15:	grub-r4604-avoid-making-terminal-window-too-small.patch
+Patch15:	grub-fix-texinfo-page.patch
 
 BuildRequires:	bison
 BuildRequires:	flex
