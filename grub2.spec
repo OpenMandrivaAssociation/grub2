@@ -1,4 +1,4 @@
-%define		libdir32	%{_exec_prefix}/lib
+%define libdir32 %{_exec_prefix}/lib
 %define platform pc
 %define efi 1
 #%define		unifont		%(echo %{_datadir}/fonts/TTF/unifont/unifont-*.ttf)
@@ -6,11 +6,11 @@
 %global efi %{ix86} x86_64
 %global optflags %{optflags} -Os
 
-%bcond_with	talpo
+%bcond_with talpo
 
 Name:		grub2
 Version:	2.00
-Release:	14
+Release:	15
 Summary:	GNU GRUB is a Multiboot boot loader
 
 Group:		System/Kernel and hardware
