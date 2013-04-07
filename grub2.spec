@@ -10,7 +10,7 @@
 
 Name:		grub2
 Version:	2.00
-Release:	16
+Release:	17
 Summary:	GNU GRUB is a Multiboot boot loader
 
 Group:		System/Kernel and hardware
@@ -292,13 +292,17 @@ exec >/dev/null 2>&1
 # Create device.map or reuse one from GRUB Legacy
 cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
 	%{_sbindir}/%{name}-mkdevicemap
-# Determine the partition with /boot
-BOOT_PARTITION=$(df -h /boot |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
-# (Re-)Generate core.img, but don't let it be installed in boot sector
-%{_sbindir}/%{name}-install $BOOT_PARTITION
-# Generate grub.cfg and add GRUB2 chainloader to menu on initial install
-if [ $1 = 1 ]; then
-    %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+# Do not install grub2 if running in a chroot
+# http://stackoverflow.com/questions/75182/detecting-a-chroot-jail-from-within
+if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
+    # Determine the partition with /boot
+    BOOT_PARTITION=$(df -h /boot |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
+    # (Re-)Generate core.img, but don't let it be installed in boot sector
+    %{_sbindir}/%{name}-install $BOOT_PARTITION
+    # Generate grub.cfg and add GRUB2 chainloader to menu on initial install
+    if [ $1 = 1 ]; then
+        %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+    fi
 fi
 #bugfix: error message before loading of grub2 menu on boot
 cp -f /boot/grub2/locale/en@quot.mo /boot/grub2/locale/en.mo
@@ -386,6 +390,9 @@ fi
 %endif
 
 %changelog
+* Sat Apr  6 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 2.00-17
+- Do not install grub2 in post if running in a chroot.
+
 * Fri Dec 21 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 2.00-12
 - when linking against ncurses, make sure to try libncursesw also (P14)
 - use pkgconfig() deps for buildrequires
