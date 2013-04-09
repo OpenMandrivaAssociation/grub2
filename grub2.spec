@@ -18,6 +18,7 @@ License:	GPLv3+
 URL:		http://www.gnu.org/software/grub/
 Source0:	http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
 Source1:	90_persistent
+Source2:	grub2.default
 Source3:	grub.melt
 # www.4shared.com/archive/lFCl6wxL/grub_guidetar.html
 Source4:	grub_guide.tar.gz
@@ -249,18 +250,7 @@ do
 #        install -m 755 -D $BASE$EXT $TGT
 done
 # Defaults
-install -d %{buildroot}%{_sysconfdir}/default
-tee %{buildroot}%{_sysconfdir}/default/grub << EOF
-GRUB_GFXPAYLOAD_LINUX=keep
-GRUB_DISABLE_RECOVERY=true
-GRUB_DISTRIBUTOR="%{distribution}"
-GRUB_GFXMODE=1600x1200,1680x1050,1360x768,1280x1024,1280x960,1280x800,1024x768,1024x600,800x600,640x480
-GRUB_DEFAULT=0
-GRUB_TIMEOUT="10"
-GRUB_CMDLINE_LINUX_DEFAULT='quiet splash=silent logo.nologo'
-GRUB_THEME="/boot/grub2/themes/rosa/theme.txt"
-GRUB_BACKGROUND="/boot/grub2/themes/rosa/terminal_background.png"
-EOF
+install -m755 %{SOURCE2} -D %{buildroot}%{_sysconfdir}/default/grub
 
 #Add more useful update-grub2 script
 install -m755 %{SOURCE9} -D %{buildroot}%{_sbindir}
