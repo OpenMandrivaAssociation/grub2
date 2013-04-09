@@ -10,7 +10,7 @@
 
 Name:		grub2
 Version:	2.00
-Release:	17
+Release:	18
 Summary:	GNU GRUB is a Multiboot boot loader
 
 Group:		System/Kernel and hardware
@@ -85,11 +85,11 @@ to the operating system kernel software (such as the Hurd or Linux).
 The kernel, in turn, initializes the rest of the operating system (e.g. GNU).
 
 %ifarch %{efi}
-%package	efi
-Summary:        GRUB for EFI systems
-Group:          System/Kernel and hardware
+%package efi
+Summary:	GRUB for EFI systems
+Group:		System/Kernel and hardware
 
-%description	efi
+%description efi
 The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
 bootloader with modular architecture. 
 
@@ -257,7 +257,7 @@ GRUB_DISTRIBUTOR="%{distribution}"
 GRUB_GFXMODE=1600x1200,1680x1050,1360x768,1280x1024,1280x960,1280x800,1024x768,1024x600,800x600,640x480
 GRUB_DEFAULT=0
 GRUB_TIMEOUT="10"
-GRUB_CMDLINE_LINUX_DEFAULT='splash=silent logo.nologo'
+GRUB_CMDLINE_LINUX_DEFAULT='quiet splash=silent logo.nologo'
 GRUB_THEME="/boot/grub2/themes/rosa/theme.txt"
 GRUB_BACKGROUND="/boot/grub2/themes/rosa/terminal_background.png"
 EOF
