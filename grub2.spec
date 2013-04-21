@@ -10,7 +10,7 @@
 
 Name:		grub2
 Version:	2.00
-Release:	19
+Release:	20
 Summary:	GNU GRUB is a Multiboot boot loader
 
 Group:		System/Kernel and hardware
@@ -32,7 +32,7 @@ Source11:	grub2.rpmlintrc
 Source12:	grub-lua-rev24.tar.xz
 # documentation and simple test script for testing grub2 themes
 Source13:	mandriva-grub2-theme-test.sh
-Source14:	mandriva-background.jpg
+Source14:	moondrake-background.jpg
 
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
