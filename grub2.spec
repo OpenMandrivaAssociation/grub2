@@ -278,7 +278,7 @@ cp -a rosa %{buildroot}/boot/%{name}/themes/
 #find %{buildroot} -size 0 -delete
 
 %post
-exec >/dev/null 2>&1
+exec > /var/log/%{name}_post.log 2>&1
 # Create device.map or reuse one from GRUB Legacy
 cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
 	%{_sbindir}/%{name}-mkdevicemap
@@ -298,7 +298,7 @@ fi
 cp -f /boot/grub2/locale/en@quot.mo /boot/grub2/locale/en.mo
 
 %preun
-exec >/dev/null
+exec > /var/log/%{name}_preun.log 2>&1
 if [ $1 = 0 ]; then
     # XXX Ugly
     rm -f /boot/%{name}/*.mod
