@@ -39,10 +39,8 @@ Patch2:		grub2-custom-color.patch
 Patch3:		grub2-move-terminal.patch
 Patch4:		grub2-read-cfg.patch
 Patch5:		grub2-symlink-is-garbage.patch
-Patch6:		grub2-name-corrections.patch
 Patch7:		grub2-10_linux.patch
 Patch8:		grub2-theme-not_selected_item_box.patch
-Patch9:		grub-2.00.Linux.remove.patch
 Patch10:	grub2-mkfont-fix.patch
 Patch11:	grub-2.00-fix-dejavu-font.patch
 Patch12:	grub-2.00-ignore-gnulib-gets-stupidity.patch
