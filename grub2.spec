@@ -50,6 +50,32 @@ Patch12:	grub-2.00-ignore-gnulib-gets-stupidity.patch
 Patch13:	grub2-remove-rosa-logo-from-theme.patch
 Patch14:	grub-2.00-try-link-against-libncursesw-also.patch
 Patch15:	grub-fix-texinfo-page.patch
+# Fix parallel build
+Patch16:	grub2-2.00-parallel-build.patch
+# Fix autoreconf warnings
+Patch17:	grub2-2.00-mga-fix_AM_PROG_MKDIR_P-configure.ac.patch
+
+# Fedora patches
+Patch20:	grub2-linuxefi.patch
+Patch21:	grub2-cdpath.patch
+Patch22:	grub2-use-linuxefi.patch
+Patch23:	grub-2.00-dont-decrease-mmap-size.patch
+Patch24:	grub-2.00-no-insmod-on-sb.patch
+Patch25:	grub-2.00-efidisk-ahci-workaround.patch
+Patch26:	grub-2.00-increase-the-ieee1275-device-path-buffer-size.patch
+Patch27:	grub-2.00-Handle-escapes-in-labels.patch
+Patch28:	grub-2.00-fix-http-crash.patch
+Patch29:	grub-2.00-Issue-separate-DNS-queries-for-ipv4-and-ipv6.patch
+Patch30:	grub-2.00-cas-reboot-support.patch
+Patch31:	grub-2.00-for-ppc-include-all-modules-in-the-core-image.patch
+Patch32:	add-vlan-tag-support.patch
+Patch33:	follow-the-symbolic-link-ieee1275.patch
+Patch34:	grub-2.00-add-X-option-to-printf-functions.patch
+Patch35:	grub-2.00-dhcp-client-id-and-uuid-options-added.patch
+Patch36:	grub-2.00-search-for-specific-config-file-for-netboot.patch
+Patch37:	grub2-add-bootpath-device-to-the-list.patch
+Patch38:	grub-2.00-add-GRUB-DISABLE-SUBMENU-option.patch
+Patch39:	grub-2.00-support-bls-config.patch
 
 BuildRequires:	bison
 BuildRequires:	flex

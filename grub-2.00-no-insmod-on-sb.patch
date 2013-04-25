@@ -1,0 +1,80 @@
+--- grub-2.00/grub-core/kern/dl.c.sb~	2012-06-22 17:26:38.000000000 +0200
++++ grub-2.00/grub-core/kern/dl.c	2013-04-25 02:14:22.947661091 +0200
+@@ -42,6 +42,10 @@
+ #include <sys/mman.h>
+ #endif
+ 
++#ifdef GRUB_MACHINE_EFI
++#include <grub/efi/efi.h>
++#endif
++
+ 
+ 
+ #pragma GCC diagnostic ignored "-Wcast-align"
+@@ -668,6 +672,19 @@ grub_dl_load_file (const char *filename)
+   void *core = 0;
+   grub_dl_t mod = 0;
+ 
++#ifdef GRUB_MACHINE_EFI
++  if (grub_efi_secure_boot ())
++    {
++#if 0
++      /* This is an error, but grub2-mkconfig still generates a pile of
++       * insmod commands, so emitting it would be mostly just obnoxious. */
++      grub_error (GRUB_ERR_ACCESS_DENIED,
++		  "Secure Boot forbids loading module from %s", filename);
++#endif
++      return 0;
++    }
++#endif
++
+   file = grub_file_open (filename);
+   if (! file)
+     return 0;
+--- grub-2.00/grub-core/kern/efi/efi.c.sb~	2012-06-11 17:54:41.000000000 +0200
++++ grub-2.00/grub-core/kern/efi/efi.c	2013-04-25 02:14:22.948661098 +0200
+@@ -229,6 +229,34 @@ grub_efi_get_variable (const char *var,
+   return NULL;
+ }
+ 
++grub_efi_boolean_t
++grub_efi_secure_boot (void)
++{
++  grub_efi_guid_t efi_var_guid = GRUB_EFI_GLOBAL_VARIABLE_GUID;
++  grub_size_t datasize;
++  char *secure_boot = NULL;
++  char *setup_mode = NULL;
++  grub_efi_boolean_t ret = 0;
++
++  secure_boot = grub_efi_get_variable("SecureBoot", &efi_var_guid, &datasize);
++
++  if (datasize != 1 || !secure_boot)
++    goto out;
++
++  setup_mode = grub_efi_get_variable("SetupMode", &efi_var_guid, &datasize);
++
++  if (datasize != 1 || !setup_mode)
++    goto out;
++
++  if (*secure_boot && !*setup_mode)
++    ret = 1;
++
++ out:
++  grub_free (secure_boot);
++  grub_free (setup_mode);
++  return ret;
++}
++
+ #pragma GCC diagnostic ignored "-Wcast-align"
+ 
+ /* Search the mods section from the PE32/PE32+ image. This code uses
+--- grub-2.00/include/grub/efi/efi.h.sb~	2013-04-25 02:14:22.949661104 +0200
++++ grub-2.00/include/grub/efi/efi.h	2013-04-25 02:15:18.860024498 +0200
+@@ -67,6 +67,7 @@ grub_err_t EXPORT_FUNC (grub_efi_set_vir
+ void *EXPORT_FUNC (grub_efi_get_variable) (const char *variable,
+ 					   const grub_efi_guid_t *guid,
+ 					   grub_size_t *datasize_out);
++grub_efi_boolean_t EXPORT_FUNC (grub_efi_secure_boot) (void);
+ int
+ EXPORT_FUNC (grub_efi_compare_device_paths) (const grub_efi_device_path_t *dp1,
+ 					     const grub_efi_device_path_t *dp2);
