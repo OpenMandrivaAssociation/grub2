@@ -23,13 +23,11 @@ Signed-off-by: Andrey Borzenkov <arvidjaar@gmail.com>
  grub-core/partmap/msdos.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: grub-2.00/grub-core/partmap/msdos.c
-===================================================================
---- grub-2.00.orig/grub-core/partmap/msdos.c
-+++ grub-2.00/grub-core/partmap/msdos.c
-@@ -196,7 +196,7 @@ grub_partition_msdos_iterate (grub_disk_
- 		    return grub_errno;
- 		}
+--- grub-2.00/grub-core/partmap/msdos.c.0103~	2012-05-21 23:27:55.000000000 +0200
++++ grub-2.00/grub-core/partmap/msdos.c	2013-04-25 04:33:50.471222565 +0200
+@@ -189,7 +189,7 @@ grub_partition_msdos_iterate (grub_disk_
+ 	      if (hook (disk, &p))
+ 		return grub_errno;
  	    }
 -	  else if (p.number < 4)
 +	  else if (p.number < 3)

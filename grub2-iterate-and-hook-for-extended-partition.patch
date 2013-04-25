@@ -16,10 +16,8 @@ partitions that are used to link together logical partitions.
 
 References: https://bugzilla.novell.com/show_bug.cgi?id=785341
 ---
-Index: grub-2.00/grub-core/partmap/msdos.c
-===================================================================
---- grub-2.00.orig/grub-core/partmap/msdos.c
-+++ grub-2.00/grub-core/partmap/msdos.c
+--- grub-2.00/grub-core/partmap/msdos.c.0105~	2013-04-25 04:34:52.111632525 +0200
++++ grub-2.00/grub-core/partmap/msdos.c	2013-04-25 04:35:14.724782859 +0200
 @@ -181,13 +181,20 @@ grub_partition_msdos_iterate (grub_disk_
  			(unsigned long long) p.len);
  
@@ -44,5 +42,5 @@ Index: grub-2.00/grub-core/partmap/msdos.c
 +		    return grub_errno;
 +		}
  	    }
- 	  else if (p.number < 4)
+ 	  else if (p.number < 3)
  	    /* If this partition is a logical one, shouldn't increase the
