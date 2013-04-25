@@ -79,6 +79,7 @@ Patch39:	grub-2.00-support-bls-config.patch
 # openSuSE patches
 Patch100:	grub2-fix-locale-en.mo.gz-not-found-error-message.patch
 Patch101:	grub2-fix-error-terminal-gfxterm-isn-t-found.patch
+Patch102:	grub2-add-device-to-os_prober-linux-menuentry.patch
 
 BuildRequires:	bison
 BuildRequires:	flex
