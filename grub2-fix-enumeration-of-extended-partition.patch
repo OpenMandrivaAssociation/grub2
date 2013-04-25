@@ -1,0 +1,38 @@
+From: Andrey Borzenkov <arvidjaar@gmail.com>
+Subject: [PATCH] fix off by one error in enumerating MSDOS partitions
+References: bnc#779534
+
+As reported in https://bugzilla.novell.com/show_bug.cgi?id=779534,
+grub2 assigns incorrect partition number to extended partitions.
+This is due to slightly non-standard EBR which contains single extended
+partition record, but no normal partition. Due to incorrect p.number
+comparison, grub2 includes it in partition numbering.
+
+With standard EBR first entry is "true" partition that correctly
+gets assigned next available number.
+
+At the point of comparison p.number is one less than partition
+number; so make correct comparison.
+
+Actual partition chain is visible in this attachement:
+http://bugzilla.novell.com/attachment.cgi?id=519076
+
+Signed-off-by: Andrey Borzenkov <arvidjaar@gmail.com>
+
+---
+ grub-core/partmap/msdos.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: grub-2.00/grub-core/partmap/msdos.c
+===================================================================
+--- grub-2.00.orig/grub-core/partmap/msdos.c
++++ grub-2.00/grub-core/partmap/msdos.c
+@@ -196,7 +196,7 @@ grub_partition_msdos_iterate (grub_disk_
+ 		    return grub_errno;
+ 		}
+ 	    }
+-	  else if (p.number < 4)
++	  else if (p.number < 3)
+ 	    /* If this partition is a logical one, shouldn't increase the
+ 	       partition number.  */
+ 	    p.number++;
