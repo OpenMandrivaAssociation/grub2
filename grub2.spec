@@ -329,8 +329,7 @@ cp %{_datadir}/gfxboot/themes/Moondrake/back.jpg %{buildroot}/boot/%{name}/theme
 %post
 exec > /var/log/%{name}_post.log 2>&1
 # Create device.map or reuse one from GRUB Legacy
-cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
-	%{_sbindir}/%{name}-mkdevicemap
+[ -f /boot/grub/device.map ] && cp -u /boot/grub/device.map /boot/%{name}/device.map
 # Do not install grub2 if running in a chroot
 # http://stackoverflow.com/questions/75182/detecting-a-chroot-jail-from-within
 if [ -z "$DURING_INSTALL" -a "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
