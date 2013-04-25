@@ -343,7 +343,9 @@ if [ -z "$DURING_INSTALL" -a "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/roo
     fi
 fi
 #bugfix: error message before loading of grub2 menu on boot
-cp -f /boot/grub2/locale/en@quot.mo /boot/grub2/locale/en.mo
+if [ -e /boot/grub2/locale/en@quot.mo -a ! -e /boot/grub2/locale/en.mo ]; then
+    ln -sr /boot/grub2/locale/en@quot.mo /boot/grub2/locale/en.mo
+fi
 
 %preun
 exec > /var/log/%{name}_preun.log 2>&1
