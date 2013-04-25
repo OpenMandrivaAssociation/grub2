@@ -76,6 +76,9 @@ Patch37:	grub2-add-bootpath-device-to-the-list.patch
 Patch38:	grub-2.00-add-GRUB-DISABLE-SUBMENU-option.patch
 Patch39:	grub-2.00-support-bls-config.patch
 
+# openSuSE patches
+Patch100:	grub2-fix-locale-en.mo.gz-not-found-error-message.patch
+
 BuildRequires:	bison
 BuildRequires:	flex
 #BuildRequires:	fonts-ttf-unifont
@@ -341,10 +344,6 @@ if [ -z "$DURING_INSTALL" -a "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/roo
     if [ $1 = 1 ]; then
         %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
     fi
-fi
-#bugfix: error message before loading of grub2 menu on boot
-if [ -e /boot/grub2/locale/en@quot.mo -a ! -e /boot/grub2/locale/en.mo ]; then
-    ln -sr /boot/grub2/locale/en@quot.mo /boot/grub2/locale/en.mo
 fi
 
 %preun
