@@ -98,8 +98,10 @@ BuildRequires:	talpo
 
 Requires:	xorriso
 Requires(post):	os-prober
+Suggests:	%{name}-theme
 
 Provides:	bootloader
+Provides:	grub2bootloader = %{EVRD}
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
@@ -115,6 +117,8 @@ The kernel, in turn, initializes the rest of the operating system (e.g. GNU).
 %package efi
 Summary:	GRUB for EFI systems
 Group:		System/Kernel and hardware
+Provides:	grub2bootloader = %{EVRD}
+Suggests:	%{name}-theme
 
 %description efi
 The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
@@ -125,6 +129,24 @@ architectures and hardware devices.  This subpackage provides support
 for EFI systems.
 %endif
 
+%package	moondrake-theme
+Summary:	Provides a graphical theme with a custom Moondrake background for grub2
+Group:		System/Kernel and hardware
+Requires:	grub2bootloader = %{EVRD}
+Provides:	%{name}-theme = %{EVRD}
+
+%description	moondrake-theme
+This package provides a custom Moondrake graphical theme.
+
+%package	rosa-theme
+Summary:	Provides a graphical theme with a custom ROSA background for grub2
+Group:		System/Kernel and hardware
+Requires:	grub2bootloader = %{EVRD}
+Provides:	%{name}-theme = %{EVRD}
+
+%description	rosa-theme
+This package provides a custom ROSA graphical theme.
+
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -132,8 +154,6 @@ for EFI systems.
 %setup -q -n grub-%{version} -a7 -a12
 %apply_patches
 cp %{SOURCE10} .
-rm rosa/background.png rosa/Logo_Rosa.png
-cp %{_datadir}/gfxboot/themes/Moondrake/back.jpg rosa/background.jpg
 
 perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;'	\
 	docs/grub-dev.texi
@@ -292,8 +312,11 @@ cat > %{buildroot}%{_filetriggers_dir}/%{name}.script << EOF
 EOF
 chmod 755 %{buildroot}%{_filetriggers_dir}/%{name}.script
 
-install -d %{buildroot}/boot/%{name}/themes/
+install -d %{buildroot}/boot/%{name}/themes/moondrake
 cp -a rosa %{buildroot}/boot/%{name}/themes/
+ln %{buildroot}/boot/%{name}/themes/rosa/* %{buildroot}/boot/%{name}/themes/moondrake
+rm %{buildroot}/boot/%{name}/themes/moondrake/background.png %{buildroot}/boot/%{name}/themes/moondrake/Logo_Rosa.png
+cp %{_datadir}/gfxboot/themes/Moondrake/back.jpg %{buildroot}/boot/%{name}/themes/moondrake/background.jpg
 
 #mv -f %{buildroot}/%{libdir32}/grub %{buildroot}/%{libdir32}/%{name}
 #mv -f %{buildroot}/%{_datadir}/grub %{buildroot}/%{_datadir}/%{name}
@@ -332,6 +355,21 @@ if [ $1 = 0 ]; then
     rm -f /boot/%{name}/*.lst
     rm -f /boot/%{name}/*.o
     rm -f /boot/%{name}/device.map
+fi
+
+%post moondrake-theme
+if [ $1 -eq 1 ] ; then
+sed 	-e 's#\(GRUB_THEME=\).*#\1"/boot/%{name}/themes/moondrake/theme.txt"#g' \
+	-e 's#\(GRUB_BACKGROUND=\).*#\1"/boot/grub2/themes/moondrake/terminal_background.png"#g' \
+	-i %{_sysconfdir}/default/grub
+fi
+
+%post rosa-theme
+# Don't install if updating
+if [ $1 -eq 1 ] ; then
+sed 	-e 's#\(GRUB_THEME=\).*#\1"/boot/%{name}/themes/rosa/theme.txt"#g' \
+	-e 's#\(GRUB_BACKGROUND=\).*#\1"/boot/grub2/themes/rosaa/terminal_background.png"#g' \
+	-i %{_sysconfdir}/default/grub
 fi
 
 #-----------------------------------------------------------------------
@@ -374,7 +412,7 @@ fi
 %{_sysconfdir}/bash_completion.d/grub
 %dir /boot/%{name}
 %dir /boot/%{name}/locale
-/boot/%{name}/themes
+%dir /boot/%{name}/themes
 # Actually, this is replaced by update-grub from scriptlets,
 # but it takes care of modified persistent part
 %config(noreplace) /boot/%{name}/grub.cfg
@@ -404,6 +442,12 @@ fi
 # RPM filetriggers
 #%{_filetriggers_dir}/%{name}.*
 %endif
+
+%files moondrake-theme
+/boot/%{name}/themes/moondrake
+
+%files rosa-theme
+/boot/%{name}/themes/rosa
 
 %changelog
 * Sat Apr  6 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 2.00-17
