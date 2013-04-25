@@ -89,6 +89,7 @@ Patch110:	grub2-efidisk-ahci-workaround.patch
 Patch111:	grub2-secureboot-chainloader.patch
 Patch112:	grub2-pass-correct-root-for-nfsroot.patch
 Patch113:	grub2-secureboot-use-linuxefi-on-uefi-in-os-prober.patch
+Patch114:	grub2-quote-messages-in-grub.cfg.patch
 
 BuildRequires:	bison
 BuildRequires:	flex
