@@ -32,7 +32,6 @@ Source11:	grub2.rpmlintrc
 Source12:	grub-lua-rev24.tar.xz
 # documentation and simple test script for testing grub2 themes
 Source13:	mandriva-grub2-theme-test.sh
-Source14:	moondrake-background.jpg
 
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
@@ -80,6 +79,7 @@ Patch39:	grub-2.00-support-bls-config.patch
 BuildRequires:	bison
 BuildRequires:	flex
 #BuildRequires:	fonts-ttf-unifont
+Buildrequires:	distro-theme-Moondrake
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	pkgconfig(fuse)
 BuildRequires:	pkgconfig(freetype2)
@@ -133,7 +133,7 @@ for EFI systems.
 %apply_patches
 cp %{SOURCE10} .
 rm rosa/background.png rosa/Logo_Rosa.png
-cp %{SOURCE14} rosa/background.jpg
+cp %{_datadir}/gfxboot/themes/Moondrake/back.jpg rosa/background.jpg
 
 perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;'	\
 	docs/grub-dev.texi
