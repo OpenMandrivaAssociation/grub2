@@ -82,6 +82,7 @@ Patch101:	grub2-fix-error-terminal-gfxterm-isn-t-found.patch
 Patch102:	grub2-add-device-to-os_prober-linux-menuentry.patch
 Patch103:	grub2-fix-enumeration-of-extended-partition.patch
 Patch104:	grub2-install-opt-skip-fs-probe.patch
+Patch105:	grub2-iterate-and-hook-for-extended-partition.patch
 
 BuildRequires:	bison
 BuildRequires:	flex
