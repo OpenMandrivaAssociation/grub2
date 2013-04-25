@@ -333,7 +333,7 @@ cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
 	%{_sbindir}/%{name}-mkdevicemap
 # Do not install grub2 if running in a chroot
 # http://stackoverflow.com/questions/75182/detecting-a-chroot-jail-from-within
-if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
+if [ -z "$DURING_INSTALL" -a "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
     # Determine the partition with /boot
     BOOT_PARTITION=$(df -h /boot |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
     # (Re-)Generate core.img, but don't let it be installed in boot sector
