@@ -1,0 +1,73 @@
+From 340fd0c8717c2bf33163a18bfec72243b0e51862 Mon Sep 17 00:00:00 2001
+From: Michael Chang <mchang@suse.com>
+Date: Thu, 30 Aug 2012 15:43:17 +0800
+Subject: [PATCH] Pass corret root= for nfsroot
+
+References: bnc#774548
+Patch-Mainline: no
+
+Fix / is mounted on nfs. The fix is to pass kernel parameters
+with correct root= for nfs. However since grub2 doesn't support
+nfs file system module, the /boot on nfs is not possible and
+grub2-probe not work in probing nfs mounted path. The fix is merely
+on the script level and not use grub2-probe for above reasons.
+---
+ util/grub-mkconfig.in |   37 ++++++++++++++++++++++++++++++-------
+ 1 files changed, 30 insertions(+), 7 deletions(-)
+
+diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
+index ca62e9f..d789fcc 100644
+--- a/util/grub-mkconfig.in
++++ b/util/grub-mkconfig.in
+@@ -128,18 +128,41 @@ else
+     exit 1
+ fi
+ 
+-# Device containing our userland.  Typically used for root= parameter.
+-GRUB_DEVICE="`${grub_probe} --target=device /`"
+-GRUB_DEVICE_UUID="`${grub_probe} --device ${GRUB_DEVICE} --target=fs_uuid 2> /dev/null`" || true
++probe_nfsroot_device () {
++    while read line ; do
++        set -- $line
++        path=$5
++        fstype=$8
++        device=$9
++
++        if [ "x${path}" = "x/" ] &&
++           [ "x${fstype}" = "xnfs" -o "x${fstype}" = "xnfs4" ] ; then
++            echo "$device"
++            return
++        fi
++    done
++} </proc/self/mountinfo
++
++NFSROOT_DEVICE="`probe_nfsroot_device`"
++
++if [ "x${NFSROOT_DEVICE}" != "x" ]; then
++    GRUB_DEVICE="$NFSROOT_DEVICE"
++    GRUB_DEVICE_UUID=""
++    GRUB_FS="unknown"
++else
++    # Device containing our userland.  Typically used for root= parameter.
++    GRUB_DEVICE="`${grub_probe} --target=device /`"
++    GRUB_DEVICE_UUID="`${grub_probe} --device ${GRUB_DEVICE} --target=fs_uuid 2> /dev/null`" || true
++
++    # Filesystem for the device containing our userland.  Used for stuff like
++    # choosing Hurd filesystem module.
++    GRUB_FS="`${grub_probe} --device ${GRUB_DEVICE} --target=fs 2> /dev/null || echo unknown`"
++fi
+ 
+ # Device containing our /boot partition.  Usually the same as GRUB_DEVICE.
+ GRUB_DEVICE_BOOT="`${grub_probe} --target=device /boot`"
+ GRUB_DEVICE_BOOT_UUID="`${grub_probe} --device ${GRUB_DEVICE_BOOT} --target=fs_uuid 2> /dev/null`" || true
+ 
+-# Filesystem for the device containing our userland.  Used for stuff like
+-# choosing Hurd filesystem module.
+-GRUB_FS="`${grub_probe} --device ${GRUB_DEVICE} --target=fs 2> /dev/null || echo unknown`"
+-
+ if test -f ${sysconfdir}/default/grub ; then
+   . ${sysconfdir}/default/grub
+ fi
+-- 
+1.7.3.4
+

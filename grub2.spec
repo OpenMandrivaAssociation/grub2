@@ -87,6 +87,7 @@ Patch108:	grub2-fix-mo-not-copied-to-grubdir-locale.patch
 Patch109:	grub2-fix-menu-in-xen-host-server.patch
 Patch110:	grub2-efidisk-ahci-workaround.patch
 Patch111:	grub2-secureboot-chainloader.patch
+Patch112:	grub2-pass-correct-root-for-nfsroot.patch
 
 BuildRequires:	bison
 BuildRequires:	flex
