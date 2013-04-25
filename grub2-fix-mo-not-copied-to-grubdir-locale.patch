@@ -1,0 +1,35 @@
+From 4b5567de4546b48e5911a45eba184c92ec45eed0 Mon Sep 17 00:00:00 2001
+From: Michael Chang <mchang@suse.com>
+Date: Wed, 18 Jul 2012 15:11:59 +0800
+Subject: [PATCH] fix mo not copied to ${grubdir}/locale/
+
+References: bnc#771393
+Patch-Mainline: no
+
+The hard-coded grub.mo should be replaced by @PACKAGE@.mo. For
+people who configure to use other package name, the hard-coded
+grub.mo is not matched thus not copied to ${grubdir}/locale. This
+patch fixes the issue by using @PACKAGE@.mo to correct match the
+file name.
+---
+ util/grub-install.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/util/grub-install.in b/util/grub-install.in
+index 3a7d332..af4e2e2 100644
+--- a/util/grub-install.in
++++ b/util/grub-install.in
+@@ -545,8 +545,8 @@ fi
+ # Copy gettext files
+ mkdir -p "${grubdir}"/locale/
+ for dir in "${localedir}"/*; do
+-    if test -f "$dir/LC_MESSAGES/grub.mo"; then
+-        cp -f "$dir/LC_MESSAGES/grub.mo" "${grubdir}/locale/${dir##*/}.mo"
++    if test -f "$dir/LC_MESSAGES/@PACKAGE@.mo"; then
++        cp -f "$dir/LC_MESSAGES/@PACKAGE@.mo" "${grubdir}/locale/${dir##*/}.mo"
+     fi
+ done
+ 
+-- 
+1.7.3.4
+

@@ -83,6 +83,7 @@ Patch104:	grub2-install-opt-skip-fs-probe.patch
 Patch105:	grub2-iterate-and-hook-for-extended-partition.patch
 Patch106:	grub2-grub-mount-return-failure-if-FUSE-failed.patch
 Patch107:	grub2-fix-tftp-endianness.patch	
+Patch108:	grub2-fix-mo-not-copied-to-grubdir-locale.patch
 
 BuildRequires:	bison
 BuildRequires:	flex
