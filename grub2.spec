@@ -182,6 +182,9 @@ perl -pi -e 's/-Werror//;' grub-core/Makefile.am
 mkdir grub-extras
 mv lua grub-extras
 export GRUB_CONTRIB=./grub-extras
+autoupdate
+rm m4/iconv.m4
+aclocal --force -Im4 -I/usr/share/aclocal --system-acdir=/usr/share/aclocal-1.13  --install
 ./autogen.sh
 
 tar -xf %{SOURCE8}
