@@ -8,14 +8,14 @@
 
 %bcond_with talpo
 
+Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
 Release:	20
 Summary:	GNU GRUB is a Multiboot boot loader
-
 Group:		System/Kernel and hardware
 License:	GPLv3+
-URL:		http://www.gnu.org/software/grub/
+Url:		http://www.gnu.org/software/grub/
 Source0:	http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
 Source1:	90_persistent
 Source2:	grub2.default
@@ -92,26 +92,25 @@ Patch113:	grub2-secureboot-use-linuxefi-on-uefi-in-os-prober.patch
 Patch114:	grub2-quote-messages-in-grub.cfg.patch
 Patch115:	30_os-prober_UEFI_support.patch	
 
+BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
 #BuildRequires:	fonts-ttf-unifont
 Buildrequires:	distro-theme-Moondrake
+BuildRequires:	help2man
+BuildRequires:	texinfo
+BuildRequires:	texlive
+BuildRequires:	glibc-static-devel
+BuildRequires:	liblzo-devel
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	pkgconfig(fuse)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(liblzma)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(ncursesw)
-BuildRequires:	glibc-static-devel
-BuildRequires:	help2man
-BuildRequires:	liblzo-devel
-BuildRequires:	texinfo
-BuildRequires:	texlive
-BuildRequires:	autogen
 %if %{with talpo}
 BuildRequires:	talpo
 %endif
-
 Requires:	xorriso
 Requires(post):	os-prober
 Suggests:	%{name}-theme
@@ -165,13 +164,12 @@ This package provides a custom ROSA graphical theme.
 
 #-----------------------------------------------------------------------
 
-#-----------------------------------------------------------------------
 %prep
-%setup -q -n grub-%{version} -a7 -a12
+%setup -qn grub-%{version} -a7 -a12
 %apply_patches
 cp %{SOURCE10} .
 
-perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;'	\
+perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;' \
 	docs/grub-dev.texi
 
 perl -pi -e "s|(^FONT_SOURCE=)|\$1%{SOURCE6}|;" configure configure.ac
@@ -203,21 +201,21 @@ export PATH=$PWD/bfd:$PATH
 %ifarch %{efi}
 mkdir -p efi
 pushd efi
-%configure                                              \
+%configure \
 %if %{with talpo}
-	CC=talpo                                        \
+	CC=talpo \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
 %else
-	CFLAGS=""                                       \
+	CFLAGS="" \
 %endif
-	TARGET_LDFLAGS=-static                          \
-	--with-platform=efi                             \
-	--program-transform-name=s,grub,%{name}-efi,    \
-	--libdir=%{libdir32}                            \
-	--libexecdir=%{libdir32}                        \
-	--with-grubdir=grub2                            \
-	--disable-werror                                \
-	--enable-device-mapper                          \
+	TARGET_LDFLAGS=-static \
+	--with-platform=efi \
+	--program-transform-name=s,grub,%{name}-efi, \
+	--libdir=%{libdir32} \
+	--libexecdir=%{libdir32} \
+	--with-grubdir=grub2 \
+	--disable-werror \
+	--enable-device-mapper \
 	--enable-grub-mkfont
 %make all
 
@@ -234,24 +232,24 @@ popd
 
 mkdir -p pc
 pushd pc
-%configure                                              \
+%configure \
 %if %{with talpo}
-	CC=talpo                                        \
+	CC=talpo  \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
 %else
-	CFLAGS=""                                       \
+	CFLAGS="" \
 %endif
-	TARGET_LDFLAGS=-static                          \
-	--with-platform=pc                              \
+	TARGET_LDFLAGS=-static \
+	--with-platform=pc \
     %ifarch x86_64
-	--enable-efiemu                                 \
+	--enable-efiemu \
     %endif
-	--program-transform-name=s,grub,%{name},        \
-	--libdir=%{libdir32}                            \
-	--libexecdir=%{libdir32}                        \
-	--with-grubdir=grub2                            \
-	--disable-werror                                \
-	--enable-device-mapper                          \
+	--program-transform-name=s,grub,%{name}, \
+	--libdir=%{libdir32} \
+	--libexecdir=%{libdir32} \
+	--with-grubdir=grub2 \
+	--disable-werror \
+	--enable-device-mapper \
 	--enable-grub-mkfont
 %make all
 
@@ -264,7 +262,6 @@ popd
 %makeinstall_std -C efi
 mv %{buildroot}%{_sysconfdir}/bash_completion.d/grub %{buildroot}%{_sysconfdir}/bash_completion.d/grub-efi
 
-
 install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/rosa/%{name}-efi/grub.efi
 # Ghost config file
 touch %{buildroot}/boot/efi/EFI/rosa/%{name}-efi/grub.cfg
@@ -275,12 +272,12 @@ ln -s ../boot/efi/EFI/rosa/%{name}-efi/grub.cfg %{buildroot}%{_sysconfdir}/%{nam
 find %{buildroot} -name '*.mod' -o -name '*.img' |
 while read MODULE
 do
-        BASE=$(echo $MODULE |sed -r "s,.*/([^/]*)\.(mod|img),\1,")
-        # Symbols from .img files are in .exec files, while .mod
-        # modules store symbols in .elf. This is just because we
-        # have both boot.img and boot.mod ...
-        EXT=$(echo $MODULE |grep -q '.mod' && echo '.elf' || echo '.exec')
-        TGT=$(echo $MODULE |sed "s,%{buildroot},.debugroot,")
+	BASE=$(echo $MODULE |sed -r "s,.*/([^/]*)\.(mod|img),\1,")
+	# Symbols from .img files are in .exec files, while .mod
+	# modules store symbols in .elf. This is just because we
+	# have both boot.img and boot.mod ...
+	EXT=$(echo $MODULE |grep -q '.mod' && echo '.elf' || echo '.exec')
+	TGT=$(echo $MODULE |sed "s,%{buildroot},.debugroot,")
 #        install -m 755 -D $BASE$EXT $TGT
 done
 %endif
