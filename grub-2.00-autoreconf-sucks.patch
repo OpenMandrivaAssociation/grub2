@@ -1,0 +1,12 @@
+--- grub-2.00/autogen.sh.bero	2013-05-15 17:50:19.615056873 +0200
++++ grub-2.00/autogen.sh	2013-05-15 17:50:33.350885151 +0200
+@@ -67,5 +67,8 @@ echo "Saving timestamps..."
+ echo timestamp > stamp-h.in
+ 
+ echo "Running autoreconf..."
+-autoreconf -vi
++autoheader
++aclocal -I m4 --dont-fix
++automake -a
++autoconf
+ exit 0
