@@ -18,7 +18,7 @@ License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
 Source0:	http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
 Source1:	90_persistent
-Source2:	grub2.default
+Source2:	grub.default
 Source3:	grub.melt
 # www.4shared.com/archive/lFCl6wxL/grub_guidetar.html
 Source4:	grub_guide.tar.gz
@@ -91,6 +91,8 @@ Patch112:	grub2-pass-correct-root-for-nfsroot.patch
 Patch113:	grub2-secureboot-use-linuxefi-on-uefi-in-os-prober.patch
 Patch114:	grub2-quote-messages-in-grub.cfg.patch
 Patch115:	30_os-prober_UEFI_support.patch	
+Patch116:	grub2-2.00-class-via-os-prober.patch
+Patch117:	grub-2.00-autoreconf-sucks.patch
 
 BuildRequires:	autogen
 BuildRequires:	bison
@@ -206,9 +208,9 @@ pushd efi
 	CC=talpo \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
 %else
-	CFLAGS="" \
+	CFLAGS="-O2" \
 %endif
-	TARGET_LDFLAGS=-static \
+	TARGET_LDFLAGS="-static" \
 	--with-platform=efi \
 	--program-transform-name=s,grub,%{name}-efi, \
 	--libdir=%{libdir32} \
@@ -231,15 +233,15 @@ popd
 %endif
 
 mkdir -p pc
-pushd pc
+cd pc
 %configure \
 %if %{with talpo}
 	CC=talpo  \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
 %else
-	CFLAGS="" \
+	CFLAGS="-O2" \
 %endif
-	TARGET_LDFLAGS=-static \
+	TARGET_LDFLAGS="-static" \
 	--with-platform=pc \
     %ifarch x86_64
 	--enable-efiemu \
@@ -253,8 +255,7 @@ pushd pc
 	--enable-grub-mkfont
 %make all
 
-make html pdf
-popd
+%make html pdf
 
 #-----------------------------------------------------------------------
 %install
@@ -341,6 +342,38 @@ cp %{_datadir}/gfxboot/themes/Moondrake/back.jpg %{buildroot}/boot/%{name}/theme
 
 #drop all zero-length file
 #find %{buildroot} -size 0 -delete
+
+# Workaround for non-identical binaries getting the same build-id
+%__strip --strip-unneeded %buildroot%_bindir/grub2-efi-fstest \
+	%buildroot%_bindir/grub2-efi-editenv \
+	%buildroot%_bindir/grub2-efi-menulst2cfg \
+	%buildroot%_bindir/grub2-efi-mkfont \
+	%buildroot%_bindir/grub2-efi-mkimage \
+	%buildroot%_bindir/grub2-efi-mklayout \
+	%buildroot%_bindir/grub2-efi-mkpasswd-pbkdf2 \
+	%buildroot%_bindir/grub2-efi-mkrelpath \
+	%buildroot%_bindir/grub2-efi-mount \
+	%buildroot%_bindir/grub2-efi-script-check \
+	%buildroot%_bindir/grub2-fstest \
+	%buildroot%_bindir/grub2-editenv \
+	%buildroot%_bindir/grub2-menulst2cfg \
+	%buildroot%_bindir/grub2-mkfont \
+	%buildroot%_bindir/grub2-mkimage \
+	%buildroot%_bindir/grub2-mklayout \
+	%buildroot%_bindir/grub2-mkpasswd-pbkdf2 \
+	%buildroot%_bindir/grub2-mkrelpath \
+	%buildroot%_bindir/grub2-mount \
+	%buildroot%_bindir/grub2-script-check \
+	%buildroot%_sbindir/grub2-efi-ofpathname \
+	%buildroot%_sbindir/grub2-efi-bios-setup \
+	%buildroot%_sbindir/grub2-efi-probe \
+	%buildroot%_sbindir/grub2-efi-sparc64-setup \
+	%buildroot%_sbindir/grub2-bios-setup \
+	%buildroot%_sbindir/grub2-ofpathname \
+	%buildroot%_sbindir/grub2-probe \
+	%buildroot%_sbindir/grub2-sparc64-setup
+
+
 
 %post
 exec > /var/log/%{name}_post.log 2>&1
