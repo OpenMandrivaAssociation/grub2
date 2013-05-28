@@ -6,7 +6,7 @@ GRUB_GFXPAYLOAD_LINUX=keep
 # Disable recovery menu entries
 GRUB_DISABLE_RECOVERY=true
 # Use these screen resolutions, also auto option can be used
-GRUB_GFXMODE=1600x1200,1680x1050,1360x768,1280x1024,1280x960,1280x800,1024x768,1024x600,800x600,640x480
+GRUB_GFXMODE=1024x768,1024x600,800x600,640x480
 #
 GRUB_CMDLINE_LINUX=""
 # Default options for cmdline
