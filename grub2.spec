@@ -103,6 +103,7 @@ BuildRequires:	help2man
 BuildRequires:	texinfo
 BuildRequires:	texlive
 BuildRequires:	glibc-static-devel
+BuildRequires:	gettext-devel
 BuildRequires:	liblzo-devel
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	pkgconfig(fuse)
