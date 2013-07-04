@@ -610,9 +610,10 @@ Conflicts:	%{name}-efi < 2.00-24
 
 %description	tools
 The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
-bootloader with modular architecture.  It support rich varietyof kernel formats,
-file systems, computer architectures and hardware devices.  This subpackage
-provides tools for support of all platforms.
+bootloader with modular architecture.  It support rich variety of kernel
+formats, file systems, computer architectures and hardware devices.
+
+This subpackage provides tools for support of all platforms.
 
 %package	moondrake-theme
 Summary:	Provides a graphical theme with a custom Moondrake background for grub2
