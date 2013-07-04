@@ -873,7 +873,7 @@ fi
 # Don't install if updating
 if [ $1 -eq 1 ] ; then
 sed 	-e 's#\(GRUB_THEME=\).*#\1"/boot/%{name}/themes/rosa/theme.txt"#g' \
-	-e 's#\(GRUB_BACKGROUND=\).*#\1"/boot/grub2/themes/rosaa/terminal_background.png"#g' \
+	-e 's#\(GRUB_BACKGROUND=\).*#\1"/boot/grub2/themes/rosa/terminal_background.png"#g' \
 	-i %{_sysconfdir}/default/grub
 fi
 
