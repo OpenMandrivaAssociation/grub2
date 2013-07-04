@@ -29,7 +29,7 @@ Source8:	grub2-po-update.tar.gz
 Source9:	update-grub2
 Source10:	README.urpmi
 Source11:	grub2.rpmlintrc
-Source12:	grub-lua-rev24.tar.xz
+Source12:	grub-lua-rev28.tar.xz
 # documentation and simple test script for testing grub2 themes
 Source13:	mandriva-grub2-theme-test.sh
 
