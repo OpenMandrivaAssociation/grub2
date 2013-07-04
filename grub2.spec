@@ -602,7 +602,7 @@ for EFI systems.
 %endif
 
 %package	tools
-Summary:	Support tools for GRUB.
+Summary:	Support tools for GRUB
 Group:		System Environment/Base
 Requires:	gettext os-prober which file system-logos
 Conflicts:	%{name} < 2.00-24
