@@ -635,7 +635,7 @@ This package provides a custom ROSA graphical theme.
 
 %package	starfield-theme
 Summary:	An example theme for GRUB
-Group:		System Environment/Base
+Group:		System/Kernel and hardware
 Requires:	%{name}-tools = %{EVRD}
 Conflicts:	%{name} < 2.00-24
 
