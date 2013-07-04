@@ -688,7 +688,7 @@ pushd efi
 	CC=talpo \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
 %else
-	CFLAGS="-O2" \
+	CFLAGS="-Os" \
 %endif
 	TARGET_LDFLAGS="-static" \
 	--with-platform=efi \
@@ -719,7 +719,7 @@ cd pc
 	CC=talpo  \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
 %else
-	CFLAGS="-O2" \
+	CFLAGS="-Os" \
 %endif
 	TARGET_LDFLAGS="-static" \
 	--with-platform=pc \
