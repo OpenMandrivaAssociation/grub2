@@ -574,7 +574,6 @@ Requires:	%{name}-tools = %{EVRD}
 Suggests:	%{name}-theme
 
 Provides:	bootloader
-Provides:	grub2bootloader = %{EVRD}
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
@@ -591,7 +590,6 @@ The kernel, in turn, initializes the rest of the operating system (e.g. GNU).
 Summary:	GRUB for EFI systems
 Group:		System/Kernel and hardware
 Requires:	%{name}-tools = %{EVRD}
-Provides:	grub2bootloader = %{EVRD}
 Suggests:	%{name}-theme
 
 %description	efi
@@ -619,7 +617,7 @@ provides tools for support of all platforms.
 %package	moondrake-theme
 Summary:	Provides a graphical theme with a custom Moondrake background for grub2
 Group:		System/Kernel and hardware
-Requires:	grub2bootloader = %{EVRD}
+Requires:	%{name}-tools = %{EVRD}
 Provides:	%{name}-theme = %{EVRD}
 
 %description	moondrake-theme
@@ -628,13 +626,20 @@ This package provides a custom Moondrake graphical theme.
 %package	rosa-theme
 Summary:	Provides a graphical theme with a custom ROSA background for grub2
 Group:		System/Kernel and hardware
-Requires:	grub2bootloader = %{EVRD}
+Requires:	%{name}-tools = %{EVRD}
 Provides:	%{name}-theme = %{EVRD}
 
 %description	rosa-theme
 This package provides a custom ROSA graphical theme.
 
-#-----------------------------------------------------------------------
+%package	starfield-theme
+Summary:	An example theme for GRUB
+Group:		System Environment/Base
+Requires:	%{name}-tools = %{EVRD}
+Conflicts:	%{name} < 2.00-24
+
+%description	starfield-theme
+Example 'starfield' theme for GRUB.
 
 %prep
 %setup -qn grub-%{version} -a7 -a12
@@ -890,6 +895,7 @@ fi
 %dir %{libdir32}/grub/
 %dir %{_datadir}/grub/
 %{_datadir}/grub/*
+%exclude %{_datadir}/grub/themes/*
 %{_sbindir}/%{name}-mkconfig
 %{_sbindir}/%{name}-install
 %{_sbindir}/%{name}-probe
@@ -930,14 +936,16 @@ fi
 %{_infodir}/grub*.info*
 %{_mandir}/man1/%{name}-*.1*
 %{_mandir}/man8/%{name}-*.8*
-# RPM filetriggers
-%{_filetriggers_dir}/%{name}.*
 
 %files moondrake-theme
 /boot/%{name}/themes/moondrake
 
 %files rosa-theme
 /boot/%{name}/themes/rosa
+
+%files starfield-theme
+%dir %{_datarootdir}/grub/themes/starfield
+%{_datarootdir}/grub/themes/starfield/*
 
 %changelog
 * Sat Apr  6 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 2.00-17
