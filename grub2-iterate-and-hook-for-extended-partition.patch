@@ -1,24 +1,6 @@
-From: Michael Chang <mchang@suse.com>
-
-The same as in the previous patch, add a support for installing grub
-into an extended partition.
-
-Here, we do not ignore extended partitions anymore. Instead we call a
-hook that makes sure we have the partition when installing.
-
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-References: https://bugzilla.novell.com/show_bug.cgi?id=750897
-
-From: Andrey Borzenkov <arvidjaar@gmail.com>
-
-Apply this logic only to primary extended partition. Ignore extended
-partitions that are used to link together logical partitions.
-
-References: https://bugzilla.novell.com/show_bug.cgi?id=785341
----
---- grub-2.00/grub-core/partmap/msdos.c.0105~	2013-04-25 04:34:52.111632525 +0200
-+++ grub-2.00/grub-core/partmap/msdos.c	2013-04-25 04:35:14.724782859 +0200
-@@ -181,13 +181,20 @@ grub_partition_msdos_iterate (grub_disk_
+--- grub-2.00/grub-core/partmap/msdos.c.0499~	2013-07-04 16:08:16.077048328 +0200
++++ grub-2.00/grub-core/partmap/msdos.c	2013-07-04 16:08:51.691554849 +0200
+@@ -188,13 +188,20 @@ grub_partition_msdos_iterate (grub_disk_
  			(unsigned long long) p.len);
  
  	  /* If this partition is a normal one, call the hook.  */
@@ -31,14 +13,14 @@ References: https://bugzilla.novell.com/show_bug.cgi?id=785341
 +		{
 +		  p.number++;
  
--	      if (hook (disk, &p))
+-	      if (hook (disk, &p, hook_data))
 -		return grub_errno;
 +		  /* prevent someone doing mkfs or mkswap on an
 +		  extended partition, but leave room for LILO */
 +		  if (grub_msdos_partition_is_extended (e->type))
 +		    p.len = 2;
 +
-+		  if (hook (disk, &p))
++		  if (hook (disk, &p, hook_data))
 +		    return grub_errno;
 +		}
  	    }

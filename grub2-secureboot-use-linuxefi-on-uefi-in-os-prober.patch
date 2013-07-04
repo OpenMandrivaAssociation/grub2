@@ -1,13 +1,5 @@
-From: Andrey Borzenkov <arvidjaar@gmail.com>
-Subject: use linuxefi/initrdefi for Linux in 30_os-prober if secure boot is enabled
-Reference: bnc#810912
-
-Emit linuxefi/initrdefi for os-prober detected Linux installations if
-secure boot is enabled.
-Index: grub-2.00/util/grub.d/30_os-prober.in
-===================================================================
---- grub-2.00.orig/util/grub.d/30_os-prober.in
-+++ grub-2.00/util/grub.d/30_os-prober.in
+--- grub-2.00/util/grub.d/30_os-prober.in.0504~	2013-07-04 16:09:32.437050565 +0200
++++ grub-2.00/util/grub.d/30_os-prober.in	2013-07-04 16:12:26.444568209 +0200
 @@ -41,6 +41,15 @@ if [ -z "${OSPROBED}" ] ; then
    exit 0
  fi
@@ -24,8 +16,8 @@ Index: grub-2.00/util/grub.d/30_os-prober.in
  osx_entry() {
      if [ x$2 = x32 ]; then
          # TRANSLATORS: it refers to kernel architecture (32-bit)
-@@ -207,11 +216,11 @@ EOF
- 	    save_default_entry | sed -e "s/^/\t/"
+@@ -200,11 +209,11 @@ EOF
+ 	    save_default_entry | grub_add_tab
  	    printf '%s\n' "${prepare_boot_cache}"
  	    cat <<  EOF
 -	linux ${LKERNEL} ${LPARAMS}
@@ -38,9 +30,9 @@ Index: grub-2.00/util/grub.d/30_os-prober.in
  EOF
              fi
          cat << EOF
-@@ -227,11 +236,11 @@ EOF
- 	save_default_entry | sed -e "s/^/\t\t/"
- 	printf '%s\n' "${prepare_boot_cache}" | sed -e "s/^/\t/"
+@@ -220,11 +229,11 @@ EOF
+ 	save_default_entry | sed -e "s/^/$grub_tab$grub_tab/"
+ 	printf '%s\n' "${prepare_boot_cache}" | grub_add_tab
  	cat <<  EOF
 -		linux ${LKERNEL} ${LPARAMS}
 +		${LINUX_LOADER_CMD} ${LKERNEL} ${LPARAMS}

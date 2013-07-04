@@ -1,7 +1,6 @@
-diff -Naur grub-2.00/include/grub/term.h grub-new/include/grub/term.h
---- grub-2.00/include/grub/term.h	2012-05-17 16:57:01.000000000 +0400
-+++ grub-new/include/grub/term.h	2012-11-30 12:52:34.958060669 +0400
-@@ -229,8 +229,8 @@
+--- grub-2.00/include/grub/term.h.0489~	2013-07-04 15:36:29.492843842 +0200
++++ grub-2.00/include/grub/term.h	2013-07-04 15:37:06.723378965 +0200
+@@ -212,8 +212,8 @@ struct grub_term_output
  };
  typedef struct grub_term_output *grub_term_output_t;
  
@@ -11,4 +10,4 @@ diff -Naur grub-2.00/include/grub/term.h grub-new/include/grub/term.h
 +#define GRUB_TERM_DEFAULT_HIGHLIGHT_COLOR 0xF0
  #define GRUB_TERM_DEFAULT_STANDARD_COLOR 0x07
  
- extern struct grub_term_output *EXPORT_VAR(grub_term_outputs_disabled);
+ /* Current color state.  */

@@ -1,33 +1,8 @@
-From 06ff1079788fedac5e3f1f12ed7bbe69228a7ae0 Mon Sep 17 00:00:00 2001
-From: Michael Chang <mchang@suse.com>
-Date: Tue, 18 Dec 2012 16:54:03 +0800
-Subject: [PATCH] Add secureboot support on efi chainloader
-
-References: fate#314485
-Patch-Mainline: no
-
-Expand the chainloader to be able to verify the image by means of shim
-lock protocol. The PE/COFF image is loaded and relocated by the
-chainloader instead of calling LoadImage and StartImage UEFI boot
-Service as they require positive verification result from keys enrolled
-in KEK or DB. The shim will use MOK in addition to firmware enrolled
-keys to verify the image.
-
-The chainloader module could be used to load other UEFI bootloaders,
-such as xen.efi, and could be signed by any of MOK, KEK or DB.
-
-Signed-off-by: Michael Chang <mchang@suse.com>
----
- grub-core/loader/efi/chainloader.c |  538 +++++++++++++++++++++++++++++++++--
- 1 files changed, 507 insertions(+), 31 deletions(-)
-
-Index: grub-2.00/grub-core/loader/efi/chainloader.c
-===================================================================
---- grub-2.00.orig/grub-core/loader/efi/chainloader.c
-+++ grub-2.00/grub-core/loader/efi/chainloader.c
-@@ -36,15 +36,31 @@
- #include <grub/i18n.h>
- #include <grub/net.h>
+--- grub-2.00/grub-core/loader/efi/chainloader.c.0502~	2013-07-04 16:35:09.970847920 +0200
++++ grub-2.00/grub-core/loader/efi/chainloader.c	2013-07-04 16:35:50.906419555 +0200
+@@ -40,15 +40,31 @@
+ #include <grub/i386/macho.h>
+ #endif
  
 +#ifdef __x86_64__
 +#define SUPPORT_SECURE_BOOT
@@ -57,7 +32,7 @@ Index: grub-2.00/grub-core/loader/efi/chainloader.c
  
  static grub_err_t
  grub_chainloader_unload (void)
-@@ -59,6 +75,7 @@ grub_chainloader_unload (void)
+@@ -63,6 +79,7 @@ grub_chainloader_unload (void)
    grub_free (cmdline);
    cmdline = 0;
    file_path = 0;
@@ -65,7 +40,7 @@ Index: grub-2.00/grub-core/loader/efi/chainloader.c
  
    grub_dl_unref (my_mod);
    return GRUB_ERR_NONE;
-@@ -186,19 +203,466 @@ make_file_path (grub_efi_device_path_t *
+@@ -190,12 +207,460 @@ make_file_path (grub_efi_device_path_t *
    return file_path;
  }
  
@@ -527,14 +502,15 @@ Index: grub-2.00/grub-core/loader/efi/chainloader.c
    grub_efi_status_t status;
    grub_efi_boot_services_t *b;
    grub_device_t dev = 0;
-   grub_efi_device_path_t *dp = 0;
+@@ -203,7 +668,6 @@ grub_cmd_chainloader (grub_command_t cmd
    grub_efi_loaded_image_t *loaded_image;
    char *filename;
+   void *boot_image = 0;
 -  grub_efi_handle_t dev_handle = 0;
  
    if (argc == 0)
      return grub_error (GRUB_ERR_BAD_ARGUMENT, N_("filename expected"));
-@@ -210,9 +674,36 @@ grub_cmd_chainloader (grub_command_t cmd
+@@ -215,9 +679,36 @@ grub_cmd_chainloader (grub_command_t cmd
    address = 0;
    image_handle = 0;
    file_path = 0;
@@ -571,7 +547,7 @@ Index: grub-2.00/grub-core/loader/efi/chainloader.c
    file = grub_file_open (filename);
    if (! file)
      goto fail;
-@@ -258,14 +749,14 @@ grub_cmd_chainloader (grub_command_t cmd
+@@ -263,14 +754,14 @@ grub_cmd_chainloader (grub_command_t cmd
    grub_printf ("file path: ");
    grub_efi_print_device_path (file_path);
  
@@ -589,18 +565,41 @@ Index: grub-2.00/grub-core/loader/efi/chainloader.c
  
    status = efi_call_4 (b->allocate_pages, GRUB_EFI_ALLOCATE_ANY_PAGES,
  			      GRUB_EFI_LOADER_CODE,
-@@ -278,7 +769,7 @@ grub_cmd_chainloader (grub_command_t cmd
-       goto fail;
+@@ -284,7 +775,7 @@ grub_cmd_chainloader (grub_command_t cmd
      }
  
--  if (grub_file_read (file, (void *) ((grub_addr_t) address), size) != size)
-+  if (grub_file_read (file, (void *) ((grub_addr_t) address), fsize) != fsize)
+   boot_image = (void *) ((grub_addr_t) address);
+-  if (grub_file_read (file, boot_image, size) != size)
++  if (grub_file_read (file, boot_image, fsize) != fsize)
      {
        if (grub_errno == GRUB_ERR_NONE)
  	grub_error (GRUB_ERR_BAD_OS, N_("premature end of file %s"),
-@@ -287,8 +778,17 @@ grub_cmd_chainloader (grub_command_t cmd
-       goto fail;
+@@ -294,7 +785,7 @@ grub_cmd_chainloader (grub_command_t cmd
      }
+ 
+ #if defined (__i386__) || defined (__x86_64__)
+-  if (size >= (grub_ssize_t) sizeof (struct grub_macho_fat_header))
++  if (fsize >= (grub_ssize_t) sizeof (struct grub_macho_fat_header))
+     {
+       struct grub_macho_fat_header *head = boot_image;
+       if (head->magic
+@@ -317,20 +808,29 @@ grub_cmd_chainloader (grub_command_t cmd
+ 	      > ~grub_cpu_to_le32 (archs[i].size)
+ 	      || grub_cpu_to_le32 (archs[i].offset)
+ 	      + grub_cpu_to_le32 (archs[i].size)
+-	      > (grub_size_t) size)
++	      > (grub_size_t) fsize)
+ 	    {
+ 	      grub_error (GRUB_ERR_BAD_OS, N_("premature end of file %s"),
+ 			  filename);
+ 	      goto fail;
+ 	    }
+ 	  boot_image = (char *) boot_image + grub_cpu_to_le32 (archs[i].offset);
+-	  size = grub_cpu_to_le32 (archs[i].size);
++	  fsize = grub_cpu_to_le32 (archs[i].size);
+ 	}
+     }
+ #endif
  
 +#ifdef SUPPORT_SECURE_BOOT
 +  if (debug_secureboot || (grub_secure_mode() && grub_secure_validate ((void *)address, fsize)))
@@ -612,12 +611,12 @@ Index: grub-2.00/grub-core/loader/efi/chainloader.c
 +#endif
 +
    status = efi_call_6 (b->load_image, 0, grub_efi_image_handle, file_path,
--			  (void *) ((grub_addr_t) address), size,
-+			  (void *) ((grub_addr_t) address), fsize,
- 			  &image_handle);
+-		       boot_image, size,
++		       boot_image, fsize,
+ 		       &image_handle);
    if (status != GRUB_EFI_SUCCESS)
      {
-@@ -313,33 +813,10 @@ grub_cmd_chainloader (grub_command_t cmd
+@@ -355,33 +855,10 @@ grub_cmd_chainloader (grub_command_t cmd
  
    grub_file_close (file);
  
@@ -653,7 +652,7 @@ Index: grub-2.00/grub-core/loader/efi/chainloader.c
      }
  
    grub_loader_set (grub_chainloader_boot, grub_chainloader_unload, 0);
-@@ -358,6 +835,9 @@ grub_cmd_chainloader (grub_command_t cmd
+@@ -400,6 +877,9 @@ grub_cmd_chainloader (grub_command_t cmd
    if (address)
      efi_call_2 (b->free_pages, address, pages);
  

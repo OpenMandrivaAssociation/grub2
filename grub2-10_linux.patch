@@ -1,11 +1,18 @@
---- a/util/grub.d/10_linux.in	2012-04-19 01:24:38.000000000 +0400
-+++ b/util/grub.d/10_linux.in	2012-10-16 18:54:20.809871694 +0400
-@@ -135,7 +135,7 @@
-   message="$(gettext_printf "Loading Linux %s ..." ${version})"
-   sed "s/^/$submenu_indentation/" << EOF
- 	echo	'$message'
--	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args}
-+	linux  ${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args} resume=`swapon -s | grep '/dev/sd.[0-9]\{1,\}' -o | if read line; then echo "$line"; fi` init=/lib/systemd/systemd
+--- grub-2.00/util/grub.d/10_linux.in.0492~	2013-07-04 15:24:20.777426380 +0200
++++ grub-2.00/util/grub.d/10_linux.in	2013-07-04 15:26:06.899976530 +0200
+@@ -134,11 +134,13 @@ linux_entry ()
+   fi
+   if [ -d /sys/firmware/efi ]; then
+     sed "s/^/$submenu_indentation/" << EOF
+-	linuxefi ${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args}
++	linuxefi ${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args} resume=`swapon -s | grep '/dev/sd.[0-9]\{1,\}' -o | if read line; then echo "$line"; fi` init=/lib/systemd/systemd
++
  EOF
+   else
+     sed "s/^/$submenu_indentation/" << EOF
+-	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args}
++	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args} resume=`swapon -s | grep '/dev/sd.[0-9]\{1,\}' -o | if read line; then echo "$line"; fi` init=/lib/systemd/systemd
++
+ EOF
+   fi
    if test -n "${initrd}" ; then
-     # TRANSLATORS: ramdisk isn't identifier. Should be translated.

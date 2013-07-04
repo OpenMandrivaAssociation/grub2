@@ -1,17 +1,6 @@
-From: Andrey Borzenkov <arvidjaar@gmail.com>
-Date: Fri Jan  4 09:46:56 UTC 2013
-Subject: properly quote translated strings in grub.cfg
-
-References: bnc#775610
-Patch-Mainline: no
-
-Add support for chainloading another bootloader on UEFI systems.
-This requires additional os-prober support to be actually useful.
-Index: grub-2.00/util/grub.d/30_os-prober.in
-===================================================================
---- grub-2.00.orig/util/grub.d/30_os-prober.in
-+++ grub-2.00/util/grub.d/30_os-prober.in
-@@ -144,6 +144,22 @@ EOF
+--- grub-2.00/util/grub.d/30_os-prober.in.0505~	2013-07-04 16:13:00.960147855 +0200
++++ grub-2.00/util/grub.d/30_os-prober.in	2013-07-04 16:13:33.491660116 +0200
+@@ -158,6 +158,22 @@ EOF
  }
  EOF
      ;;
@@ -32,5 +21,5 @@ Index: grub-2.00/util/grub.d/30_os-prober.in
 +EOF
 +    ;;
      linux)
-       LINUXPROBED="`linux-boot-prober ${DEVICE} 2> /dev/null | tr ' ' '^' | paste -s -d ' '`"
-       prepare_boot_cache=
+       if [ "x$BTRFS" = "xbtrfs" ]; then
+          LINUXPROBED="`linux-boot-prober btrfs ${BTRFSuuid} ${BTRFSsubvol}  2> /dev/null | tr ' ' '^' | paste -s -d ' '`"

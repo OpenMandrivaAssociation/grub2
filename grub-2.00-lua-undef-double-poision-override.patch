@@ -1,0 +1,10 @@
+--- grub-2.00/lua/luaconf.h.poision~	2013-07-04 17:44:01.195629260 +0200
++++ grub-2.00/lua/luaconf.h	2013-07-04 17:44:02.717652211 +0200
+@@ -640,6 +640,7 @@ union luai_Cast { double l_d; long l_l;
+ ** aligned in 16-byte boundaries, then you should add long double in the
+ ** union.) Probably you do not need to change this.
+ */
++#undef double
+ #define LUAI_USER_ALIGNMENT_T	union { double u; void *s; long l; }
+ 
+ 

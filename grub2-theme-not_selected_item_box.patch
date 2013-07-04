@@ -1,7 +1,6 @@
-diff -Naur grub-2.00/grub-core/gfxmenu/gui_list.c grub-new/grub-core/gfxmenu/gui_list.c
---- grub-2.00/grub-core/gfxmenu/gui_list.c	2011-12-14 14:36:07.000000000 +0400
-+++ grub-new/grub-core/gfxmenu/gui_list.c	2012-11-29 16:00:36.642209919 +0400
-@@ -58,8 +58,10 @@
+--- grub-2.00/grub-core/gfxmenu/gui_list.c.0493~	2013-07-04 15:24:20.096416282 +0200
++++ grub-2.00/grub-core/gfxmenu/gui_list.c	2013-07-04 15:28:48.130284097 +0200
+@@ -58,8 +58,10 @@ struct grub_gui_list_impl
    int need_to_recreate_boxes;
    char *theme_dir;
    char *menu_box_pattern;
@@ -12,7 +11,7 @@ diff -Naur grub-2.00/grub-core/gfxmenu/gui_list.c grub-new/grub-core/gfxmenu/gui
    grub_gfxmenu_box_t selected_item_box;
  
    grub_gfxmenu_icon_manager_t icon_manager;
-@@ -76,11 +78,14 @@
+@@ -76,11 +78,14 @@ list_destroy (void *vself)
  
    grub_free (self->theme_dir);
    grub_free (self->menu_box_pattern);
@@ -26,8 +25,8 @@ diff -Naur grub-2.00/grub-core/gfxmenu/gui_list.c grub-new/grub-core/gfxmenu/gui
 +    self->item_box->destroy (self->item_box);
    if (self->icon_manager)
      grub_gfxmenu_icon_manager_destroy (self->icon_manager);
- 
-@@ -115,10 +120,14 @@
+   if (self->scrollbar_thumb)
+@@ -119,10 +124,14 @@ check_boxes (list_impl_t self)
                               self->selected_item_box_pattern,
                               self->theme_dir);
  
@@ -43,7 +42,7 @@ diff -Naur grub-2.00/grub-core/gfxmenu/gui_list.c grub-new/grub-core/gfxmenu/gui
  }
  
  static int
-@@ -212,7 +221,7 @@
+@@ -216,7 +225,7 @@ draw_scrollbar (list_impl_t self,
  static void
  draw_menu (list_impl_t self, int num_shown_items)
  {
@@ -52,7 +51,7 @@ diff -Naur grub-2.00/grub-core/gfxmenu/gui_list.c grub-new/grub-core/gfxmenu/gui
      return;
  
    int boxpad = self->item_padding;
-@@ -225,6 +234,7 @@
+@@ -229,6 +238,7 @@ draw_menu (list_impl_t self, int num_sho
  
    make_selected_item_visible (self);
  
@@ -60,7 +59,7 @@ diff -Naur grub-2.00/grub-core/gfxmenu/gui_list.c grub-new/grub-core/gfxmenu/gui
    grub_gfxmenu_box_t selbox = self->selected_item_box;
    int sel_leftpad = selbox->get_left_pad (selbox);
    int sel_toppad = selbox->get_top_pad (selbox);
-@@ -256,7 +266,15 @@
+@@ -260,7 +270,15 @@ draw_menu (list_impl_t self, int num_sho
            selbox->draw (selbox, 0,
                          item_top - sel_toppad);
          }
@@ -77,7 +76,7 @@ diff -Naur grub-2.00/grub-core/gfxmenu/gui_list.c grub-new/grub-core/gfxmenu/gui
        icon = get_item_icon (self, menu_index);
        if (icon != 0)
          grub_video_blit_bitmap (icon, GRUB_VIDEO_BLIT_BLEND,
-@@ -302,7 +320,7 @@
+@@ -306,7 +324,7 @@ list_paint (void *vself, const grub_vide
  
    check_boxes (self);
  
@@ -86,7 +85,7 @@ diff -Naur grub-2.00/grub-core/gfxmenu/gui_list.c grub-new/grub-core/gfxmenu/gui
      return;
  
    grub_gui_set_viewport (&self->bounds, &vpsave);
-@@ -487,6 +505,12 @@
+@@ -491,6 +509,12 @@ list_set_property (void *vself, const ch
        grub_free (self->menu_box_pattern);
        self->menu_box_pattern = value ? grub_strdup (value) : 0;
      }
@@ -99,7 +98,7 @@ diff -Naur grub-2.00/grub-core/gfxmenu/gui_list.c grub-new/grub-core/gfxmenu/gui
    else if (grub_strcmp (name, "selected_item_pixmap_style") == 0)
      {
        self->need_to_recreate_boxes = 1;
-@@ -604,8 +628,10 @@
+@@ -619,8 +643,10 @@ grub_gui_list_new (void)
    self->need_to_recreate_boxes = 0;
    self->theme_dir = 0;
    self->menu_box_pattern = 0;

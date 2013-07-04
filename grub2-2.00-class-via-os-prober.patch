@@ -1,31 +1,32 @@
---- grub-2.00/util/grub.d/30_os-prober.in.0116~	2013-05-28 06:41:32.103880233 +0200
-+++ grub-2.00/util/grub.d/30_os-prober.in	2013-05-28 06:44:21.264357511 +0200
-@@ -121,6 +121,10 @@ for OS in ${OSPROBED} ; do
-   LONGNAME="`echo ${OS} | cut -d ':' -f 2 | tr '^' ' '`"
-   LABEL="`echo ${OS} | cut -d ':' -f 3 | tr '^' ' '`"
-   BOOT="`echo ${OS} | cut -d ':' -f 4`"
+--- grub-2.00/util/grub.d/30_os-prober.in.0502~	2013-07-04 15:52:04.756231698 +0200
++++ grub-2.00/util/grub.d/30_os-prober.in	2013-07-04 15:56:14.524784982 +0200
+@@ -127,6 +127,11 @@ for OS in ${OSPROBED} ; do
+ 	BTRFSsubvol="`echo ${OS} | cut -d ':' -f 7`"
+   fi
+ 
 +  CLASS="$(echo ${LABEL} | tr '[A-Z]' '[a-z]' | sed 's,[0-9]*$,,')" 
 +  if [ -z "${CLASS}" ] ; then
 +    CLASS="unknown";
 +  fi
- 
++
    if [ -z "${LONGNAME}" ] ; then
      LONGNAME="${LABEL}"
-@@ -211,7 +215,7 @@ EOF
+   fi
+@@ -220,7 +225,7 @@ EOF
  
  	if [ "x$is_first_entry" = xtrue ]; then
              cat << EOF
 -menuentry '$(echo "$OS $onstr" | grub_quote)' --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-simple-$boot_device_id' {
 +menuentry '$(echo "$OS $onstr" | grub_quote)' --class ${CLASS} --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-simple-$boot_device_id' {
  EOF
- 	    save_default_entry | sed -e "s/^/\t/"
+ 	    save_default_entry | grub_add_tab
  	    printf '%s\n' "${prepare_boot_cache}"
-@@ -231,7 +235,7 @@ EOF
+@@ -240,7 +245,7 @@ EOF
  	fi
  	title="${LLABEL} $onstr"
          cat << EOF
 -	menuentry '$(echo "$title" | grub_quote)' --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-$LKERNEL-${recovery_params}-$boot_device_id' {
 +	menuentry '$(echo "$title" | grub_quote)' --class ${CLASS} --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-$LKERNEL-${recovery_params}-$boot_device_id' {
  EOF
- 	save_default_entry | sed -e "s/^/\t\t/"
- 	printf '%s\n' "${prepare_boot_cache}" | sed -e "s/^/\t/"
+ 	save_default_entry | sed -e "s/^/$grub_tab$grub_tab/"
+ 	printf '%s\n' "${prepare_boot_cache}" | grub_add_tab
