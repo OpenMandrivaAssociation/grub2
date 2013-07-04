@@ -526,39 +526,24 @@ Patch999:	grub-2.00-remove-dropped-m4-macros-from-aclocal-as-well.patch
 Patch1000:		grub2-locales.patch
 Patch1001:		grub2-00_header.patch
 Patch1002:		grub2-custom-color.patch
-#Patch1003:		grub2-move-terminal.patch
 Patch1004:		grub2-read-cfg.patch
 Patch1005:		grub2-symlink-is-garbage.patch
 Patch1007:		grub2-10_linux.patch
 Patch1008:		grub2-theme-not_selected_item_box.patch
-#Patch1010:		grub2-mkfont-fix.patch
 Patch1011:	grub-2.00-fix-dejavu-font.patch
-#Patch1012:	grub-2.00-ignore-gnulib-gets-stupidity.patch
 Patch1013:	grub2-remove-rosa-logo-from-theme.patch
-#Patch1014:	grub-2.00-try-link-against-libncursesw-also.patch
-#Patch1015:	grub-fix-texinfo-page.patch
-# Fix parallel build
-#Patch1016:	grub2-2.00-parallel-build.patch
-# Fix autoreconf warnings
-#Patch1017:	grub2-2.00-mga-fix_AM_PROG_MKDIR_P-configure.ac.patch
 Patch1018:	grub-2.00-lua-undef-double-poision-override.patch
 
 # openSuSE patches
 Patch1100:	grub2-fix-locale-en.mo.gz-not-found-error-message.patch
 Patch1101:	grub2-fix-error-terminal-gfxterm-isn-t-found.patch
-#Patch1102:	grub2-add-device-to-os_prober-linux-menuentry.patch
-#Patch1103:	grub2-fix-enumeration-of-extended-partition.patch
 Patch1104:	grub2-install-opt-skip-fs-probe.patch
 Patch1105:	grub2-iterate-and-hook-for-extended-partition.patch
-#Patch1106:	grub2-grub-mount-return-failure-if-FUSE-failed.patch
-#Patch1107:	grub2-fix-tftp-endianness.patch	
-#Patch1108:	grub2-fix-mo-not-copied-to-grubdir-locale.patch
 Patch1109:	grub2-fix-menu-in-xen-host-server.patch
 Patch1110:	grub2-efidisk-ahci-workaround.patch
 Patch1111:	grub2-secureboot-chainloader.patch
 Patch1112:	grub2-pass-correct-root-for-nfsroot.patch
 Patch1113:	grub2-secureboot-use-linuxefi-on-uefi-in-os-prober.patch
-#Patch1114:	grub2-quote-messages-in-grub.cfg.patch
 Patch1115:	30_os-prober_UEFI_support.patch	
 Patch1116:	grub2-2.00-class-via-os-prober.patch
 Patch1117:	grub-2.00-autoreconf-sucks.patch
