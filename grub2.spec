@@ -529,7 +529,7 @@ Patch1002:	grub2-custom-color.patch
 Patch1004:	grub2-read-cfg.patch
 Patch1005:	grub2-symlink-is-garbage.patch
 Patch1007:	grub2-10_linux.patch
-Patch1008:	rub2-theme-not_selected_item_box.patch
+Patch1008:	grub2-theme-not_selected_item_box.patch
 Patch1011:	grub-2.00-fix-dejavu-font.patch
 Patch1013:	grub2-remove-rosa-logo-from-theme.patch
 Patch1018:	grub-2.00-lua-undef-double-poision-override.patch
@@ -570,6 +570,7 @@ BuildRequires:	talpo
 %endif
 Requires:	xorriso
 Requires(post):	os-prober
+Requires:	%{name}-tools = %{EVRD}
 Suggests:	%{name}-theme
 
 Provides:	bootloader
@@ -586,13 +587,14 @@ to the operating system kernel software (such as the Hurd or Linux).
 The kernel, in turn, initializes the rest of the operating system (e.g. GNU).
 
 %ifarch %{efi}
-%package efi
+%package	efi
 Summary:	GRUB for EFI systems
 Group:		System/Kernel and hardware
+Requires:	%{name}-tools = %{EVRD}
 Provides:	grub2bootloader = %{EVRD}
 Suggests:	%{name}-theme
 
-%description efi
+%description	efi
 The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
 bootloader with modular architecture. 
 
@@ -600,6 +602,19 @@ It support rich variety of kernel formats, file systems, computer
 architectures and hardware devices.  This subpackage provides support 
 for EFI systems.
 %endif
+
+%package	tools
+Summary:	Support tools for GRUB.
+Group:		System Environment/Base
+Requires:	gettext os-prober which file system-logos
+Conflicts:	%{name} < 2.00-24
+Conflicts:	%{name}-efi < 2.00-24
+
+%description	tools
+The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
+bootloader with modular architecture.  It support rich varietyof kernel formats,
+file systems, computer architectures and hardware devices.  This subpackage
+provides tools for support of all platforms.
 
 %package	moondrake-theme
 Summary:	Provides a graphical theme with a custom Moondrake background for grub2
@@ -671,7 +686,7 @@ pushd efi
 %endif
 	TARGET_LDFLAGS="-static" \
 	--with-platform=efi \
-	--program-transform-name=s,grub,%{name}-efi, \
+	--program-transform-name=s,grub,%{name}, \
 	--libdir=%{libdir32} \
 	--libexecdir=%{libdir32} \
 	--with-grubdir=grub2 \
@@ -720,7 +735,6 @@ cd pc
 %install
 %ifarch %{efi}
 %makeinstall_std -C efi
-mv %{buildroot}%{_datadir}/bash-completion/completions/grub %{buildroot}%{_datadir}/bash-completion/completions/grub-efi
 
 install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/rosa/%{name}-efi/grub.efi
 # Ghost config file
@@ -802,38 +816,6 @@ cp %{_datadir}/gfxboot/themes/Moondrake/back.jpg %{buildroot}/boot/%{name}/theme
 #drop all zero-length file
 #find %{buildroot} -size 0 -delete
 
-# Workaround for non-identical binaries getting the same build-id
-%__strip --strip-unneeded %buildroot%_bindir/grub2-efi-fstest \
-	%buildroot%_bindir/grub2-efi-editenv \
-	%buildroot%_bindir/grub2-efi-menulst2cfg \
-	%buildroot%_bindir/grub2-efi-mkfont \
-	%buildroot%_bindir/grub2-efi-mkimage \
-	%buildroot%_bindir/grub2-efi-mklayout \
-	%buildroot%_bindir/grub2-efi-mkpasswd-pbkdf2 \
-	%buildroot%_bindir/grub2-efi-mkrelpath \
-	%buildroot%_bindir/grub2-efi-mount \
-	%buildroot%_bindir/grub2-efi-script-check \
-	%buildroot%_bindir/grub2-fstest \
-	%buildroot%_bindir/grub2-editenv \
-	%buildroot%_bindir/grub2-menulst2cfg \
-	%buildroot%_bindir/grub2-mkfont \
-	%buildroot%_bindir/grub2-mkimage \
-	%buildroot%_bindir/grub2-mklayout \
-	%buildroot%_bindir/grub2-mkpasswd-pbkdf2 \
-	%buildroot%_bindir/grub2-mkrelpath \
-	%buildroot%_bindir/grub2-mount \
-	%buildroot%_bindir/grub2-script-check \
-	%buildroot%_sbindir/grub2-efi-ofpathname \
-	%buildroot%_sbindir/grub2-efi-bios-setup \
-	%buildroot%_sbindir/grub2-efi-probe \
-	%buildroot%_sbindir/grub2-efi-sparc64-setup \
-	%buildroot%_sbindir/grub2-bios-setup \
-	%buildroot%_sbindir/grub2-ofpathname \
-	%buildroot%_sbindir/grub2-probe \
-	%buildroot%_sbindir/grub2-sparc64-setup
-
-
-
 %post
 exec > /var/log/%{name}_post.log 2>&1
 # Create device.map or reuse one from GRUB Legacy
@@ -878,54 +860,14 @@ sed 	-e 's#\(GRUB_THEME=\).*#\1"/boot/%{name}/themes/rosa/theme.txt"#g' \
 fi
 
 #-----------------------------------------------------------------------
-%files -f grub.lang
+%files
 %doc NEWS README THANKS TODO ChangeLog
 #%{libdir32}/%{name}
 %{libdir32}/grub/*-%{platform}
-#%{_sbindir}/%{name}-*
-#%{_bindir}/%{name}-*
-%{_sbindir}/update-grub2
-%{_bindir}/%{name}-editenv
-%{_bindir}/%{name}-fstest
-%{_bindir}/%{name}-kbdcomp
-%{_bindir}/%{name}-menulst2cfg
-%{_bindir}/%{name}-mkfont
-%{_bindir}/%{name}-mkimage
-%{_bindir}/%{name}-mklayout
-%{_bindir}/%{name}-mknetdir
-%{_bindir}/%{name}-mkpasswd-pbkdf2
-%{_bindir}/%{name}-mkrelpath
-%{_bindir}/%{name}-mkrescue
-%{_bindir}/%{name}-mkstandalone
-%{_bindir}/%{name}-mount
-%{_bindir}/%{name}-render-label
-%{_bindir}/%{name}-script-check
-%{_sbindir}/%{name}-bios-setup
-%{_sbindir}/%{name}-install
-%{_sbindir}/%{name}-mkconfig
-%{_sbindir}/%{name}-ofpathname
-%{_sbindir}/%{name}-probe
-%{_sbindir}/%{name}-reboot
-%{_sbindir}/%{name}-set-default
-%{_sbindir}/%{name}-sparc64-setup
-#%{_datadir}/%{name}
-%{_datadir}/grub
-%attr(0700,root,root) %dir %{_sysconfdir}/grub.d
-%{_sysconfdir}/grub.d/README
-%config %{_sysconfdir}/grub.d/??_*
 %{_sysconfdir}/%{name}.cfg
-%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/default/grub
-%{_datadir}/bash-completion/completions/grub
-%dir /boot/%{name}
-%dir /boot/%{name}/locale
-%dir /boot/%{name}/themes
 # Actually, this is replaced by update-grub from scriptlets,
 # but it takes care of modified persistent part
 %config(noreplace) /boot/%{name}/grub.cfg
-%{_infodir}/%{name}.info*
-%{_infodir}/grub-dev.info*
-%{_mandir}/man1/%{name}-*.1*
-%{_mandir}/man8/%{name}-*.8*
 # RPM filetriggers
 %{_filetriggers_dir}/%{name}.*
 
@@ -934,13 +876,7 @@ fi
 %attr(0755,root,root) %dir /boot/efi/EFI/rosa/grub2-efi
 %attr(0755,root,root) /boot/efi/EFI/rosa/grub2-efi/grub.efi
 %attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/rosa/grub2-efi/grub.cfg
-%{_datadir}/bash-completion/completions/grub-efi
 %{libdir32}/grub/%{_arch}-efi/
-%{_sbindir}/%{name}-efi*
-%{_bindir}/%{name}-efi*
-%{_bindir}/%{name}-glue-efi
-#%{_datadir}/grub
-#%{_sysconfdir}/grub.d
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 
 # Actually, this is replaced by update-grub from scriptlets,
@@ -949,6 +885,53 @@ fi
 # RPM filetriggers
 #%{_filetriggers_dir}/%{name}.*
 %endif
+
+%files tools -f grub.lang
+%dir %{libdir32}/grub/
+%dir %{_datadir}/grub/
+%{_datadir}/grub/*
+%{_sbindir}/%{name}-mkconfig
+%{_sbindir}/%{name}-install
+%{_sbindir}/%{name}-probe
+%{_sbindir}/%{name}-reboot
+%{_sbindir}/%{name}-set-default
+%{_sbindir}/%{name}-bios-setup
+%{_sbindir}/%{name}-ofpathname
+%{_sbindir}/%{name}-sparc64-setup
+%{_sbindir}/update-grub2
+%{_bindir}/%{name}-mknetdir
+%{_bindir}/%{name}-mkstandalone
+%{_bindir}/%{name}-editenv
+%{_bindir}/%{name}-fstest
+%{_bindir}/%{name}-kbdcomp
+%{_bindir}/%{name}-menulst2cfg
+%{_bindir}/%{name}-mkfont
+%{_bindir}/%{name}-mklayout
+%{_bindir}/%{name}-mkimage
+%{_bindir}/%{name}-mkpasswd-pbkdf2
+%{_bindir}/%{name}-mkrelpath
+%{_bindir}/%{name}-mount
+%{_bindir}/%{name}-glue-efi
+%{_bindir}/%{name}-render-label
+%ifnarch %{sparc}
+%{_bindir}/%{name}-mkrescue
+%endif
+%{_bindir}/%{name}-script-check
+%{_datadir}/bash-completion/completions/grub
+%attr(0700,root,root) %dir %{_sysconfdir}/grub.d
+%config %{_sysconfdir}/grub.d/??_*
+%{_sysconfdir}/grub.d/README
+%attr(0644,root,root) %ghost %config(noreplace) %{_sysconfdir}/default/grub
+%dir /boot/%{name}
+%dir /boot/%{name}/themes/
+#%dir /boot/%{name}/themes/system
+#%exclude /boot/%{name}/themes/system/*
+#%exclude %{_datadir}/grub/themes/
+%{_infodir}/grub*.info*
+%{_mandir}/man1/%{name}-*.1*
+%{_mandir}/man8/%{name}-*.8*
+# RPM filetriggers
+%{_filetriggers_dir}/%{name}.*
 
 %files moondrake-theme
 /boot/%{name}/themes/moondrake
