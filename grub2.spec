@@ -604,7 +604,7 @@ for EFI systems.
 %package	tools
 Summary:	Support tools for GRUB
 Group:		System/Kernel and hardware
-Requires:	gettext os-prober which file system-logos
+Requires:	gettext os-prober which file
 Conflicts:	%{name} < 2.00-24
 Conflicts:	%{name}-efi < 2.00-24
 
