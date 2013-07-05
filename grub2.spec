@@ -7,6 +7,7 @@
 %global optflags %{optflags} -Os
 
 %bcond_with talpo
+%bcond_without uclibc
 
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
@@ -568,6 +569,9 @@ BuildRequires:	pkgconfig(ncursesw)
 %if %{with talpo}
 BuildRequires:	talpo
 %endif
+%if %{with uclibc}
+BuildRequires:	uClibc-devel
+%endif
 Requires:	xorriso
 Requires(post):	os-prober
 Requires:	%{name}-tools = %{EVRD}
@@ -689,6 +693,10 @@ pushd efi
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
 %else
 	CFLAGS="-Os" \
+%if %{with uclibc}
+	TARGET_CC="%{uclibc_cc}" \
+	TARGET_CFLAGS="%{uclibc_cflags}" \
+%endif
 %endif
 	TARGET_LDFLAGS="-static" \
 	--with-platform=efi \
@@ -720,6 +728,10 @@ cd pc
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
 %else
 	CFLAGS="-Os" \
+%if %{with uclibc}
+	TARGET_CC="%{uclibc_cc}" \
+	TARGET_CFLAGS="%{uclibc_cflags}" \
+%endif
 %endif
 	TARGET_LDFLAGS="-static" \
 	--with-platform=pc \
