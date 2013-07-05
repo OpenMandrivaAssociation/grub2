@@ -33,6 +33,8 @@ Source11:	grub2.rpmlintrc
 Source12:	grub-lua-rev28.tar.xz
 # documentation and simple test script for testing grub2 themes
 Source13:	mandriva-grub2-theme-test.sh
+Source14:	ntldr-img-rev21.tar.xz
+Source15:	gpxe-rev15.tar.xz
 
 # fedora patches
 Patch0000:	grub-2.00-bzrignore.patch
@@ -647,7 +649,7 @@ Conflicts:	%{name} < 2.00-24
 Example 'starfield' theme for GRUB.
 
 %prep
-%setup -qn grub-%{version} -a7 -a12
+%setup -qn grub-%{version} -a7 -a12 -a14 -a15
 #  needs to be fixed..
 #apply_patches
 
@@ -664,8 +666,8 @@ sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure.ac
 
 perl -pi -e 's/-Werror//;' grub-core/Makefile.am
 mkdir grub-extras
-mv lua grub-extras
-export GRUB_CONTRIB=./grub-extras
+mv gpxe lua ntldr-img grub-extras
+export GRUB_CONTRIB="$PWD/grub-extras"
 autoupdate
 rm m4/iconv.m4
 aclocal --force -Im4 -I/usr/share/aclocal --system-acdir=/usr/share/aclocal-1.13  --install
@@ -930,6 +932,7 @@ fi
 %{_bindir}/%{name}-mkpasswd-pbkdf2
 %{_bindir}/%{name}-mkrelpath
 %{_bindir}/%{name}-mount
+%{_bindir}/%{name}-ntldr-img
 %{_bindir}/%{name}-glue-efi
 %{_bindir}/%{name}-render-label
 %ifnarch %{sparc}
