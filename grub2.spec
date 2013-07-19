@@ -51,7 +51,7 @@ Patch14:	grub-2.00-try-link-against-libncursesw-also.patch
 Patch15:	grub-fix-texinfo-page.patch
 Patch16:	grub2-2.00-class-via-os-prober.patch
 Patch17:	grub-2.00-autoreconf-sucks.patch
-
+Patch18:	0468-Don-t-write-messages-to-the-screen.patch
 BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
