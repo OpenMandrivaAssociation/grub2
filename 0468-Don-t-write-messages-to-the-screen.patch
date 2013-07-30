@@ -116,14 +116,13 @@ index 8ab7794..da47b18 100644
 -  grub_printf ("Welcome to GRUB!\n\n");
 -  grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
 -
-   grub_load_config ();
- 
-   grub_boot_time ("Before loading embedded modules.");
-diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index d7ea670..5ed7695 100644
---- a/util/grub.d/10_linux.in
-+++ b/util/grub.d/10_linux.in
-@@ -132,29 +132,22 @@ linux_entry ()
+   /* Load pre-loaded modules and free the space.  */
+   grub_register_exported_symbols ();
+ #ifdef GRUB_LINKER_HAVE_INIT
+diff -Naur grub-2.00/util/grub.d/10_linux.in grub-2.00.tpg/util/grub.d/10_linux.in
+--- grub-2.00/util/grub.d/10_linux.in	2013-07-19 15:16:59.000000000 +0000
++++ grub-2.00.tpg/util/grub.d/10_linux.in	2013-07-19 15:26:26.121674384 +0000
+@@ -132,16 +132,11 @@
      fi
      printf '%s\n' "${prepare_boot_cache}" | sed "s/^/$submenu_indentation/"
    fi
