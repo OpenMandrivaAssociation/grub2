@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	21
+Release:	22
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -308,9 +308,13 @@ cp -a rosa %{buildroot}/boot/%{name}/themes/
 
 %post
 exec >/dev/null 2>&1
+
+if [ -e /boot/grub/device.map ]; then
 # Create device.map or reuse one from GRUB Legacy
 cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
 	%{_sbindir}/%{name}-mkdevicemap
+fi
+
 # Do not install grub2 if running in a chroot
 # http://stackoverflow.com/questions/75182/detecting-a-chroot-jail-from-within
 if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
