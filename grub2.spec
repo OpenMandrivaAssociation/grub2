@@ -44,7 +44,6 @@ Patch9:		grub-2.00.Linux.remove.patch
 Patch10:	grub2-mkfont-fix.patch
 Patch11:	grub-2.00-fix-dejavu-font.patch
 Patch12:	grub-2.00-ignore-gnulib-gets-stupidity.patch
-Patch13:	grub2-remove-rosa-logo-from-theme.patch
 Patch14:	grub-2.00-try-link-against-libncursesw-also.patch
 Patch15:	grub-fix-texinfo-page.patch
 Patch16:	grub2-2.00-class-via-os-prober.patch
