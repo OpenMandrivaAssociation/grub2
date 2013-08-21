@@ -71,8 +71,8 @@ BuildRequires:	pkgconfig(ncursesw)
 BuildRequires:	talpo
 %endif
 Requires:	xorriso
-Requires(post):	os-prober
 Provides:	bootloader
+Suggests:	os-prober
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
