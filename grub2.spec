@@ -248,6 +248,8 @@ do
 done
 # Defaults
 install -m755 %{SOURCE2} -D %{buildroot}%{_sysconfdir}/default/grub
+# (tpg) use default distro name
+sed -i -e 's#TMP_DISTRO#%{distribution}#' %{buildroot}%{_sysconfdir}/default/grub
 
 #Add more useful update-grub2 script
 install -m755 %{SOURCE9} -D %{buildroot}%{_sbindir}
