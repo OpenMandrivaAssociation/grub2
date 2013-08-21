@@ -71,8 +71,8 @@ BuildRequires:	pkgconfig(ncursesw)
 BuildRequires:	talpo
 %endif
 Requires:	xorriso
-Requires(post):	os-prober
 Provides:	bootloader
+Suggests:	os-prober
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
@@ -248,6 +248,8 @@ do
 done
 # Defaults
 install -m755 %{SOURCE2} -D %{buildroot}%{_sysconfdir}/default/grub
+# (tpg) use default distro name
+sed -i -e 's#TMP_DISTRO#%{distribution}#' %{buildroot}%{_sysconfdir}/default/grub
 
 #Add more useful update-grub2 script
 install -m755 %{SOURCE9} -D %{buildroot}%{_sbindir}
@@ -324,7 +326,7 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
     %{_sbindir}/%{name}-install $BOOT_PARTITION
     # Generate grub.cfg and add GRUB2 chainloader to menu on initial install
     if [ $1 = 1 ]; then
-        %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+        %{_sbindir}/update-grub2
     fi
 fi
 #bugfix: error message before loading of grub2 menu on boot
@@ -343,7 +345,7 @@ fi
 
 #-----------------------------------------------------------------------
 %files -f grub.lang
-%doc NEWS README THANKS TODO ChangeLog
+%doc NEWS README THANKS TODO
 #%{libdir32}/%{name}
 %{libdir32}/grub/*-%{platform}
 #%{_sbindir}/%{name}-*
@@ -393,7 +395,7 @@ fi
 %{_filetriggers_dir}/%{name}.*
 
 %ifarch %{efi}
-%files efi 
+%files efi
 %attr(0755,root,root) %dir /boot/efi/EFI/rosa/grub2-efi
 %attr(0755,root,root) /boot/efi/EFI/rosa/grub2-efi/grub.efi
 %attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/rosa/grub2-efi/grub.cfg
