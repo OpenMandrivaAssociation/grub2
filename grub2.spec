@@ -345,7 +345,7 @@ fi
 
 #-----------------------------------------------------------------------
 %files -f grub.lang
-%doc NEWS README THANKS TODO ChangeLog
+%doc NEWS README THANKS TODO
 #%{libdir32}/%{name}
 %{libdir32}/grub/*-%{platform}
 #%{_sbindir}/%{name}-*
@@ -395,7 +395,7 @@ fi
 %{_filetriggers_dir}/%{name}.*
 
 %ifarch %{efi}
-%files efi 
+%files efi
 %attr(0755,root,root) %dir /boot/efi/EFI/rosa/grub2-efi
 %attr(0755,root,root) /boot/efi/EFI/rosa/grub2-efi/grub.efi
 %attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/rosa/grub2-efi/grub.cfg
