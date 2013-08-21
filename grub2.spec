@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	22
+Release:	23
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -23,7 +23,6 @@ Source3:	grub.melt
 Source4:	grub_guide.tar.gz
 Source5:	DroidSansMonoLicense.txt
 Source6:	DroidSansMono.ttf
-Source7:	rosa-theme.tar.gz
 Source8:	grub2-po-update.tar.gz
 Source9:	update-grub2
 Source10:	README.urpmi
@@ -31,7 +30,6 @@ Source11:	grub2.rpmlintrc
 Source12:	grub-lua-rev24.tar.xz
 # documentation and simple test script for testing grub2 themes
 Source13:	mandriva-grub2-theme-test.sh
-Source14:	mandriva-background.jpg
 
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
@@ -101,11 +99,9 @@ for EFI systems.
 #-----------------------------------------------------------------------
 
 %prep
-%setup -qn grub-%{version} -a7 -a12
+%setup -qn grub-%{version} -a12
 %apply_patches
 cp %{SOURCE10} .
-rm rosa/background.png rosa/Logo_Rosa.png
-cp %{SOURCE14} rosa/background.jpg
 
 perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;' \
 	docs/grub-dev.texi
@@ -383,7 +379,7 @@ fi
 %{_sysconfdir}/bash_completion.d/grub
 %dir /boot/%{name}
 %dir /boot/%{name}/locale
-/boot/%{name}/themes
+%dir /boot/%{name}/themes
 # Actually, this is replaced by update-grub from scriptlets,
 # but it takes care of modified persistent part
 %config(noreplace) /boot/%{name}/grub.cfg
