@@ -254,15 +254,15 @@ install -m755 %{SOURCE9} -D %{buildroot}%{_sbindir}
 install -d %{buildroot}%{_filetriggers_dir}
 cat > %{buildroot}%{_filetriggers_dir}/%{name}.filter << EOF
 ^./boot/vmlinuz-
+^./boot/grub2/themes/
 EOF
 cat > %{buildroot}%{_filetriggers_dir}/%{name}.script << EOF
 #!/bin/sh
-%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+[ -e /boot/grub2/grub.cfg ] && %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
 EOF
 chmod 755 %{buildroot}%{_filetriggers_dir}/%{name}.script
 
 install -d %{buildroot}/boot/%{name}/themes/
-cp -a rosa %{buildroot}/boot/%{name}/themes/
 
 #mv -f %{buildroot}/%{libdir32}/grub %{buildroot}/%{libdir32}/%{name}
 #mv -f %{buildroot}/%{_datadir}/grub %{buildroot}/%{_datadir}/%{name}
