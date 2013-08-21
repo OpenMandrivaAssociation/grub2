@@ -326,7 +326,7 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
     %{_sbindir}/%{name}-install $BOOT_PARTITION
     # Generate grub.cfg and add GRUB2 chainloader to menu on initial install
     if [ $1 = 1 ]; then
-        %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+        %{_sbindir}/update-grub2
     fi
 fi
 #bugfix: error message before loading of grub2 menu on boot
