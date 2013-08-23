@@ -27,10 +27,9 @@ Bug-Ubuntu: https://bugs.launchpad.net/bugs/861048
 Forwarded: (partial) http://lists.gnu.org/archive/html/grub-devel/2009-09/msg00056.html
 Last-Update: 2013-08-15
 
-Index: b/configure.ac
-===================================================================
---- a/configure.ac
-+++ b/configure.ac
+diff -Naur grub-2.00/configure.ac grub-2.00.tpg/configure.ac
+--- grub-2.00/configure.ac	2012-06-26 01:47:37.000000000 +0000
++++ grub-2.00.tpg/configure.ac	2013-08-23 16:01:17.717262663 +0000
 @@ -1076,6 +1076,16 @@
  AC_SUBST([LIBZFS])
  AC_SUBST([LIBNVPAIR])
@@ -59,10 +58,9 @@ Index: b/configure.ac
 +fi
  echo "*******************************************************"
  ]
-Index: b/grub-core/boot/i386/pc/boot.S
-===================================================================
---- a/grub-core/boot/i386/pc/boot.S
-+++ b/grub-core/boot/i386/pc/boot.S
+diff -Naur grub-2.00/grub-core/boot/i386/pc/boot.S grub-2.00.tpg/grub-core/boot/i386/pc/boot.S
+--- grub-2.00/grub-core/boot/i386/pc/boot.S	2011-10-19 18:46:09.000000000 +0000
++++ grub-2.00.tpg/grub-core/boot/i386/pc/boot.S	2013-08-23 16:03:18.874615544 +0000
 @@ -19,6 +19,9 @@
  
  #include <grub/symbol.h>
@@ -91,10 +89,9 @@ Index: b/grub-core/boot/i386/pc/boot.S
  	/* set %si to the disk address packet */
  	movw	$disk_address_packet, %si
  
-Index: b/grub-core/boot/i386/pc/diskboot.S
-===================================================================
---- a/grub-core/boot/i386/pc/diskboot.S
-+++ b/grub-core/boot/i386/pc/diskboot.S
+diff -Naur grub-2.00/grub-core/boot/i386/pc/diskboot.S grub-2.00.tpg/grub-core/boot/i386/pc/diskboot.S
+--- grub-2.00/grub-core/boot/i386/pc/diskboot.S	2012-06-23 09:10:37.000000000 +0000
++++ grub-2.00.tpg/grub-core/boot/i386/pc/diskboot.S	2013-08-23 16:03:30.145926383 +0000
 @@ -18,6 +18,9 @@
  
  #include <grub/symbol.h>
@@ -171,10 +168,9 @@ Index: b/grub-core/boot/i386/pc/diskboot.S
  notification_string:	.asciz "loading"
  
  notification_step:	.asciz "."
-Index: b/grub-core/kern/main.c
-===================================================================
---- a/grub-core/kern/main.c
-+++ b/grub-core/kern/main.c
+diff -Naur grub-2.00/grub-core/kern/main.c grub-2.00.tpg/grub-core/kern/main.c
+--- grub-2.00/grub-core/kern/main.c	2012-06-25 20:33:41.000000000 +0000
++++ grub-2.00.tpg/grub-core/kern/main.c	2013-08-23 16:04:01.200783273 +0000
 @@ -207,13 +207,23 @@
  void __attribute__ ((noreturn))
  grub_main (void)
@@ -212,10 +208,9 @@ Index: b/grub-core/kern/main.c
 +
    grub_rescue_run ();
  }
-Index: b/grub-core/kern/rescue_reader.c
-===================================================================
---- a/grub-core/kern/rescue_reader.c
-+++ b/grub-core/kern/rescue_reader.c
+diff -Naur grub-2.00/grub-core/kern/rescue_reader.c grub-2.00.tpg/grub-core/kern/rescue_reader.c
+--- grub-2.00/grub-core/kern/rescue_reader.c	2012-01-31 21:53:43.000000000 +0000
++++ grub-2.00.tpg/grub-core/kern/rescue_reader.c	2013-08-23 16:04:06.511930639 +0000
 @@ -77,7 +77,9 @@
  void __attribute__ ((noreturn))
  grub_rescue_run (void)
@@ -226,10 +221,9 @@ Index: b/grub-core/kern/rescue_reader.c
  
    while (1)
      {
-Index: b/grub-core/normal/main.c
-===================================================================
---- a/grub-core/normal/main.c
-+++ b/grub-core/normal/main.c
+diff -Naur grub-2.00/grub-core/normal/main.c grub-2.00.tpg/grub-core/normal/main.c
+--- grub-2.00/grub-core/normal/main.c	2012-06-26 01:59:57.000000000 +0000
++++ grub-2.00.tpg/grub-core/normal/main.c	2013-08-23 16:04:28.568537427 +0000
 @@ -399,6 +399,15 @@
  grub_normal_read_line_real (char **line, int cont, int nested)
  {
@@ -256,10 +250,9 @@ Index: b/grub-core/normal/main.c
  
    while (1)
      {
-Index: b/grub-core/normal/menu.c
-===================================================================
---- a/grub-core/normal/menu.c
-+++ b/grub-core/normal/menu.c
+diff -Naur grub-2.00/grub-core/normal/menu.c grub-2.00.tpg/grub-core/normal/menu.c
+--- grub-2.00/grub-core/normal/menu.c	2012-05-17 12:55:37.000000000 +0000
++++ grub-2.00.tpg/grub-core/normal/menu.c	2013-08-23 16:04:35.616731837 +0000
 @@ -669,12 +669,18 @@
  
  /* Callback invoked immediately before a menu entry is executed.  */
@@ -303,10 +296,9 @@ Index: b/grub-core/normal/menu.c
  
        if (auto_boot)
  	grub_menu_execute_with_fallback (menu, e, autobooted,
-Index: b/util/grub.d/10_linux.in
-===================================================================
---- a/util/grub.d/10_linux.in
-+++ b/util/grub.d/10_linux.in
+diff -Naur grub-2.00/util/grub.d/10_linux.in grub-2.00.tpg/util/grub.d/10_linux.in
+--- grub-2.00/util/grub.d/10_linux.in	2013-08-23 15:59:44.000000000 +0000
++++ grub-2.00.tpg/util/grub.d/10_linux.in	2013-08-23 15:58:25.000000000 +0000
 @@ -20,6 +20,7 @@
  prefix="@prefix@"
  exec_prefix="@exec_prefix@"
@@ -315,34 +307,26 @@ Index: b/util/grub.d/10_linux.in
  
  . "@datadir@/@PACKAGE@/grub-mkconfig_lib"
  
-@@ -140,10 +141,12 @@
+@@ -132,18 +133,22 @@
      fi
      printf '%s\n' "${prepare_boot_cache}" | sed "s/^/$submenu_indentation/"
    fi
--  message="$(gettext_printf "Loading Linux %s ..." ${version})"
--  sed "s/^/$submenu_indentation/" << EOF
 +  if [ x"$enable_quiet_boot" = xno ] || [ x"$type" != xsimple ]; then
-+    message="$(gettext_printf "Loading Linux %s ..." ${version})"
-+    sed "s/^/$submenu_indentation/" << EOF
- 	echo	'$(echo "$message" | grub_quote)'
+   message="$(gettext_printf "Loading Linux %s ..." ${version})"
+   sed "s/^/$submenu_indentation/" << EOF
+ 	echo	'$message'
+ 	linux  ${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args} resume=`swapon -s | grep '/dev/sd.[0-9]\{1,\}' -o | if read line; then echo "$line"; fi` init=/lib/systemd/systemd
  EOF
 +  fi
-   if test -d /sys/firmware/efi && test -e "${linux}.efi.signed"; then
-     sed "s/^/$submenu_indentation/" << EOF
- 	linux	${rel_dirname}/${basename}.efi.signed root=${linux_root_device_thisversion} ro ${args}
-@@ -155,9 +158,13 @@
-   fi
    if test -n "${initrd}" ; then
      # TRANSLATORS: ramdisk isn't identifier. Should be translated.
--    message="$(gettext_printf "Loading initial ramdisk ...")"
--    sed "s/^/$submenu_indentation/" << EOF
 +    if [ x"$enable_quiet_boot" = xno ] || [ x"$type" != xsimple ]; then
-+      message="$(gettext_printf "Loading initial ramdisk ...")"
-+      sed "s/^/$submenu_indentation/" << EOF
- 	echo	'$(echo "$message" | grub_quote)'
-+EOF
-+    fi
-+    sed "s/^/$submenu_indentation/" << EOF
+     message="$(gettext_printf "Loading initial ramdisk ...")"
+     sed "s/^/$submenu_indentation/" << EOF
+ 	echo	'$message'
  	initrd	${rel_dirname}/${initrd}
  EOF
++    fi
    fi
+   sed "s/^/$submenu_indentation/" << EOF
+ }
