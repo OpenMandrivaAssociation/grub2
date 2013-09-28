@@ -843,14 +843,9 @@ cp %{_datadir}/gfxboot/themes/Moondrake/install/back.jpg %{buildroot}/boot/%{nam
 #find %{buildroot} -size 0 -delete
 
 %post
-exec >/dev/null 2>&1
-
-if [ -e /boot/grub/device.map ]; then
+exec > /var/log/%{name}_post.log 2>&1
 # Create device.map or reuse one from GRUB Legacy
-cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
-	%{_sbindir}/%{name}-mkdevicemap
-fi
-
+[ -f /boot/grub/device.map ] && cp -u /boot/grub/device.map /boot/%{name}/device.map
 # Do not install grub2 if running in a chroot
 # http://stackoverflow.com/questions/75182/detecting-a-chroot-jail-from-within
 if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
@@ -860,7 +855,7 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
     %{_sbindir}/%{name}-install $BOOT_PARTITION
     # Generate grub.cfg and add GRUB2 chainloader to menu on initial install
     if [ $1 = 1 ]; then
-        %{_sbindir}/update-grub2
+        %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
     fi
 fi
 
