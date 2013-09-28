@@ -671,7 +671,7 @@ mkdir grub-extras
 mv gpxe lua ntldr-img grub-extras
 export GRUB_CONTRIB="$PWD/grub-extras"
 cp %{SOURCE16} .
-./linguas.sh
+sh linguas.sh
 autoupdate
 rm m4/iconv.m4
 aclocal --force -Im4 -I/usr/share/aclocal --system-acdir=/usr/share/aclocal-1.13  --install
