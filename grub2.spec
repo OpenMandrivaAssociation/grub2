@@ -832,7 +832,7 @@ install -d %{buildroot}/boot/%{name}/themes/moondrake
 cp -a rosa %{buildroot}/boot/%{name}/themes/
 ln %{buildroot}/boot/%{name}/themes/rosa/* %{buildroot}/boot/%{name}/themes/moondrake
 rm %{buildroot}/boot/%{name}/themes/moondrake/background.png %{buildroot}/boot/%{name}/themes/moondrake/Logo_Rosa.png
-cp %{_datadir}/gfxboot/themes/Moondrake/back.jpg %{buildroot}/boot/%{name}/themes/moondrake/background.jpg
+cp %{_datadir}/gfxboot/themes/Moondrake/install/back.jpg %{buildroot}/boot/%{name}/themes/moondrake/background.jpg
 
 #mv -f %{buildroot}/%{libdir32}/grub %{buildroot}/%{libdir32}/%{name}
 #mv -f %{buildroot}/%{_datadir}/grub %{buildroot}/%{_datadir}/%{name}
