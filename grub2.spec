@@ -34,6 +34,7 @@ Source12:	grub-lua-rev28.tar.xz
 Source13:	mandriva-grub2-theme-test.sh
 Source14:	ntldr-img-rev21.tar.xz
 Source15:	gpxe-rev15.tar.xz
+Source16:	linguas.sh
 
 # fedora patches
 Patch0000:	grub-2.00-bzrignore.patch
@@ -478,7 +479,7 @@ Patch0438:	0438-grub-core-tests-setjmp_test.c-New-test.patch
 Patch0439:	0439-Menu-color-test.patch
 Patch0440:	0440-grub-core-commands-videoinfo.c-Use-paletted-rather-t.patch
 Patch0441:	0441-Compressed-HFS-support.patch
-Patch0442:	0442-Don-t-say-GNU-Linux-in-generated-menus.patch
+#Patch0442:	0442-Don-t-say-GNU-Linux-in-generated-menus.patch
 Patch0443:	0443-Migrate-PPC-from-Yaboot-to-Grub2.patch
 Patch0444:	0444-Add-fw_path-variable-revised.patch
 Patch0445:	0445-Don-t-set-boot-device-on-ppc-ieee1275.patch
@@ -504,8 +505,8 @@ Patch0464:	0464-configure.ac-Don-t-use-extended-registers-on-x86_64.patch
 Patch0465:	0465-configure.ac-Don-t-disable-extended-registers-on-emu.patch
 Patch0466:	0466-conf-Makefile.common-Poison-float-and-double-on-non-.patch
 Patch0467:	0467-Progressively-skip-menu-elements-on-small-terminals-.patch
-Patch0468:	0468-Don-t-write-messages-to-the-screen.patch
-Patch0469:	0469-Don-t-print-GNU-GRUB-header.patch
+#Patch0468:	0468-Don-t-write-messages-to-the-screen.patch
+#Patch0469:	0469-Don-t-print-GNU-GRUB-header.patch
 Patch0470:	0470-Don-t-draw-a-border-around-the-menu.patch
 Patch0471:	0471-Don-t-add-to-highlighted-row.patch
 Patch0472:	0472-Don-t-add-to-highlighted-row.patch
@@ -530,11 +531,12 @@ Patch1001:	grub2-00_header.patch
 Patch1002:	grub2-custom-color.patch
 Patch1004:	grub2-read-cfg.patch
 Patch1005:	grub2-symlink-is-garbage.patch
-Patch1007:	grub2-10_linux.patch
+#Patch1007:	grub2-10_linux.patch
 Patch1008:	grub2-theme-not_selected_item_box.patch
 Patch1011:	grub-2.00-fix-dejavu-font.patch
 Patch1013:	grub2-remove-rosa-logo-from-theme.patch
 Patch1018:	grub-2.00-lua-undef-double-poision-override.patch
+Patch1019:	grub-2.00-dont-print-stuff-while-grub-is-loading.patch
 
 # openSuSE patches
 Patch1100:	grub2-fix-locale-en.mo.gz-not-found-error-message.patch
