@@ -24,6 +24,7 @@ Source3:	grub.melt
 Source4:	grub_guide.tar.gz
 Source5:	DroidSansMonoLicense.txt
 Source6:	DroidSansMono.ttf
+Source7:	rosa-theme.tar.gz
 Source8:	grub2-po-update.tar.gz
 Source9:	update-grub2
 Source10:	README.urpmi
@@ -559,7 +560,7 @@ BuildRequires:	texinfo
 BuildRequires:	texlive
 BuildRequires:	glibc-static-devel
 BuildRequires:	gettext-devel
-BuildRequires:	liblzo-devel
+BuildRequires:	lzo-devel
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	pkgconfig(fuse)
 BuildRequires:	pkgconfig(freetype2)
