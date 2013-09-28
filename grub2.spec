@@ -537,6 +537,7 @@ Patch1013:	grub2-remove-rosa-logo-from-theme.patch
 Patch1018:	grub-2.00-lua-undef-double-poision-override.patch
 
 # openSuSE patches
+%if 0
 Patch1100:	grub2-fix-locale-en.mo.gz-not-found-error-message.patch
 Patch1101:	grub2-fix-error-terminal-gfxterm-isn-t-found.patch
 Patch1104:	grub2-install-opt-skip-fs-probe.patch
@@ -549,6 +550,7 @@ Patch1113:	grub2-secureboot-use-linuxefi-on-uefi-in-os-prober.patch
 Patch1115:	30_os-prober_UEFI_support.patch	
 Patch1116:	grub2-2.00-class-via-os-prober.patch
 Patch1117:	grub-2.00-autoreconf-sucks.patch
+%endif
 
 BuildRequires:	autogen
 BuildRequires:	bison
