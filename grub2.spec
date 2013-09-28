@@ -537,7 +537,6 @@ Patch1013:	grub2-remove-rosa-logo-from-theme.patch
 Patch1018:	grub-2.00-lua-undef-double-poision-override.patch
 
 # openSuSE patches
-%if 0
 Patch1100:	grub2-fix-locale-en.mo.gz-not-found-error-message.patch
 Patch1101:	grub2-fix-error-terminal-gfxterm-isn-t-found.patch
 Patch1104:	grub2-install-opt-skip-fs-probe.patch
@@ -550,7 +549,6 @@ Patch1113:	grub2-secureboot-use-linuxefi-on-uefi-in-os-prober.patch
 Patch1115:	30_os-prober_UEFI_support.patch	
 Patch1116:	grub2-2.00-class-via-os-prober.patch
 Patch1117:	grub-2.00-autoreconf-sucks.patch
-%endif
 
 BuildRequires:	autogen
 BuildRequires:	bison
@@ -670,6 +668,7 @@ perl -pi -e 's/-Werror//;' grub-core/Makefile.am
 mkdir grub-extras
 mv gpxe lua ntldr-img grub-extras
 export GRUB_CONTRIB="$PWD/grub-extras"
+./linguas.sh
 autoupdate
 rm m4/iconv.m4
 aclocal --force -Im4 -I/usr/share/aclocal --system-acdir=/usr/share/aclocal-1.13  --install
@@ -781,10 +780,8 @@ done
 %endif
 
 ######EFI
-%makeinstall_std -C pc
+%makeinstall_std -C pc install-starfieldDATA
 %makeinstall_std -C pc/docs install-pdf install-html PACKAGE_TARNAME=%{name}
-
-install -m644 pc/util/bash-completion.d/grub -D %{buildroot}%{_sysconfdir}/bash_completion.d/grub
 
 # (bor) grub.info is harcoded in sources
 mv %{buildroot}%{_infodir}/grub.info %{buildroot}%{_infodir}/%{name}.info
@@ -899,7 +896,6 @@ fi
 #%{libdir32}/%{name}
 %{libdir32}/grub/*-%{platform}
 %{_sysconfdir}/%{name}.cfg
-%{_sysconfdir}/bash_completion.d/grub
 %dir /boot/%{name}
 %dir /boot/%{name}/locale
 %dir /boot/%{name}/themes
