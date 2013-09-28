@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head><script type="text/javascript">var NREUMQ=NREUMQ||[];NREUMQ.push(["mark","firstbyte",new Date().getTime()]);</script>
+<meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/base/jquery-ui.css" media="screen, projection" rel="stylesheet" type="text/css" />
+<link href="/assets/application-d0dcacb8b372eb7d815543aa5cca3fe8.css" media="screen" rel="stylesheet" type="text/css" />
+<!--[if lt IE 9]>
+<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+<![endif]-->
+<script src="/assets/application-727b9c426eacb5a3a7ec4409210dbe1f.js" type="text/javascript"></script>
+
+<meta content="authenticity_token" name="csrf-param" />
+<meta content="LLgpMQ7cYGANiK3+MBn1j6nA1TShhiJNyQlZUHM/ssc=" name="csrf-token" />
+<title>Access violation to this page! - ABF</title>
+</head>
+<body ng-app='RosaABF' ng-controller='RosaABFController' ng-init="init('en', false)">
+<div class='wrap'>
+<header>
+<div class='left'></div>
+<div class='middle'>
+<menu>
+<div class='logo'><a href="/"><img alt="logo" src="/assets/logo-mini-2f8d378bf1d67d6810a70399879685a0.png" /></a></div>
+<ul>
+<li><a href="/build_lists">Task monitoring</a></li>
+<li><a href="/advisories">Advisories</a></li>
+</ul>
+
+</menu>
+<div class='information'>
+<div class='search'>
+<form accept-charset="UTF-8" action="/search" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+<div class='pic'></div>
+<div class='field'><input id="query" name="query" placeholder="Search" type="text" /></div>
+</form>
+
+</div>
+
+<div class='user'>
+<div class='profile'><a href="/register_requests/new">Sign up</a></div>
+<div class='profile'><a href="/users/sign_in">Sign in</a></div>
+</div>
+</div>
+</div>
+<div class='right'></div>
+<div class='both'></div>
+</header>
+<div class='both'></div>
+<noscript>
+<div style='font-size: 12px; color: red; font-weight: bold;'>You need javascript to properly use this site</div>
+</noscript>
+
+<div class='flash'>
+<div class='alert message'>Access violation to this page!</div>
+</div>
+
+<div class='flash_notify'>
+</div>
+
+<article>
+<div class='all'></div>
+<div class='both'></div>
+</article>
+</div>
+<footer><ul>
+<li>
+<img alt="Square" src="/assets/square-f67586559205d49fca2eb4e008d9e7a9.png" />
+ROSA Lab © 2013
+</li>
+<li>
+<img alt="Square" src="/assets/square-f67586559205d49fca2eb4e008d9e7a9.png" />
+<img alt="flag" src="/assets/flag-dd2e218e7ad44222dab66d6f8d1f818c.png" />
+</li>
+<li>
+<img alt="Square" src="/assets/square-f67586559205d49fca2eb4e008d9e7a9.png" />
+<a href="http://www.rosalab.com/about">About the company</a>
+</li>
+<li>
+<img alt="Square" src="/assets/square-f67586559205d49fca2eb4e008d9e7a9.png" />
+<a href="http://www.rosalab.com/about/contacts">Contacts</a>
+</li>
+<li>
+<img alt="Square" src="/assets/square-f67586559205d49fca2eb4e008d9e7a9.png" />
+<a href="https://abf.rosalinux.ru/terms-of-service">Terms Of Service</a>
+</li>
+<li>
+<img alt="Square" src="/assets/square-f67586559205d49fca2eb4e008d9e7a9.png" />
+<a href="https://abf.rosalinux.ru/contact">Support</a>
+</li>
+<li>
+<img alt="Square" src="/assets/square-f67586559205d49fca2eb4e008d9e7a9.png" />
+<a href="http://abf-doc.rosalinux.ru">Developer API</a>
+</li>
+<li>
+<img alt="Square" src="/assets/square-f67586559205d49fca2eb4e008d9e7a9.png" />
+<a href="https://abf.rosalinux.ru/abf/abf-ideas/issues">ABF Ideas</a>
+</li>
+<li>
+<img alt="Square" src="/assets/square-f67586559205d49fca2eb4e008d9e7a9.png" />
+<a href="http://abf-blog.rosalinux.ru">ABF Blog</a>
+</li>
+</ul>
+</footer>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29164163-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+  (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter14076919 = new Ya.Metrika({id:14076919, enableAll: true, ut:"noindex", webvisor:true}); } catch(e) {} }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f); } else { f(); } })(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript>
+  <div>
+    <img src="//mc.yandex.ru/watch/14076919?ut=noindex" style="position:absolute; left:-9999px;" alt="" />
+  </div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
+
+<script type="text/javascript">if (!NREUMQ.f) { NREUMQ.f=function() {
+NREUMQ.push(["load",new Date().getTime()]);
+var e=document.createElement("script");
+e.type="text/javascript";
+e.src=(("http:"===document.location.protocol)?"http:":"https:") + "//" +
+  "js-agent.newrelic.com/nr-100.js";
+document.body.appendChild(e);
+if(NREUMQ.a)NREUMQ.a();
+};
+NREUMQ.a=window.onload;window.onload=NREUMQ.f;
+};
+NREUMQ.push(["nrfj","beacon-1.newrelic.com","78f9ddca27","494133","elYLRxFeCVVSFhlCVF5cFhwFXhdbXgBSV1s=",0,29,new Date().getTime(),"","","","",""]);</script></body>
+</html>
