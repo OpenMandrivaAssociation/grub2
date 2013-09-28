@@ -1,0 +1,38 @@
+--- grub-2.00/grub-core/boot/i386/pc/boot.S.noprint~	2013-09-29 00:03:38.045841776 +0200
++++ grub-2.00/grub-core/boot/i386/pc/boot.S	2013-09-29 00:08:05.683552851 +0200
+@@ -470,7 +470,7 @@ LOCAL(general_error):
+ LOCAL(stop):
+ 	jmp	LOCAL(stop)
+ 
+-notification_string:	.asciz "GRUB "
++notification_string:	.asciz ""
+ geometry_error_string:	.asciz "Geom"
+ hd_probe_error_string:	.asciz "Hard Disk"
+ read_error_string:	.asciz "Read"
+--- grub-2.00/grub-core/boot/i386/pc/diskboot.S.noprint~	2013-09-29 00:03:49.550915076 +0200
++++ grub-2.00/grub-core/boot/i386/pc/diskboot.S	2013-09-29 00:05:57.274730419 +0200
+@@ -320,10 +320,10 @@ LOCAL(general_error):
+ /* go here when you need to stop the machine hard after an error condition */
+ LOCAL(stop):	jmp	LOCAL(stop)
+ 
+-notification_string:	.asciz "loading"
++notification_string:	.asciz ""
+ 
+-notification_step:	.asciz "."
+-notification_done:	.asciz "\r\n"
++notification_step:	.asciz ""
++notification_done:	.asciz ""
+ 
+ geometry_error_string:	.asciz "Geom"
+ read_error_string:	.asciz "Read"
+--- grub-2.00/grub-core/kern/main.c.noprint~	2013-09-29 00:02:43.756496235 +0200
++++ grub-2.00/grub-core/kern/main.c	2013-09-28 23:57:42.176588370 +0200
+@@ -270,7 +270,7 @@ grub_main (void)
+ 
+   /* Hello.  */
+   grub_setcolorstate (GRUB_TERM_COLOR_HIGHLIGHT);
+-  grub_printf ("Welcome to GRUB!\n\n");
++  grub_printf ("");
+   grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
+ 
+   grub_load_config ();
