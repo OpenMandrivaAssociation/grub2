@@ -897,7 +897,6 @@ fi
 #%{libdir32}/%{name}
 %{libdir32}/grub/*-%{platform}
 %{_sysconfdir}/%{name}.cfg
-%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/default/grub
 %{_sysconfdir}/bash_completion.d/grub
 %dir /boot/%{name}
 %dir /boot/%{name}/locale
