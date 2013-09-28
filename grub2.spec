@@ -557,6 +557,7 @@ BuildRequires:	bison
 BuildRequires:	flex
 #BuildRequires:	fonts-ttf-unifont
 Buildrequires:	distro-theme-Moondrake
+BuildRequires:	distro-gfxboot-theme
 BuildRequires:	help2man
 BuildRequires:	texinfo
 BuildRequires:	texlive
