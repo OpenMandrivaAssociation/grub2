@@ -784,6 +784,8 @@ done
 %makeinstall_std -C pc
 %makeinstall_std -C pc/docs install-pdf install-html PACKAGE_TARNAME=%{name}
 
+install -m644 pc/util/bash-completion.d/grub -D %{buildroot}%{_sysconfdir}/bash_completion.d/grub
+
 # (bor) grub.info is harcoded in sources
 mv %{buildroot}%{_infodir}/grub.info %{buildroot}%{_infodir}/%{name}.info
 
