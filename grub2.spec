@@ -12,8 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	24
-Summary:	GNU GRUB is a Multiboot boot loader
+Release:	26
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -25,7 +24,6 @@ Source3:	grub.melt
 Source4:	grub_guide.tar.gz
 Source5:	DroidSansMonoLicense.txt
 Source6:	DroidSansMono.ttf
-Source7:	rosa-theme.tar.gz
 Source8:	grub2-po-update.tar.gz
 Source9:	update-grub2
 Source10:	README.urpmi
@@ -709,6 +707,7 @@ pushd efi
 	--disable-werror \
 	--enable-device-mapper \
 	--enable-grub-mkfont
+
 %make all
 
 %ifarch %{ix86}
@@ -747,6 +746,7 @@ cd pc
 	--disable-werror \
 	--enable-device-mapper \
 	--enable-grub-mkfont
+
 %make all
 
 %make html pdf
@@ -807,6 +807,8 @@ do
 done
 # Defaults
 install -m755 %{SOURCE2} -D %{buildroot}%{_sysconfdir}/default/grub
+# (tpg) use default distro name
+sed -i -e 's#TMP_DISTRO#%{distribution}#' %{buildroot}%{_sysconfdir}/default/grub
 
 #Add more useful update-grub2 script
 install -m755 %{SOURCE9} -D %{buildroot}%{_sbindir}
@@ -815,10 +817,11 @@ install -m755 %{SOURCE9} -D %{buildroot}%{_sbindir}
 install -d %{buildroot}%{_filetriggers_dir}
 cat > %{buildroot}%{_filetriggers_dir}/%{name}.filter << EOF
 ^./boot/vmlinuz-
+^./boot/grub2/themes/
 EOF
 cat > %{buildroot}%{_filetriggers_dir}/%{name}.script << EOF
 #!/bin/sh
-%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+[ -e /boot/grub2/grub.cfg ] && %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
 EOF
 chmod 755 %{buildroot}%{_filetriggers_dir}/%{name}.script
 
@@ -837,9 +840,14 @@ cp %{_datadir}/gfxboot/themes/Moondrake/back.jpg %{buildroot}/boot/%{name}/theme
 #find %{buildroot} -size 0 -delete
 
 %post
-exec > /var/log/%{name}_post.log 2>&1
+exec >/dev/null 2>&1
+
+if [ -e /boot/grub/device.map ]; then
 # Create device.map or reuse one from GRUB Legacy
-[ -f /boot/grub/device.map ] && cp -u /boot/grub/device.map /boot/%{name}/device.map
+cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
+	%{_sbindir}/%{name}-mkdevicemap
+fi
+
 # Do not install grub2 if running in a chroot
 # http://stackoverflow.com/questions/75182/detecting-a-chroot-jail-from-within
 if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
@@ -849,7 +857,7 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
     %{_sbindir}/%{name}-install $BOOT_PARTITION
     # Generate grub.cfg and add GRUB2 chainloader to menu on initial install
     if [ $1 = 1 ]; then
-        %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+        %{_sbindir}/update-grub2
     fi
 fi
 
@@ -885,6 +893,11 @@ fi
 #%{libdir32}/%{name}
 %{libdir32}/grub/*-%{platform}
 %{_sysconfdir}/%{name}.cfg
+%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/default/grub
+%{_sysconfdir}/bash_completion.d/grub
+%dir /boot/%{name}
+%dir /boot/%{name}/locale
+%dir /boot/%{name}/themes
 # Actually, this is replaced by update-grub from scriptlets,
 # but it takes care of modified persistent part
 %config(noreplace) /boot/%{name}/grub.cfg
@@ -892,7 +905,7 @@ fi
 %{_filetriggers_dir}/%{name}.*
 
 %ifarch %{efi}
-%files efi 
+%files efi
 %attr(0755,root,root) %dir /boot/efi/EFI/rosa/grub2-efi
 %attr(0755,root,root) /boot/efi/EFI/rosa/grub2-efi/grub.efi
 %attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/rosa/grub2-efi/grub.cfg
