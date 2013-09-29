@@ -784,7 +784,7 @@ done
 %endif
 
 ######EFI
-%makeinstall_std -C pc install-starfieldDATA
+%makeinstall_std -C pc
 %makeinstall_std -C pc/docs install-pdf install-html PACKAGE_TARNAME=%{name}
 
 # (bor) grub.info is harcoded in sources
@@ -837,6 +837,7 @@ cp -a rosa %{buildroot}/boot/%{name}/themes/
 ln %{buildroot}/boot/%{name}/themes/rosa/* %{buildroot}/boot/%{name}/themes/moondrake
 rm %{buildroot}/boot/%{name}/themes/moondrake/background.png %{buildroot}/boot/%{name}/themes/moondrake/Logo_Rosa.png
 cp %{_datadir}/gfxboot/themes/Moondrake/install/back.jpg %{buildroot}/boot/%{name}/themes/moondrake/background.jpg
+
 
 #mv -f %{buildroot}/%{libdir32}/grub %{buildroot}/%{libdir32}/%{name}
 #mv -f %{buildroot}/%{_datadir}/grub %{buildroot}/%{_datadir}/%{name}
@@ -972,9 +973,11 @@ fi
 %files rosa-theme
 /boot/%{name}/themes/rosa
 
+%if 0
 %files starfield-theme
 %dir %{_datarootdir}/grub/themes/starfield
 %{_datarootdir}/grub/themes/starfield/*
+%end
 
 %changelog
 * Sat Apr  6 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 2.00-17
