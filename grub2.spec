@@ -924,7 +924,7 @@ fi
 %dir %{libdir32}/grub/
 %dir %{_datadir}/grub/
 %{_datadir}/grub/*
-%exclude %{_datadir}/grub/themes/*
+#%exclude %{_datadir}/grub/themes/*
 %{_sbindir}/%{name}-mkconfig
 %{_sbindir}/%{name}-install
 %{_sbindir}/%{name}-probe
@@ -972,12 +972,6 @@ fi
 
 %files rosa-theme
 /boot/%{name}/themes/rosa
-
-%if 0
-%files starfield-theme
-%dir %{_datarootdir}/grub/themes/starfield
-%{_datarootdir}/grub/themes/starfield/*
-%end
 
 %changelog
 * Sat Apr  6 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 2.00-17
