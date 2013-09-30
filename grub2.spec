@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	25
+Release:	26
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -323,7 +323,7 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
     %{_sbindir}/%{name}-install $BOOT_PARTITION
     # Generate grub.cfg and add GRUB2 chainloader to menu on initial install
     if [ $1 = 1 ]; then
-        %{_sbindir}/update-grub2
+        %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
     fi
 fi
 #bugfix: error message before loading of grub2 menu on boot
