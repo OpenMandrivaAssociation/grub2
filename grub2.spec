@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	26
+Release:	27
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -55,7 +55,8 @@ BuildRequires:	flex
 #BuildRequires:	fonts-ttf-unifont
 BuildRequires:	help2man
 BuildRequires:	texinfo
-BuildRequires:	texlive
+BuildRequires:	texlive-latex
+BuildRequires:	texlive-epsf
 BuildRequires:	glibc-static-devel
 BuildRequires:	liblzo-devel
 BuildRequires:	pkgconfig(devmapper)
