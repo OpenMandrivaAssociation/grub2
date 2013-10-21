@@ -563,6 +563,7 @@ BuildRequires:	texinfo
 BuildRequires:	texlive-latex
 BuildRequires:	texlive-epsf
 BuildRequires:	texlive-kpathsea.bin
+BuildRequires:	texlive
 BuildRequires:	glibc-static-devel
 BuildRequires:	gettext-devel
 BuildRequires:	lzo-devel
