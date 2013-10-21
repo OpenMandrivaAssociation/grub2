@@ -759,7 +759,7 @@ cd pc
 
 %make all
 
-%make html pdf
+%make html
 
 #-----------------------------------------------------------------------
 %install
@@ -788,7 +788,7 @@ done
 
 ######EFI
 %makeinstall_std -C pc
-%makeinstall_std -C pc/docs install-pdf install-html PACKAGE_TARNAME=%{name}
+%makeinstall_std -C pc/docs install-html PACKAGE_TARNAME=%{name}
 
 # (bor) grub.info is harcoded in sources
 mv %{buildroot}%{_infodir}/grub.info %{buildroot}%{_infodir}/%{name}.info
