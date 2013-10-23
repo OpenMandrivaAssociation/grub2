@@ -12,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	28
+Release:	29
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -835,11 +835,11 @@ cat > %{buildroot}%{_filetriggers_dir}/%{name}.script << EOF
 EOF
 chmod 755 %{buildroot}%{_filetriggers_dir}/%{name}.script
 
-install -d %{buildroot}/boot/%{name}/themes/moondrake
-cp -a rosa %{buildroot}/boot/%{name}/themes/
-ln %{buildroot}/boot/%{name}/themes/rosa/* %{buildroot}/boot/%{name}/themes/moondrake
-rm %{buildroot}/boot/%{name}/themes/moondrake/background.png %{buildroot}/boot/%{name}/themes/moondrake/Logo_Rosa.png
-cp %{_datadir}/gfxboot/themes/Moondrake/install/back.jpg %{buildroot}/boot/%{name}/themes/moondrake/background.jpg
+install -d %{buildroot}/boot/%{name}/themes/Moondrake
+cp -a rosa %{buildroot}/boot/%{name}/themes/Rosa
+ln %{buildroot}/boot/%{name}/themes/Rosa/* %{buildroot}/boot/%{name}/themes/Moondrake
+rm %{buildroot}/boot/%{name}/themes/Moondrake/background.png %{buildroot}/boot/%{name}/themes/Moondrake/Logo_Rosa.png
+cp %{_datadir}/gfxboot/themes/Moondrake/install/back.jpg %{buildroot}/boot/%{name}/themes/Moondrake/background.jpg
 
 
 #mv -f %{buildroot}/%{libdir32}/grub %{buildroot}/%{libdir32}/%{name}
@@ -880,16 +880,19 @@ fi
 
 %post moondrake-theme
 if [ $1 -eq 1 ] ; then
-sed 	-e 's#\(GRUB_THEME=\).*#\1"/boot/%{name}/themes/moondrake/theme.txt"#g' \
-	-e 's#\(GRUB_BACKGROUND=\).*#\1"/boot/grub2/themes/moondrake/terminal_background.png"#g' \
+grep -q GRUB_THEME %{_sysconfdir}/default/grub && echo GRUB_THEME= >> %{_sysconfdir}/default/grub
+grep -q GRUB_BACKGROUND %{_sysconfdir}/default/grub && echo GRUB_Background= >> %{_sysconfdir}/default/grub
+
+sed 	-e 's#\(GRUB_THEME=\).*#\1"/boot/%{name}/themes/Moondrake/theme.txt"#g' \
+	-e 's#\(GRUB_BACKGROUND=\).*#\1"/boot/grub2/themes/Moondrake/terminal_background.png"#g' \
 	-i %{_sysconfdir}/default/grub
 fi
 
 %post rosa-theme
 # Don't install if updating
 if [ $1 -eq 1 ] ; then
-sed 	-e 's#\(GRUB_THEME=\).*#\1"/boot/%{name}/themes/rosa/theme.txt"#g' \
-	-e 's#\(GRUB_BACKGROUND=\).*#\1"/boot/grub2/themes/rosa/terminal_background.png"#g' \
+sed 	-e 's#\(GRUB_THEME=\).*#\1"/boot/%{name}/themes/Rosa/theme.txt"#g' \
+	-e 's#\(GRUB_BACKGROUND=\).*#\1"/boot/grub2/themes/Rosa/terminal_background.png"#g' \
 	-i %{_sysconfdir}/default/grub
 fi
 
@@ -971,10 +974,10 @@ fi
 %{_mandir}/man8/%{name}-*.8*
 
 %files moondrake-theme
-/boot/%{name}/themes/moondrake
+/boot/%{name}/themes/Moondrake
 
 %files rosa-theme
-/boot/%{name}/themes/rosa
+/boot/%{name}/themes/Rosa
 
 %changelog
 * Sat Apr  6 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 2.00-17
