@@ -4,4 +4,4 @@ GRUB_DISTRIBUTOR="TMP_DISTRO"
 GRUB_GFXMODE=1680x1050,1360x768,1280x800,1024x768,1024x600,800x600,640x480
 GRUB_DEFAULT=0
 GRUB_TIMEOUT="10"
-GRUB_CMDLINE_LINUX_DEFAULT='splash=silent logo.nologo acpi_osi=Linux acpi_backlight=vendor'
+GRUB_CMDLINE_LINUX_DEFAULT='quiet splash=silent logo.nologo acpi_osi=Linux acpi_backlight=vendor'
