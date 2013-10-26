@@ -840,8 +840,9 @@ cp -a rosa %{buildroot}/boot/%{name}/themes/Rosa
 ln %{buildroot}/boot/%{name}/themes/Rosa/* %{buildroot}/boot/%{name}/themes/Moondrake
 rm %{buildroot}/boot/%{name}/themes/Moondrake/background.png %{buildroot}/boot/%{name}/themes/Moondrake/Logo_Rosa.png
 cp %{_datadir}/gfxboot/themes/Moondrake/install/back.jpg %{buildroot}/boot/%{name}/themes/Moondrake/background.jpg
-sed -e 's#mandriva#Moondrake#g -i %{buildroot}/boot/%{name}/themes/Moondrake/theme.txt
-sed -e 's#rosa#Rosa#g -i %{buildroot}/boot/%{name}/themes/Rosa/theme.txt
+sed -e 's#mandriva#Moondrake#g' -i %{buildroot}/boot/%{name}/themes/Moondrake/theme.txt
+sed -e 's#rosa#Rosa#g' -i %{buildroot}/boot/%{name}/themes/Rosa/theme.txt
+
 
 #mv -f %{buildroot}/%{libdir32}/grub %{buildroot}/%{libdir32}/%{name}
 #mv -f %{buildroot}/%{_datadir}/grub %{buildroot}/%{_datadir}/%{name}
