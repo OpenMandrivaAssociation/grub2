@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	28
+Release:	29
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -70,7 +70,7 @@ BuildRequires:	talpo
 %endif
 Requires:	xorriso
 Provides:	bootloader
-Suggests:	os-prober
+Requires:	os-prober
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
