@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	29
+Release:	30
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -269,6 +269,10 @@ install -d %{buildroot}/boot/%{name}/themes/
 #mv -f %{buildroot}/%{libdir32}/grub %{buildroot}/%{libdir32}/%{name}
 #mv -f %{buildroot}/%{_datadir}/grub %{buildroot}/%{_datadir}/%{name}
 
+#bugfix: error message before loading of grub2 menu on boot
+mkdir -p %{buildroot}/%{_datadir}/locale/en/LC_MESSAGES
+cp %{buildroot}/%{_datadir}/locale/en@quot/LC_MESSAGES/grub.mo %{buildroot}/%{_datadir}/locale/en/LC_MESSAGES
+
 %find_lang grub
 
 #drop all zero-length file
@@ -327,8 +331,6 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
         %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
     fi
 fi
-#bugfix: error message before loading of grub2 menu on boot
-cp -f /boot/grub2/locale/en@quot.mo /boot/grub2/locale/en.mo
 
 %preun
 exec >/dev/null
