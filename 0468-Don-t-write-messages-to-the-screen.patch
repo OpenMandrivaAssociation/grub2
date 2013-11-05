@@ -110,23 +110,3 @@ diff -Naur grub-2.00/grub-core/kern/main.c grub-2.00.tpg/grub-core/kern/main.c
    /* Load pre-loaded modules and free the space.  */
    grub_register_exported_symbols ();
  #ifdef GRUB_LINKER_HAVE_INIT
-diff -Naur grub-2.00/util/grub.d/10_linux.in grub-2.00.tpg/util/grub.d/10_linux.in
---- grub-2.00/util/grub.d/10_linux.in	2013-07-19 15:16:59.000000000 +0000
-+++ grub-2.00.tpg/util/grub.d/10_linux.in	2013-07-19 15:26:26.121674384 +0000
-@@ -132,16 +132,11 @@
-     fi
-     printf '%s\n' "${prepare_boot_cache}" | sed "s/^/$submenu_indentation/"
-   fi
--  message="$(gettext_printf "Loading Linux %s ..." ${version})"
-   sed "s/^/$submenu_indentation/" << EOF
--	echo	'$message'
- 	linux  ${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args} resume=`swapon -s | grep '/dev/sd.[0-9]\{1,\}' -o | if read line; then echo "$line"; fi` init=/lib/systemd/systemd
- EOF
-   if test -n "${initrd}" ; then
--    # TRANSLATORS: ramdisk isn't identifier. Should be translated.
--    message="$(gettext_printf "Loading initial ramdisk ...")"
-     sed "s/^/$submenu_indentation/" << EOF
--	echo	'$message'
- 	initrd	${rel_dirname}/${initrd}
- EOF
-   fi
