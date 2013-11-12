@@ -12,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	29
+Release:	31.1
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -846,6 +846,10 @@ sed -e 's#rosa#Rosa#g' -i %{buildroot}/boot/%{name}/themes/Rosa/theme.txt
 
 #mv -f %{buildroot}/%{libdir32}/grub %{buildroot}/%{libdir32}/%{name}
 #mv -f %{buildroot}/%{_datadir}/grub %{buildroot}/%{_datadir}/%{name}
+
+#bugfix: error message before loading of grub2 menu on boot
+mkdir -p %{buildroot}/%{_datadir}/locale/en/LC_MESSAGES
+cp %{buildroot}/%{_datadir}/locale/en@quot/LC_MESSAGES/grub.mo %{buildroot}/%{_datadir}/locale/en/LC_MESSAGES
 
 %find_lang grub
 
