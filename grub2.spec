@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	35
+Release:	36
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -49,6 +49,7 @@ Patch15:	grub-fix-texinfo-page.patch
 Patch16:	grub2-2.00-class-via-os-prober.patch
 Patch17:	grub-2.00-autoreconf-sucks.patch
 Patch18:	0468-Don-t-write-messages-to-the-screen.patch
+Patch19:	grub-2.00-add-recovery_option.patch
 BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
