@@ -12,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	31.1
+Release:	37
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -526,6 +526,7 @@ Patch0484:	0484-Use-2-instead-of-1-for-our-right-hand-margin-so-line.patch
 # clean up after P0208
 Patch999:	grub-2.00-remove-dropped-m4-macros-from-aclocal-as-well.patch
 
+# our patches
 Patch1000:	grub2-locales.patch
 Patch1001:	grub2-00_header.patch
 Patch1002:	grub2-custom-color.patch
@@ -537,6 +538,7 @@ Patch1011:	grub-2.00-fix-dejavu-font.patch
 Patch1013:	grub2-remove-rosa-logo-from-theme.patch
 Patch1018:	grub-2.00-lua-undef-double-poision-override.patch
 Patch1019:	grub-2.00-dont-print-stuff-while-grub-is-loading.patch
+Patch1020:	grub-2.00-add-recovery_option.patch
 
 # openSuSE patches
 Patch1100:	grub2-fix-locale-en.mo.gz-not-found-error-message.patch
