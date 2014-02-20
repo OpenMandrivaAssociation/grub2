@@ -557,6 +557,7 @@ BuildRequires:	bison
 BuildRequires:	flex
 #BuildRequires:	fonts-ttf-unifont
 BuildRequires:	help2man
+BuildRequires:	rsync
 BuildRequires:	texinfo
 BuildRequires:	texlive-latex
 BuildRequires:	texlive-epsf
