@@ -24,7 +24,6 @@ Source3:	grub.melt
 Source4:	grub_guide.tar.gz
 Source5:	DroidSansMonoLicense.txt
 Source6:	DroidSansMono.ttf
-Source7:	rosa-theme.tar.gz
 Source8:	grub2-po-update.tar.gz
 Source9:	update-grub2
 Source10:	README.urpmi
@@ -535,7 +534,6 @@ Patch1005:	grub2-symlink-is-garbage.patch
 #Patch1007:	grub2-10_linux.patch
 Patch1008:	grub2-theme-not_selected_item_box.patch
 Patch1011:	grub-2.00-fix-dejavu-font.patch
-Patch1013:	grub2-remove-rosa-logo-from-theme.patch
 Patch1018:	grub-2.00-lua-undef-double-poision-override.patch
 Patch1019:	grub-2.00-dont-print-stuff-while-grub-is-loading.patch
 Patch1020:	grub-2.00-add-recovery_option.patch
@@ -558,8 +556,6 @@ BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
 #BuildRequires:	fonts-ttf-unifont
-Buildrequires:	distro-theme-Moondrake
-BuildRequires:	distro-gfxboot-theme
 BuildRequires:	help2man
 BuildRequires:	texinfo
 BuildRequires:	texlive-latex
@@ -628,24 +624,6 @@ formats, file systems, computer architectures and hardware devices.
 
 This subpackage provides tools for support of all platforms.
 
-%package	moondrake-theme
-Summary:	Provides a graphical theme with a custom Moondrake background for grub2
-Group:		System/Kernel and hardware
-Requires:	%{name}-tools = %{EVRD}
-Provides:	%{name}-theme = %{EVRD}
-
-%description	moondrake-theme
-This package provides a custom Moondrake graphical theme.
-
-%package	rosa-theme
-Summary:	Provides a graphical theme with a custom ROSA background for grub2
-Group:		System/Kernel and hardware
-Requires:	%{name}-tools = %{EVRD}
-Provides:	%{name}-theme = %{EVRD}
-
-%description	rosa-theme
-This package provides a custom ROSA graphical theme.
-
 %package	starfield-theme
 Summary:	An example theme for GRUB
 Group:		System/Kernel and hardware
@@ -656,7 +634,7 @@ Conflicts:	%{name} < 2.00-24
 Example 'starfield' theme for GRUB.
 
 %prep
-%setup -qn grub-%{version} -a7 -a12 -a14 -a15
+%setup -qn grub-%{version} -a12 -a14 -a15
 #  needs to be fixed..
 #apply_patches
 
@@ -679,7 +657,7 @@ cp %{SOURCE16} .
 sh linguas.sh
 autoupdate
 rm m4/iconv.m4
-aclocal --force -Im4 -I/usr/share/aclocal --system-acdir=/usr/share/aclocal-1.13  --install
+aclocal --force -Im4 -I/usr/share/aclocal --system-acdir=/usr/share/aclocal-1.14  --install
 ./autogen.sh
 
 tar -xf %{SOURCE8}
@@ -837,14 +815,7 @@ cat > %{buildroot}%{_filetriggers_dir}/%{name}.script << EOF
 EOF
 chmod 755 %{buildroot}%{_filetriggers_dir}/%{name}.script
 
-install -d %{buildroot}/boot/%{name}/themes/Moondrake
-cp -a rosa %{buildroot}/boot/%{name}/themes/Rosa
-ln %{buildroot}/boot/%{name}/themes/Rosa/* %{buildroot}/boot/%{name}/themes/Moondrake
-rm %{buildroot}/boot/%{name}/themes/Moondrake/background.png %{buildroot}/boot/%{name}/themes/Moondrake/Logo_Rosa.png
-cp %{_datadir}/gfxboot/themes/Moondrake/install/back.jpg %{buildroot}/boot/%{name}/themes/Moondrake/background.jpg
-sed -e 's#mandriva#Moondrake#g' -i %{buildroot}/boot/%{name}/themes/Moondrake/theme.txt
-sed -e 's#rosa#Rosa#g' -i %{buildroot}/boot/%{name}/themes/Rosa/theme.txt
-
+install -d %{buildroot}/boot/%{name}/themes
 
 #mv -f %{buildroot}/%{libdir32}/grub %{buildroot}/%{libdir32}/%{name}
 #mv -f %{buildroot}/%{_datadir}/grub %{buildroot}/%{_datadir}/%{name}
@@ -884,24 +855,6 @@ if [ $1 = 0 ]; then
     rm -f /boot/%{name}/*.lst
     rm -f /boot/%{name}/*.o
     rm -f /boot/%{name}/device.map
-fi
-
-%post moondrake-theme
-if [ $1 -eq 1 ] ; then
-grep -q GRUB_THEME %{_sysconfdir}/default/grub && echo GRUB_THEME= >> %{_sysconfdir}/default/grub
-grep -q GRUB_BACKGROUND %{_sysconfdir}/default/grub && echo GRUB_Background= >> %{_sysconfdir}/default/grub
-
-sed 	-e 's#\(GRUB_THEME=\).*#\1"/boot/%{name}/themes/Moondrake/theme.txt"#g' \
-	-e 's#\(GRUB_BACKGROUND=\).*#\1"/boot/grub2/themes/Moondrake/terminal_background.png"#g' \
-	-i %{_sysconfdir}/default/grub
-fi
-
-%post rosa-theme
-# Don't install if updating
-if [ $1 -eq 1 ] ; then
-sed 	-e 's#\(GRUB_THEME=\).*#\1"/boot/%{name}/themes/Rosa/theme.txt"#g' \
-	-e 's#\(GRUB_BACKGROUND=\).*#\1"/boot/grub2/themes/Rosa/terminal_background.png"#g' \
-	-i %{_sysconfdir}/default/grub
 fi
 
 #-----------------------------------------------------------------------
@@ -980,86 +933,3 @@ fi
 %{_infodir}/grub*.info*
 %{_mandir}/man1/%{name}-*.1*
 %{_mandir}/man8/%{name}-*.8*
-
-%files moondrake-theme
-/boot/%{name}/themes/Moondrake
-
-%files rosa-theme
-/boot/%{name}/themes/Rosa
-
-%changelog
-* Sat Apr  6 2013 pcpa <paulo.cesar.pereira.de.andrade@gmail.com> - 2.00-17
-- Do not install grub2 in post if running in a chroot.
-
-* Fri Dec 21 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 2.00-12
-- when linking against ncurses, make sure to try libncursesw also (P14)
-- use pkgconfig() deps for buildrequires
-- add missing pkgconfig(fuse) buildrequire for grub2-mount to build
-- fix merge with ROSA package
-- cleanups
-
-* Sat Sep 29 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 2.00-1
-+ Revision: 817955
-- add br on texinfo
-- don't error out on gets()... (P1, from fedora)
-- indent
-- fix path to dejavu fonts (P0)
-- filter out certain rpmlint errors
-- set grubdir properly
-- add lua support
-- enable Linux device-mapper support
-- build with bfd linker for now as using gold will break stuff
-- new version
-
-  + Paulo Andrade <pcpa@mandriva.com.br>
-    - Update grub2 theme test script to work in a current cooker system.
-
-* Tue Jan 03 2012 Paulo Andrade <pcpa@mandriva.com.br> 1.99-4
-+ Revision: 750375
-- Rework sample theme test script to work on a fresh svn checkout.
-- Add documentation and script to test grub2 themes
-- Add talpo build and melt config file for debug build (thanks to alissy)
-
-* Thu Aug 25 2011 Paulo Andrade <pcpa@mandriva.com.br> 1.99-3
-+ Revision: 696543
-- Add a very simple sample grub2 mandriva theme
-- Build and install pdf and html documentation.
-
-* Thu Jul 07 2011 Per Øyvind Karlsen <peroyvind@mandriva.org> 1.99-2
-+ Revision: 689083
-- build with xz support
-
-* Thu Jun 02 2011 Paulo Andrade <pcpa@mandriva.com.br> 1.99-1
-+ Revision: 682534
-- Cleanup to better match upstream, and update to latest upstream release
-
-* Sat Oct 23 2010 Andrey Borzenkov <arvidjaar@mandriva.org> 1.98-2mdv2011.0
-+ Revision: 587770
-- add menu entry "Chainload GRUB2" to default bootloader on first install
-  create default grub.cfg on first install
-- use filetriggers instead of standard triggers to update grub.cfg on
-  kernel add/remove. Every kernel package has unique name in Mandriva
-  and plain triggers do not support wildcards
-- source2: update /etc/defaut/grub
-  * set distributor to Mandriva
-  * use splash=silent instead of "guiet rhgb" in GRUB_CMDLINE_LINUX_DEFAULT,
-  not GRUB_CMDLINE_LINUX
-  * do not generate rescue line by default, it is not done in grub1
-
-* Mon Oct 11 2010 Andrey Borzenkov <arvidjaar@mandriva.org> 1.98-1mdv2011.0
-+ Revision: 584979
-- buildrequires help2man
-- buildrequires texinfo for makeinfo
-- package info and man pages
-
-  + Per Øyvind Karlsen <peroyvind@mandriva.org>
-    - new release: 1.98
-      * partially sync with fedora
-    - add missing buildrequires
-
-  + Thierry Vignaud <tv@mandriva.org>
-    - rebuild
-
-  + Jérôme Soyer <saispo@mandriva.org>
-    - New upstream release
-

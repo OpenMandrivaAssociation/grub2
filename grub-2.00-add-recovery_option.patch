@@ -1,20 +1,18 @@
-diff -Naur grub-2.00/util/grub-mkconfig.in grub-2.00.tpg/util/grub-mkconfig.in
---- grub-2.00/util/grub-mkconfig.in	2012-04-05 17:41:07.000000000 +0000
-+++ grub-2.00.tpg/util/grub-mkconfig.in	2014-02-08 00:33:53.883988357 +0000
-@@ -216,7 +216,8 @@
-   GRUB_INIT_TUNE \
+--- grub-2.00/util/grub-mkconfig.in.0493~	2014-02-20 01:14:43.740407733 +0100
++++ grub-2.00/util/grub-mkconfig.in	2014-02-20 01:20:54.950405353 +0100
+@@ -216,7 +216,8 @@ export GRUB_DEFAULT \
    GRUB_SAVEDEFAULT \
    GRUB_ENABLE_CRYPTODISK \
--  GRUB_BADRAM
-+  GRUB_BADRAM \
+   GRUB_BADRAM \
+-  GRUB_DISABLE_SUBMENU
++  GRUB_DISABLE_SUBMENU \
 +  GRUB_CMDLINE_LINUX_RECOVERY
  
  if test "x${grub_cfg}" != "x"; then
    rm -f "${grub_cfg}.new"
-diff -Naur grub-2.00/util/grub.d/10_linux.in grub-2.00.tpg/util/grub.d/10_linux.in
---- grub-2.00/util/grub.d/10_linux.in	2012-04-18 21:24:38.000000000 +0000
-+++ grub-2.00.tpg/util/grub.d/10_linux.in	2014-02-08 00:49:36.880402063 +0000
-@@ -86,7 +86,7 @@
+--- grub-2.00/util/grub.d/10_linux.in.0493~	2014-02-20 01:14:43.640407734 +0100
++++ grub-2.00/util/grub.d/10_linux.in	2014-02-20 01:14:43.750407733 +0100
+@@ -86,7 +86,7 @@ linux_entry ()
    if [ x$type != xsimple ] ; then
        case $type in
  	  recovery)
@@ -23,7 +21,7 @@ diff -Naur grub-2.00/util/grub.d/10_linux.in grub-2.00.tpg/util/grub.d/10_linux.
  	  *)
  	      title="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")" ;;
        esac
-@@ -243,7 +243,7 @@
+@@ -259,7 +259,7 @@ while [ "x$list" != "x" ] ; do
                "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
    if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
      linux_entry "${OS}" "${version}" recovery \
