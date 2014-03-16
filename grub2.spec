@@ -658,7 +658,7 @@ cp %{SOURCE16} .
 sh linguas.sh
 autoupdate
 rm m4/iconv.m4
-aclocal --force -Im4 -I/usr/share/aclocal --system-acdir=/usr/share/aclocal-1.14  --install
+aclocal --force -Im4 -I/usr/share/aclocal --system-acdir=/usr/share/aclocal-*  --install
 ./autogen.sh
 
 tar -xf %{SOURCE8}
