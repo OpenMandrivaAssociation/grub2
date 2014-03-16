@@ -6,13 +6,13 @@
 %global efi %{ix86} x86_64
 %global optflags %{optflags} -Os
 
-%bcond_with talpo
-%bcond_without uclibc
+%bcond_with	talpo
+%bcond_with	uclibc
 
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	37
+Release:	38
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
