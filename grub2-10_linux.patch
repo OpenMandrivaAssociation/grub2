@@ -5,13 +5,13 @@
    if [ -d /sys/firmware/efi ]; then
      sed "s/^/$submenu_indentation/" << EOF
 -	linuxefi ${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args}
-+	linuxefi ${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args} resume=`swapon -s | grep '/dev/sd.[0-9]\{1,\}' -o | if read line; then echo "$line"; fi` init=/lib/systemd/systemd
++	linuxefi ${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args} resume=`swapon -s | grep '/dev/sd.[0-9]\{1,\}' -o | if read line; then echo "$line"; fi`
 +
  EOF
    else
      sed "s/^/$submenu_indentation/" << EOF
 -	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args}
-+	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args} resume=`swapon -s | grep '/dev/sd.[0-9]\{1,\}' -o | if read line; then echo "$line"; fi` init=/lib/systemd/systemd
++	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args} resume=`swapon -s | grep '/dev/sd.[0-9]\{1,\}' -o | if read line; then echo "$line"; fi`
 +
  EOF
    fi
