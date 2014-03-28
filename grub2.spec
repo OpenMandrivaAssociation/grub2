@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	38
+Release:	39
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -330,6 +330,12 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
     # Generate grub.cfg and add GRUB2 chainloader to menu on initial install
     if [ $1 = 1 ]; then
         %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+    fi
+# (tpg) remove wrong line in boot options
+    if [ -e /etc/default/grub ]; then
+	if grep -q "init=/lib/systemd/systemd" /etc/default/grub; then
+	    sed -i -e 's#init=/lib/systemd/systemd##g' /etc/default/grub
+	fi
     fi
 fi
 
