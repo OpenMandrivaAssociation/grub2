@@ -1,24 +1,5 @@
-From 340fd0c8717c2bf33163a18bfec72243b0e51862 Mon Sep 17 00:00:00 2001
-From: Michael Chang <mchang@suse.com>
-Date: Thu, 30 Aug 2012 15:43:17 +0800
-Subject: [PATCH] Pass corret root= for nfsroot
-
-References: bnc#774548
-Patch-Mainline: no
-
-Fix / is mounted on nfs. The fix is to pass kernel parameters
-with correct root= for nfs. However since grub2 doesn't support
-nfs file system module, the /boot on nfs is not possible and
-grub2-probe not work in probing nfs mounted path. The fix is merely
-on the script level and not use grub2-probe for above reasons.
----
- util/grub-mkconfig.in |   37 ++++++++++++++++++++++++++++++-------
- 1 files changed, 30 insertions(+), 7 deletions(-)
-
-diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
-index ca62e9f..d789fcc 100644
---- a/util/grub-mkconfig.in
-+++ b/util/grub-mkconfig.in
+--- grub-2.02~beta2/util/grub-mkconfig.in.1112~	2014-04-08 15:17:01.783892795 +0200
++++ grub-2.02~beta2/util/grub-mkconfig.in	2014-04-08 15:19:14.690681077 +0200
 @@ -128,18 +128,41 @@ else
      exit 1
  fi
@@ -65,9 +46,6 @@ index ca62e9f..d789fcc 100644
 -# choosing Hurd filesystem module.
 -GRUB_FS="`${grub_probe} --device ${GRUB_DEVICE} --target=fs 2> /dev/null || echo unknown`"
 -
- if test -f ${sysconfdir}/default/grub ; then
-   . ${sysconfdir}/default/grub
+ if [ x"$GRUB_FS" = xunknown ]; then
+     GRUB_FS="$(stat -f --printf=%T / || echo unknown)"
  fi
--- 
-1.7.3.4
-

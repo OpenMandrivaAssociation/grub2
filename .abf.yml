@@ -1,10 +1,8 @@
 ---
 sources:
-  DroidSansMono.ttf: 4d3d8054231ec4e9bfc14a46ad4d60c575fbfeec
-  grub-2.00.tar.xz: 274d91e96b56a5b9dd0a07accff69dbb6dfb596b
   grub2-po-update.tar.gz: a070d4b6548821ebcf3e3354b268096fd9811fa9
   grub_guide.tar.gz: f300e9f0c86512bb90f5e82fa65636fcb5d644a7
-  mandriva-background.jpg: f773e67016442a97c4e77e953ea62cf26f8395dc
-  grub-lua-rev28.tar.xz: b5ec2bda79d1d30fe86724ab56c8551f928eb8c9
   ntldr-img-rev21.tar.xz: 40fc3b04476351cc548a1fdde0286805e59d2953
   gpxe-rev15.tar.xz: 5c7be8e4e82b9489feb4ca748eb66a4b2d9e74e6
+  grub-lua-rev30.tar.xz: b84af78af1d2736dc43c477afa814b20f40fddf0
+  grub-2.02~beta2.tar.xz: 1bf580f1e8bce4909a7ac7ca485cee02b00ed383

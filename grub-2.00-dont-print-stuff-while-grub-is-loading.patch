@@ -25,14 +25,3 @@
  
  geometry_error_string:	.asciz "Geom"
  read_error_string:	.asciz "Read"
---- grub-2.00/grub-core/kern/main.c.noprint~	2013-09-29 00:02:43.756496235 +0200
-+++ grub-2.00/grub-core/kern/main.c	2013-09-28 23:57:42.176588370 +0200
-@@ -270,7 +270,7 @@ grub_main (void)
- 
-   /* Hello.  */
-   grub_setcolorstate (GRUB_TERM_COLOR_HIGHLIGHT);
--  grub_printf ("Welcome to GRUB!\n\n");
-+  grub_printf ("");
-   grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
- 
-   grub_load_config ();
