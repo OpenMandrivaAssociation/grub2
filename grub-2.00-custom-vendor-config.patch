@@ -1,0 +1,12 @@
+--- grub-2.00/util/grub-mkconfig.in.vendor~	2014-04-08 07:16:51.949318709 +0200
++++ grub-2.00/util/grub-mkconfig.in	2014-04-08 07:16:55.290161070 +0200
+@@ -142,6 +142,9 @@ GRUB_FS="`${grub_probe} --device ${GRUB_
+ if test -f ${sysconfdir}/default/grub ; then
+   . ${sysconfdir}/default/grub
+ fi
++if test -f ${sysconfdir}/default/grub.vendor ; then
++  . ${sysconfdir}/default/grub.vendor
++fi
+ 
+ # XXX: should this be deprecated at some point?
+ if [ "x${GRUB_TERMINAL}" != "x" ] ; then

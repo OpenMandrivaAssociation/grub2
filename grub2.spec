@@ -12,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.00
-Release:	38
+Release:	39
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -537,6 +537,7 @@ Patch1011:	grub-2.00-fix-dejavu-font.patch
 Patch1018:	grub-2.00-lua-undef-double-poision-override.patch
 Patch1019:	grub-2.00-dont-print-stuff-while-grub-is-loading.patch
 Patch1020:	grub-2.00-add-recovery_option.patch
+Patch1021:      grub-2.00-custom-vendor-config.patch
 
 # openSuSE patches
 Patch1100:	grub2-fix-locale-en.mo.gz-not-found-error-message.patch
