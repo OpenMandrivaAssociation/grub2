@@ -549,7 +549,7 @@ fi
 %attr(0700,root,root) %dir %{_sysconfdir}/grub.d
 %config %{_sysconfdir}/grub.d/??_*
 %{_sysconfdir}/grub.d/README
-%attr(0644,root,root) %ghost %config(noreplace) %{_sysconfdir}/default/grub
+%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/default/grub
 %dir /boot/%{name}
 %dir /boot/%{name}/themes/
 #%dir /boot/%{name}/themes/system
