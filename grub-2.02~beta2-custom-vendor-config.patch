@@ -4,7 +4,7 @@
  if test -f ${sysconfdir}/default/grub ; then
    . ${sysconfdir}/default/grub
  fi
-+if [ "x${GRUB_DISABLE_VENDOR_CONF}" = "x" ] || [ "x${GRUB_DISABLE_VENDOR_CONF}" = "xn" ]; then
++if [ "x${GRUB_DISABLE_VENDOR_CONF}" = "x" ] || [ "x${GRUB_DISABLE_VENDOR_CONF}" = "xfalse" ]; then
 +  if test -e ${sysconfdir}/default/grub.vendor ; then
 +    . ${sysconfdir}/default/grub.vendor
 +  fi

@@ -5,4 +5,4 @@ GRUB_DEFAULT=0
 GRUB_TIMEOUT="10"
 GRUB_CMDLINE_LINUX_DEFAULT="quiet splash=silent logo.nologo acpi_osi=Linux acpi_backlight=vendor"
 GRUB_CMDLINE_LINUX_RECOVERY=" failsafe nomodeset xdriver=vesa vga=788 systemd.log_level=debug systemd.log_target=kmsg log_buf_len=1M"
-GRUB_DISABLE_VENDOR_CONF=n
+GRUB_DISABLE_VENDOR_CONF=false
