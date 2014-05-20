@@ -172,6 +172,7 @@ Patch1117:	grub-2.00-autoreconf-sucks.patch
 BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
+BuildRequires:	fontpackages-devel
 BuildRequires:	unifont
 BuildRequires:	help2man
 BuildRequires:	rsync
@@ -195,6 +196,7 @@ BuildRequires:	talpo
 %if %{with uclibc}
 BuildRequires:	uClibc-devel
 %endif
+BuildRequires:	unifont-fonts
 Requires:	xorriso
 Requires(post):	os-prober
 Requires:	%{name}-tools = %{EVRD}
