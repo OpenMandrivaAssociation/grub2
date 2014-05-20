@@ -1,14 +1,8 @@
 GRUB_GFXPAYLOAD_LINUX=keep
-<<<<<<< HEAD
-GRUB_DISABLE_RECOVERY=true
-GRUB_DISTRIBUTOR="Moondrake"
-GRUB_GFXMODE=auto
-=======
 GRUB_DISABLE_RECOVERY=false
-GRUB_DISTRIBUTOR="TMP_DISTRO"
-GRUB_GFXMODE=1680x1050,1360x768,1280x800,1024x768,1024x600,800x600,640x480
->>>>>>> e66bc81e16d65230f02778aeec075b254efe12b4
+GRUB_GFXMODE=auto
 GRUB_DEFAULT=0
 GRUB_TIMEOUT="10"
 GRUB_CMDLINE_LINUX_DEFAULT="quiet splash=silent logo.nologo acpi_osi=Linux acpi_backlight=vendor"
 GRUB_CMDLINE_LINUX_RECOVERY=" failsafe nomodeset xdriver=vesa vga=788 systemd.log_level=debug systemd.log_target=kmsg log_buf_len=1M"
+GRUB_DISABLE_VENDOR_CONF=false

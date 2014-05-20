@@ -156,7 +156,7 @@ Patch1005:	grub2-symlink-is-garbage.patch
 Patch1011:	grub-2.02~beta2-fix-dejavu-font.patch
 Patch1019:	grub-2.00-dont-print-stuff-while-grub-is-loading.patch
 Patch1020:	grub-2.02~beta2-add-recovery_option.patch
-Patch1021:      grub-2.00-custom-vendor-config.patch
+Patch1021:      grub-2.02~beta2-custom-vendor-config.patch
 
 # openSuSE patches
 Patch1101:	grub2-fix-error-terminal-gfxterm-isn-t-found.patch
@@ -417,8 +417,6 @@ do
 done
 # Defaults
 install -m755 %{SOURCE2} -D %{buildroot}%{_sysconfdir}/default/grub
-# (tpg) use default distro name
-sed -i -e 's#TMP_DISTRO#%{distribution}#' %{buildroot}%{_sysconfdir}/default/grub
 
 #Add more useful update-grub2 script
 install -m755 %{SOURCE9} -D %{buildroot}%{_sbindir}
@@ -553,7 +551,7 @@ fi
 %attr(0700,root,root) %dir %{_sysconfdir}/grub.d
 %config %{_sysconfdir}/grub.d/??_*
 %{_sysconfdir}/grub.d/README
-%attr(0644,root,root) %ghost %config(noreplace) %{_sysconfdir}/default/grub
+%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/default/grub
 %dir /boot/%{name}
 %dir /boot/%{name}/themes/
 #%dir /boot/%{name}/themes/system
