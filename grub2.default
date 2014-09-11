@@ -15,3 +15,5 @@ GRUB_CMDLINE_LINUX_DEFAULT='quiet splash logo.nologo'
 GRUB_THEME=""
 # Patch to wallpapper
 GRUB_BACKGROUND=""
+GRUB_DEFAULT=saved
+GRUB_SAVEDEFAULT=true
