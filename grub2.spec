@@ -59,7 +59,7 @@ BuildRequires:	texinfo
 BuildRequires:	texlive-latex
 BuildRequires:	texlive-epsf
 BuildRequires:	glibc-static-devel
-BuildRequires:	liblzo-devel
+BuildRequires:	lzo-devel
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	pkgconfig(fuse)
 BuildRequires:	pkgconfig(freetype2)
