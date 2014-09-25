@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.1
+Release:	1.beta2.2
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -464,9 +464,16 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
     fi
 # (tpg) remove wrong line in boot options
     if [ -e /etc/default/grub ]; then
-	if grep -q "init=/lib/systemd/systemd" /etc/default/grub; then
-	    sed -i -e 's#init=/lib/systemd/systemd##g' /etc/default/grub
-	fi
+		if grep -q "init=/lib/systemd/systemd" /etc/default/grub; then
+	    	sed -i -e 's#init=/lib/systemd/systemd##g' /etc/default/grub
+            update-grub2
+		fi
+    	
+        if grep -q "acpi_backlight=vendor" /etc/default/grub; then
+        	sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' /etc/default/grub
+            update-grub2
+        fi
+
     fi
 fi
 
