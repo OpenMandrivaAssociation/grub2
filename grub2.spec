@@ -1,6 +1,7 @@
 %define libdir32 %{_exec_prefix}/lib
 %define platform pc
 %define efi 1
+%define debug_package %{nil}
 
 %global efi %{ix86} x86_64
 %global optflags %{optflags} -Os
@@ -286,6 +287,8 @@ xz -v --text ChangeLog
 
 #-----------------------------------------------------------------------
 %build
+export CXX=g++
+export CC=gcc
 export GRUB_CONTRIB="$PWD/grub-extras"
 export CONFIGURE_TOP="$PWD"
 
