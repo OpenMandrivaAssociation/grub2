@@ -12,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.3
+Release:	1.beta2.4
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -287,8 +287,8 @@ xz -v --text ChangeLog
 
 #-----------------------------------------------------------------------
 %build
-export CXX=g++
-export CC=gcc
+export CXX="g++ -fuse-ld=bfd"
+export CC="gcc -fuse-ld=bfd"
 export GRUB_CONTRIB="$PWD/grub-extras"
 export CONFIGURE_TOP="$PWD"
 
