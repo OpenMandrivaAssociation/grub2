@@ -328,7 +328,7 @@ pushd efi
 %else
 %define grubefiarch %{_arch}-efi
 %endif
-./grub-mkimage -O %{grubefiarch} -p /EFI/rosa/%{name}-efi -o grub.efi -d grub-core part_gpt hfsplus fat \
+./grub-mkimage -O %{grubefiarch} -p /EFI/omdv/%{name}-efi -o grub.efi -d grub-core part_gpt hfsplus fat \
         ext2 btrfs normal chain boot configfile linux appleldr minicmd \
         loadbios reboot halt search font gfxterm echo video efi_gop efi_uga
 popd
@@ -369,10 +369,10 @@ cd pc
 %ifarch %{efi}
 %makeinstall_std -C efi
 
-install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/rosa/%{name}-efi/grub.efi
+install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/omdv/%{name}-efi/grub.efi
 # Ghost config file
-touch %{buildroot}/boot/efi/EFI/rosa/%{name}-efi/grub.cfg
-ln -s ../boot/efi/EFI/rosa/%{name}-efi/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
+touch %{buildroot}/boot/efi/EFI/omdv/%{name}-efi/grub.cfg
+ln -s ../boot/efi/EFI/omdv/%{name}-efi/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
 
 # Install ELF files modules and images were created from into
 # the shadow root, where debuginfo generator will grab them from
@@ -508,9 +508,9 @@ fi
 
 %ifarch %{efi}
 %files efi
-%attr(0755,root,root) %dir /boot/efi/EFI/rosa/grub2-efi
-%attr(0755,root,root) /boot/efi/EFI/rosa/grub2-efi/grub.efi
-%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/rosa/grub2-efi/grub.cfg
+%attr(0755,root,root) %dir /boot/efi/EFI/omdv/grub2-efi
+%attr(0755,root,root) /boot/efi/EFI/omdv/grub2-efi/grub.efi
+%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/omdv/grub2-efi/grub.cfg
 %{libdir32}/grub/%{_arch}-efi/
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 
