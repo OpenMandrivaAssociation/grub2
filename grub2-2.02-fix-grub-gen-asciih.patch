@@ -1,0 +1,10 @@
+--- grub-2.00/util/grub-gen-asciih.c	2014-10-13 17:34:17.286646044 +0100
++++ ./test/grub-gen-asciih.c	2014-10-13 17:33:40.266381708 +0100
+@@ -133,6 +133,7 @@
+   fprintf (file, "/* THIS CHUNK OF BYTES IS AUTOMATICALLY GENERATED */\n");
+   fprintf (file, "unsigned char ascii_bitmaps[] =\n");
+   fprintf (file, "{\n");
++  fprintf (file, "};\n");
+ 
+   for (char_code = 0; char_code <= 0x7f; char_code++)
+     {

@@ -1,0 +1,18 @@
+--- grub-2.02/grub-core/osdep/unix/platform.c~	2014-09-25 20:59:26.000000000 +0100
++++ grub-2.02/grub-core/osdep/unix/platform.c	2014-11-14 17:52:53.607395517 +0000
+@@ -146,10 +146,13 @@
+       grub_util_error (_("%s: not found"), "efibootmgr");
+     }
+ 
+-  /* On Linux, we need the efivars kernel modules.  */
++  /* Openmandriva uses the latest kernel interface so the efi
++   * module is not required */
++  /* On Linux, we need the efivars kernel modules.  
+ #ifdef __linux__
+   grub_util_exec ((const char * []){ "modprobe", "-q", "efivars", NULL });
+-#endif
++#endif */
++
+   /* Delete old entries from the same distributor.  */
+   grub_install_remove_efi_entries_by_distributor (efi_distributor);
+ 
