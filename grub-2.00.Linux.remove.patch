@@ -12,6 +12,6 @@ diff -Nur grub-2.00.old/util/grub.d/10_linux.in grub-2.00/util/grub.d/10_linux.i
  else
 -  OS="${GRUB_DISTRIBUTOR} Linux"
 +  OS="${GRUB_DISTRIBUTOR}"
-   CLASS="--class $(echo ${GRUB_DISTRIBUTOR} | tr 'A-Z' 'a-z' | cut -d' ' -f1) ${CLASS}"
+   CLASS="--class $(echo ${GRUB_DISTRIBUTOR} | tr 'A-Z' 'a-z' | cut -d' ' -f1|LC_ALL=C sed 's,[^[:alnum:]_],_,g') ${CLASS}"
  fi
  

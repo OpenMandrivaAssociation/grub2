@@ -2,8 +2,8 @@ diff -Naur grub-2.00/grub-core/gfxmenu/gui_label.c grub-new/grub-core/gfxmenu/gu
 --- grub-2.00/grub-core/gfxmenu/gui_label.c	2012-03-03 16:00:50.000000000 +0400
 +++ grub-new/grub-core/gfxmenu/gui_label.c	2012-11-27 19:34:28.551058755 +0400
 @@ -24,6 +24,11 @@
- #include <grub/gui_string_util.h>
  #include <grub/i18n.h>
+ #include <grub/color.h>
  
 +#define LABEL_ENTER "Boot entry     "
 +#define LABEL_E     "Edit entry     "

@@ -98,15 +98,15 @@ diff -Naur grub-2.00/grub-core/gettext/gettext.c grub-2.00.tpg/grub-core/gettext
 diff -Naur grub-2.00/grub-core/kern/main.c grub-2.00.tpg/grub-core/kern/main.c
 --- grub-2.00/grub-core/kern/main.c	2012-06-25 20:33:41.000000000 +0000
 +++ grub-2.00.tpg/grub-core/kern/main.c	2013-07-19 15:22:44.510629986 +0000
-@@ -210,11 +210,6 @@
-   /* First of all, initialize the machine.  */
-   grub_machine_init ();
+@@ -269,11 +269,6 @@
+
+   grub_boot_time ("After machine init.");
  
 -  /* Hello.  */
 -  grub_setcolorstate (GRUB_TERM_COLOR_HIGHLIGHT);
 -  grub_printf ("Welcome to GRUB!\n\n");
 -  grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
 -
-   /* Load pre-loaded modules and free the space.  */
-   grub_register_exported_symbols ();
- #ifdef GRUB_LINKER_HAVE_INIT
+   grub_load_config ();
+
+   grub_boot_time ("Before loading embedded modules.");

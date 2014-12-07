@@ -10,12 +10,13 @@
 
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
-Version:	2.00
-Release:	40
+Version:	2.02
+Release:	1.beta2.4
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
-Source0:	http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
+#Source0:	http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
+Source0:	grub-%{version}-2014-10-8.tar.xz
 Source1:	90_persistent
 Source2:	grub.default
 Source3:	grub.melt
@@ -27,38 +28,45 @@ Source8:	grub2-po-update.tar.gz
 Source9:	update-grub2
 Source10:	README.urpmi
 Source11:	grub2.rpmlintrc
-Source12:	grub-lua-rev24.tar.xz
+Source12:	grub-lua-rev30.tar.xz
 # documentation and simple test script for testing grub2 themes
 Source13:	mandriva-grub2-theme-test.sh
+Source14:	linguas.sh
 
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
 Patch2:		grub2-custom-color.patch
-Patch3:		grub2-move-terminal.patch
-Patch4:		grub2-read-cfg.patch
-Patch5:		grub2-symlink-is-garbage.patch
-Patch6:		grub2-name-corrections.patch
-Patch7:		grub2-10_linux.patch
-Patch8:		grub2-theme-not_selected_item_box.patch
-Patch9:		grub-2.00.Linux.remove.patch
-Patch10:	grub2-mkfont-fix.patch
-Patch11:	grub-2.00-fix-dejavu-font.patch
-Patch12:	grub-2.00-ignore-gnulib-gets-stupidity.patch
-Patch14:	grub-2.00-try-link-against-libncursesw-also.patch
-Patch15:	grub-fix-texinfo-page.patch
-Patch16:	grub2-2.00-class-via-os-prober.patch
-Patch17:	grub-2.00-autoreconf-sucks.patch
-Patch18:	0468-Don-t-write-messages-to-the-screen.patch
-Patch19:	grub-2.00-add-recovery_option.patch
+Patch3:		grub2-read-cfg.patch
+Patch4:		grub2-symlink-is-garbage.patch
+Patch5:		grub2-name-corrections.patch
+Patch6:		grub2-10_linux.patch
+Patch7:		grub-2.00.Linux.remove.patch
+Patch8:		grub-2.00-fix-dejavu-font.patch
+Patch9:		grub2-2.00-class-via-os-prober.patch
+Patch10:	grub-2.00-autoreconf-sucks.patch
+Patch11:	0468-Don-t-write-messages-to-the-screen.patch
+Patch12:	grub-2.00-add-recovery_option.patch
+Patch13:	grub2-2.02~beta2-class-via-os-prober.patch
+Patch14:	30_os-prober_UEFI_support.patch
+Patch15:	0085-Add-support-for-UEFI-operating-systems-returned-by-o.patch
+Patch16:	grub-2.02-remove-efivar-kernel-module-requirement.patch
+#Patch17:	fedora-linuxefi.patch
+		
 BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
-#BuildRequires:	fonts-ttf-unifont
+BuildRequires:	fontpackages-devel
+BuildRequires:	unifont
+BuildRequires:	fonts-ttf-tamil
+BuildRequires:	unifont-fonts
 BuildRequires:	help2man
+BuildRequires:	rsync
 BuildRequires:	texinfo
 BuildRequires:	texlive-latex
 BuildRequires:	texlive-epsf
+BuildRequires:	texlive-kpathsea.bin
 BuildRequires:	glibc-static-devel
+BuildRequires:	gettext-devel
 BuildRequires:	lzo-devel
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	pkgconfig(fuse)
@@ -66,12 +74,14 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(liblzma)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(ncursesw)
+
 %if %{with talpo}
 BuildRequires:	talpo
 %endif
 Requires:	xorriso
 Provides:	bootloader
 Requires:	os-prober
+Requires:	distro-theme-common
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
@@ -116,6 +126,8 @@ mkdir grub-extras
 mv lua grub-extras
 export GRUB_CONTRIB=./grub-extras
 sed -i -e 's,-I m4,-I m4 --dont-fix,g' autogen.sh
+cp %{SOURCE14} .
+sh linguas.sh
 ./autogen.sh
 
 tar -xf %{SOURCE8}
@@ -148,19 +160,31 @@ pushd efi
 	--libexecdir=%{libdir32} \
 	--with-grubdir=grub2 \
 	--disable-werror \
-	--enable-device-mapper \
-	--enable-grub-mkfont
-
-%make all
+	--enable-grub-mkfont \
+	--enable-device-mapper
+	
+#Slow make as slow as possible to try and avoid apparent race condition. Works Locally
+make  all
 
 %ifarch %{ix86}
 %define grubefiarch i386-efi
 %else
 %define grubefiarch %{_arch}-efi
 %endif
-./grub-mkimage -O %{grubefiarch} -p /EFI/rosa/%{name}-efi -o grub.efi -d grub-core part_gpt hfsplus fat \
-        ext2 btrfs normal chain boot configfile linux appleldr minicmd \
-        loadbios reboot halt search font gfxterm echo video efi_gop efi_uga
+
+
+
+#This line loads all the modules but makes the efi image unstable.
+#./grub-mkimage -O %{grubefiarch} -p /EFI/openmandriva/%{name}-efi -o grub.efi -d grub-core `ls grub-core/*.mod | sed 's/.*\///g' | sed 's/\.mod//g' | xargs
+#` In practice the grub.efi image is only required for the iso. when grub is installed it selects the modules it needs to boot the current install from the installed
+#  OS.
+
+#These lines produce a grub.efi suitable for an iso. Note the path in the -p option it points to the grub.cfg file on the iso.
+./grub-mkimage -O %{grubefiarch} -p /EFI/BOOT -o grub.efi -d /usr/lib/grub/x86_64-efi linux multiboot multiboot2 all_video boot \
+		btrfs cat chain configfile echo efifwsetup efinet ext2 fat font gfxmenu gfxterm gfxterm_menu gfxterm_background \
+		gzio halt hfsplus iso9660 jpeg lvm mdraid09 mdraid1x minicmd normal part_apple part_msdos part_gpt password_pbkdf2 \
+		png reboot search search_fs_uuid search_fs_file search_label sleep test tftp video xfs mdraid09 mdraid1x lua loopback \
+		squash4 syslinuxcfg
 popd
 %endif
 
@@ -184,7 +208,8 @@ cd pc
 	--with-grubdir=grub2 \
 	--disable-werror \
 	--enable-device-mapper \
-	--enable-grub-mkfont
+	--enable-grub-mkfont \
+	--enable-device-mapper
 
 %make all
 
@@ -196,10 +221,10 @@ cd pc
 %makeinstall_std -C efi
 mv %{buildroot}%{_sysconfdir}/bash_completion.d/grub %{buildroot}%{_sysconfdir}/bash_completion.d/grub-efi
 
-install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/rosa/%{name}-efi/grub.efi
+install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/openmandriva/grub.efi
 # Ghost config file
-touch %{buildroot}/boot/efi/EFI/rosa/%{name}-efi/grub.cfg
-ln -s ../boot/efi/EFI/rosa/%{name}-efi/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
+touch %{buildroot}/boot/efi/EFI/openmandriva/grub.cfg
+ln -s ../boot/efi/EFI/openmandriva/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
 
 # Install ELF files modules and images were created from into
 # the shadow root, where debuginfo generator will grab them from
@@ -378,16 +403,20 @@ fi
 %{_bindir}/%{name}-mkstandalone
 %{_bindir}/%{name}-mount
 %{_bindir}/%{name}-script-check
+%{_bindir}/%{name}-file
+%{_bindir}/%{name}-glue-efi
+%{_bindir}/%{name}-mknetdir
+%{_bindir}/%{name}-render-label
+%{_bindir}/%{name}-syslinux2cfg
+%{_sbindir}/%{name}-macbless
 %{_sbindir}/%{name}-bios-setup
 %{_sbindir}/%{name}-install
 %{_sbindir}/%{name}-mkconfig
-%{_sbindir}/%{name}-mknetdir
 %{_sbindir}/%{name}-ofpathname
 %{_sbindir}/%{name}-probe
 %{_sbindir}/%{name}-reboot
 %{_sbindir}/%{name}-set-default
 %{_sbindir}/%{name}-sparc64-setup
-#%{_datadir}/%{name}
 %{_datadir}/grub
 %attr(0700,root,root) %dir %{_sysconfdir}/grub.d
 %{_sysconfdir}/grub.d/README
@@ -410,9 +439,9 @@ fi
 
 %ifarch %{efi}
 %files efi
-%attr(0755,root,root) %dir /boot/efi/EFI/rosa/grub2-efi
-%attr(0755,root,root) /boot/efi/EFI/rosa/grub2-efi/grub.efi
-%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/rosa/grub2-efi/grub.cfg
+%attr(0755,root,root) %dir /boot/efi/EFI/openmandriva
+%attr(0755,root,root) /boot/efi/EFI/openmandriva/grub.efi
+%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/openmandriva/grub.cfg
 %{_sysconfdir}/bash_completion.d/grub-efi
 %{libdir32}/grub/%{_arch}-efi/
 %{_sbindir}/%{name}-efi*
