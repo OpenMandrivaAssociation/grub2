@@ -1,7 +1,8 @@
 %define libdir32 %{_exec_prefix}/lib
 %define platform pc
 %define efi 1
-#%define		unifont		%(echo %{_datadir}/fonts/TTF/unifont/unifont-*.ttf)
+%define debug_package %{nil}
+
 
 %global efi %{ix86} x86_64
 %global optflags %{optflags} -Os
@@ -11,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.4
+Release:	1.beta2.5
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -50,7 +51,7 @@ Patch13:	grub2-2.02~beta2-class-via-os-prober.patch
 Patch14:	30_os-prober_UEFI_support.patch
 Patch15:	0085-Add-support-for-UEFI-operating-systems-returned-by-o.patch
 Patch16:	grub-2.02-remove-efivar-kernel-module-requirement.patch
-#Patch17:	fedora-linuxefi.patch
+
 		
 BuildRequires:	autogen
 BuildRequires:	bison
@@ -135,6 +136,8 @@ pushd po-update; sh ./update.sh; popd
 
 #-----------------------------------------------------------------------
 %build
+export CXX="g++ -fuse-ld=bfd"
+export CC="gcc -fuse-ld=bfd"
 export GRUB_CONTRIB="$PWD/grub-extras"
 export CONFIGURE_TOP="$PWD"
 
