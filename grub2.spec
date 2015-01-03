@@ -12,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.8
+Release:	1.beta2.9
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -52,7 +52,7 @@ Patch14:	30_os-prober_UEFI_support.patch
 Patch15:	0085-Add-support-for-UEFI-operating-systems-returned-by-o.patch
 Patch16:	grub-2.02-remove-efivar-kernel-module-requirement.patch
 
-		
+
 BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
@@ -168,7 +168,7 @@ pushd efi
 	--disable-werror \
 	--enable-grub-mkfont \
 	--enable-device-mapper
-	
+
 #Slow make as slow as possible to try and avoid apparent race condition. Works Locally
 make  all
 
@@ -368,11 +368,15 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
 	    	sed -i -e 's#init=/lib/systemd/systemd##g' /etc/default/grub
             update-grub2
 		fi
-    	
+
         if grep -q "acpi_backlight=vendor" /etc/default/grub; then
         	sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' /etc/default/grub
             update-grub2
         fi
+# (tpg) disable audit messages
+        if ! grep -q "audit=0" /etc/default/grub; then
+    	    sed -i -e 's#quiet#quiet audit=0 #' /etc/default/grub
+    	fi
 
     fi
 fi
