@@ -145,6 +145,7 @@ export GRUB_CONTRIB="$PWD/grub-extras"
 export CONFIGURE_TOP="$PWD"
 
 #(proyvind): debugedit will fail on some binaries if linked using gold
+# https://sourceware.org/bugzilla/show_bug.cgi?id=14187
 mkdir -p bfd
 ln -sf %{_bindir}/ld.bfd bfd/ld
 export PATH=$PWD/bfd:$PATH
