@@ -186,7 +186,7 @@ make  all
 #  OS.
 
 #These lines produce a grub.efi suitable for an iso. Note the path in the -p option it points to the grub.cfg file on the iso.
-./grub-mkimage -O %{grubefiarch} -p /EFI/BOOT -o grub.efi -d grub-core linux multiboot multiboot2 all_video boot \
+./grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d grub-core linux multiboot multiboot2 all_video boot \
 		btrfs cat chain configfile echo efifwsetup efinet ext2 fat font gfxmenu gfxterm gfxterm_menu gfxterm_background \
 		gzio halt hfsplus iso9660 jpeg lvm mdraid09 mdraid1x minicmd normal part_apple part_msdos part_gpt password_pbkdf2 \
 		png reboot search search_fs_uuid search_fs_file search_label sleep test tftp video xfs mdraid09 mdraid1x lua loopback \
