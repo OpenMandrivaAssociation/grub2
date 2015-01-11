@@ -12,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.9
+Release:	1.beta2.10
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -145,6 +145,7 @@ export GRUB_CONTRIB="$PWD/grub-extras"
 export CONFIGURE_TOP="$PWD"
 
 #(proyvind): debugedit will fail on some binaries if linked using gold
+# https://sourceware.org/bugzilla/show_bug.cgi?id=14187
 mkdir -p bfd
 ln -sf %{_bindir}/ld.bfd bfd/ld
 export PATH=$PWD/bfd:$PATH
@@ -186,7 +187,7 @@ make  all
 #  OS.
 
 #These lines produce a grub.efi suitable for an iso. Note the path in the -p option it points to the grub.cfg file on the iso.
-./grub-mkimage -O %{grubefiarch} -p /EFI/BOOT -o grub.efi -d grub-core linux multiboot multiboot2 all_video boot \
+./grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d grub-core linux multiboot multiboot2 all_video boot \
 		btrfs cat chain configfile echo efifwsetup efinet ext2 fat font gfxmenu gfxterm gfxterm_menu gfxterm_background \
 		gzio halt hfsplus iso9660 jpeg lvm mdraid09 mdraid1x minicmd normal part_apple part_msdos part_gpt password_pbkdf2 \
 		png reboot search search_fs_uuid search_fs_file search_label sleep test tftp video xfs mdraid09 mdraid1x lua loopback \
