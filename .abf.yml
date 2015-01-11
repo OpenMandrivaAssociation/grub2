@@ -1,6 +1,8 @@
+removed_sources:
+  grub-2.02-2014-10-8.tar.xz: 58e826d9071f3f744a5baf2c09992d78c4cfb1f4
 sources:
   DroidSansMono.ttf: 4d3d8054231ec4e9bfc14a46ad4d60c575fbfeec
-  grub-2.02-2014-10-8.tar.xz: 58e826d9071f3f744a5baf2c09992d78c4cfb1f4
+  grub-2.02-2014-10-8.tar.xz: fa76f8fb54ed04a0a23ca27dd6d58422a0a3f9a0
   grub-lua-rev30.tar.xz: b84af78af1d2736dc43c477afa814b20f40fddf0
   grub2-po-update.tar.gz: ba7b6ed09fe79b9447b046d2d667b87441489900
   grub_guide.tar.gz: f300e9f0c86512bb90f5e82fa65636fcb5d644a7
