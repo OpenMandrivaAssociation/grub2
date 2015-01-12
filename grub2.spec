@@ -1,7 +1,8 @@
 %define libdir32 %{_exec_prefix}/lib
 %define platform pc
 %define efi 1
-#%define		unifont		%(echo %{_datadir}/fonts/TTF/unifont/unifont-*.ttf)
+%define debug_package %{nil}
+
 
 %global efi %{ix86} x86_64
 %global optflags %{optflags} -Os
@@ -11,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.4
+Release:	1.beta2.10
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -50,8 +51,8 @@ Patch13:	grub2-2.02~beta2-class-via-os-prober.patch
 Patch14:	30_os-prober_UEFI_support.patch
 Patch15:	0085-Add-support-for-UEFI-operating-systems-returned-by-o.patch
 Patch16:	grub-2.02-remove-efivar-kernel-module-requirement.patch
-#Patch17:	fedora-linuxefi.patch
-		
+
+
 BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
@@ -82,6 +83,9 @@ Requires:	xorriso
 Provides:	bootloader
 Requires:	os-prober
 Requires:	distro-theme-common
+Conflicts:	grub2-tools < 2.02-1.beta2.6
+%rename		grub2-tools
+Requires(post):	grub2-theme
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
@@ -110,7 +114,7 @@ for EFI systems.
 #-----------------------------------------------------------------------
 
 %prep
-%setup -qn grub-%{version} -a12
+%setup -qn grub-%{version}-2014-10-8 -a12
 %apply_patches
 cp %{SOURCE10} .
 
@@ -135,10 +139,13 @@ pushd po-update; sh ./update.sh; popd
 
 #-----------------------------------------------------------------------
 %build
+export CXX="g++ -fuse-ld=bfd"
+export CC="gcc -fuse-ld=bfd"
 export GRUB_CONTRIB="$PWD/grub-extras"
 export CONFIGURE_TOP="$PWD"
 
 #(proyvind): debugedit will fail on some binaries if linked using gold
+# https://sourceware.org/bugzilla/show_bug.cgi?id=14187
 mkdir -p bfd
 ln -sf %{_bindir}/ld.bfd bfd/ld
 export PATH=$PWD/bfd:$PATH
@@ -162,8 +169,8 @@ pushd efi
 	--disable-werror \
 	--enable-grub-mkfont \
 	--enable-device-mapper
-	
-#Slow make as slow as possible to try and avoid apparent race condition. Works Locally
+
+#Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
 make  all
 
 %ifarch %{ix86}
@@ -180,7 +187,7 @@ make  all
 #  OS.
 
 #These lines produce a grub.efi suitable for an iso. Note the path in the -p option it points to the grub.cfg file on the iso.
-./grub-mkimage -O %{grubefiarch} -p /EFI/BOOT -o grub.efi -d grub-core linux multiboot multiboot2 all_video boot \
+./grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d grub-core linux multiboot multiboot2 all_video boot \
 		btrfs cat chain configfile echo efifwsetup efinet ext2 fat font gfxmenu gfxterm gfxterm_menu gfxterm_background \
 		gzio halt hfsplus iso9660 jpeg lvm mdraid09 mdraid1x minicmd normal part_apple part_msdos part_gpt password_pbkdf2 \
 		png reboot search search_fs_uuid search_fs_file search_label sleep test tftp video xfs mdraid09 mdraid1x lua loopback \
@@ -237,7 +244,6 @@ do
 	# have both boot.img and boot.mod ...
 	EXT=$(echo $MODULE |grep -q '.mod' && echo '.elf' || echo '.exec')
 	TGT=$(echo $MODULE |sed "s,%{buildroot},.debugroot,")
-#        install -m 755 -D $BASE$EXT $TGT
 done
 %endif
 
@@ -254,6 +260,7 @@ install -m755 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/grub.d/90_persistent
 # Ghost config file
 install -d %{buildroot}/boot/%{name}
 install -d %{buildroot}/boot/%{name}/locale
+cp $RPM_BUILD_DIR/grub-%{version}-2014-10-8/po/*.gmo %{buildroot}/boot/%{name}/locale/
 touch %{buildroot}/boot/%{name}/grub.cfg
 ln -s ../boot/%{name}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}.cfg
 
@@ -292,12 +299,11 @@ chmod 755 %{buildroot}%{_filetriggers_dir}/%{name}.script
 
 install -d %{buildroot}/boot/%{name}/themes/
 
-#mv -f %{buildroot}/%{libdir32}/grub %{buildroot}/%{libdir32}/%{name}
-#mv -f %{buildroot}/%{_datadir}/grub %{buildroot}/%{_datadir}/%{name}
 
 #bugfix: error message before loading of grub2 menu on boot
 mkdir -p %{buildroot}/%{_datadir}/locale/en/LC_MESSAGES
 cp %{buildroot}/%{_datadir}/locale/en@quot/LC_MESSAGES/grub.mo %{buildroot}/%{_datadir}/locale/en/LC_MESSAGES
+
 
 %find_lang grub
 
@@ -334,8 +340,6 @@ cp %{buildroot}/%{_datadir}/locale/en@quot/LC_MESSAGES/grub.mo %{buildroot}/%{_d
 	%buildroot%_sbindir/grub2-probe \
 	%buildroot%_sbindir/grub2-sparc64-setup
 
-
-
 %post
 exec >/dev/null 2>&1
 
@@ -362,11 +366,15 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
 	    	sed -i -e 's#init=/lib/systemd/systemd##g' /etc/default/grub
             update-grub2
 		fi
-    	
+
         if grep -q "acpi_backlight=vendor" /etc/default/grub; then
         	sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' /etc/default/grub
             update-grub2
         fi
+# (tpg) disable audit messages
+        if ! grep -q "audit=0" /etc/default/grub; then
+    	    sed -i -e 's#quiet#quiet audit=0 #' /etc/default/grub
+    	fi
 
     fi
 fi
@@ -387,6 +395,8 @@ fi
 %doc NEWS README THANKS TODO
 #%{libdir32}/%{name}
 %{libdir32}/grub/*-%{platform}
+#Files here are needed for install. Moved from efi package
+%{libdir32}/grub/%{_arch}-efi/
 #%{_sbindir}/%{name}-*
 #%{_bindir}/%{name}-*
 %{_sbindir}/update-grub2
@@ -426,6 +436,7 @@ fi
 %{_sysconfdir}/bash_completion.d/grub
 %dir /boot/%{name}
 %dir /boot/%{name}/locale
+%dir /boot/%{name}/locale/*.gmo
 %dir /boot/%{name}/themes
 # Actually, this is replaced by update-grub from scriptlets,
 # but it takes care of modified persistent part
@@ -438,22 +449,20 @@ fi
 %{_filetriggers_dir}/%{name}.*
 
 %ifarch %{efi}
-%files efi
 %attr(0755,root,root) %dir /boot/efi/EFI/openmandriva
-%attr(0755,root,root) /boot/efi/EFI/openmandriva/grub.efi
 %attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/openmandriva/grub.cfg
 %{_sysconfdir}/bash_completion.d/grub-efi
-%{libdir32}/grub/%{_arch}-efi/
 %{_sbindir}/%{name}-efi*
 %{_bindir}/%{name}-efi*
-#%{_datadir}/grub
-#%{_sysconfdir}/grub.d
+
+%files efi
+# Files in this package are only required for the creation of iso's
+# The install process creates all the files required to boot with grub via EFI
+%attr(0755,root,root) /boot/efi/EFI/openmandriva/grub.efi
+#%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/openmandriva/grub.cfg
+#%{_sysconfdir}/bash_completion.d/grub-efi
+
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 
-# Actually, this is replaced by update-grub from scriptlets,
-# but it takes care of modified persistent part
-#%config(noreplace) /boot/efi/EFI/rosa/%{name}-efi/grub.cfg
-# RPM filetriggers
-#%{_filetriggers_dir}/%{name}.*
 %endif
 
