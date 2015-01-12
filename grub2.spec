@@ -114,7 +114,7 @@ for EFI systems.
 #-----------------------------------------------------------------------
 
 %prep
-%setup -qn grub-%{version} -a12
+%setup -qn grub-%{version}-2014-10-8 -a12
 %apply_patches
 cp %{SOURCE10} .
 
