@@ -51,7 +51,7 @@ Patch13:	grub2-2.02~beta2-class-via-os-prober.patch
 Patch14:	30_os-prober_UEFI_support.patch
 Patch15:	0085-Add-support-for-UEFI-operating-systems-returned-by-o.patch
 Patch16:	grub-2.02-remove-efivar-kernel-module-requirement.patch
-
+Patch17:	grub-2.02-beta2-custom-vendor-config.patch
 
 BuildRequires:	autogen
 BuildRequires:	bison

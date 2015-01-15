@@ -1,0 +1,24 @@
+--- grub-2.02~beta2/util/grub-mkconfig.in.1021~	2014-04-17 12:41:41.386830429 +0200
++++ grub-2.02~beta2/util/grub-mkconfig.in	2014-04-17 12:54:09.688269256 +0200
+@@ -147,6 +147,11 @@ fi
+ if test -f ${sysconfdir}/default/grub ; then
+   . ${sysconfdir}/default/grub
+ fi
++if [ "x${GRUB_DISABLE_VENDOR_CONF}" = "x" ] || [ "x${GRUB_DISABLE_VENDOR_CONF}" = "xfalse" ]; then
++  if test -e ${sysconfdir}/default/grub.vendor ; then
++    . ${sysconfdir}/default/grub.vendor
++  fi
++fi
+ 
+ # XXX: should this be deprecated at some point?
+ if [ "x${GRUB_TERMINAL}" != "x" ] ; then
+@@ -226,7 +231,8 @@ export GRUB_DEFAULT \
+   GRUB_OS_PROBER_SKIP_LIST \
+   GRUB_DISABLE_SUBMENU \
+   GRUB_DEFAULT_DTB \
+-  GRUB_CMDLINE_LINUX_RECOVERY
++  GRUB_CMDLINE_LINUX_RECOVERY \
++  GRUB_DISABLE_VENDOR_CONF
+ 
+ if test "x${grub_cfg}" != "x"; then
+   rm -f "${grub_cfg}.new"
