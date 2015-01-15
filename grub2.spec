@@ -5,7 +5,6 @@
 
 
 %global efi %{ix86} x86_64
-%global optflags %{optflags} -Os
 
 %bcond_with talpo
 
