@@ -131,7 +131,6 @@ export GRUB_CONTRIB=./grub-extras
 sed -i -e 's,-I m4,-I m4 --dont-fix,g' autogen.sh
 cp %{SOURCE14} .
 sh linguas.sh
-./autogen.sh
 
 tar -xf %{SOURCE8}
 pushd po-update; sh ./update.sh; popd
@@ -144,10 +143,16 @@ export GRUB_CONTRIB="$PWD/grub-extras"
 export CONFIGURE_TOP="$PWD"
 
 #(proyvind): debugedit will fail on some binaries if linked using gold
+# https://savannah.gnu.org/bugs/?34539
 # https://sourceware.org/bugzilla/show_bug.cgi?id=14187
 mkdir -p bfd
 ln -sf %{_bindir}/ld.bfd bfd/ld
-export PATH=$PWD/bfd:$PATH
+export PATH=$(pwd)/bfd:$PATH
+export LDFLAGS_PROGRAM=$(pwd)/bfd/ld
+export TARGET_LDFLAGS=" -fuse-ld=bfd"
+
+# (tpg) regenerate stuff
+./autogen.sh
 
 %ifarch %{efi}
 mkdir -p efi

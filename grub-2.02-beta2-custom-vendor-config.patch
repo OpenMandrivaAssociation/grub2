@@ -1,22 +1,24 @@
 --- grub-2.02-2014-10-8/util/grub-mkconfig.in~	2015-01-15 23:15:33.874667396 +0000
 +++ grub-2.02-2014-10-8/util/grub-mkconfig.in	2015-01-15 23:04:06.018642657 +0000
 @@ -147,6 +147,11 @@
- if test -f ${sysconfdir}/default/grub ; then
+@@ -148,6 +148,12 @@
    . ${sysconfdir}/default/grub
  fi
+ 
 +if [ "x${GRUB_DISABLE_VENDOR_CONF}" = "x" ] || [ "x${GRUB_DISABLE_VENDOR_CONF}" = "xfalse" ]; then
 +  if test -e ${sysconfdir}/default/grub.vendor ; then
 +    . ${sysconfdir}/default/grub.vendor
 +  fi
 +fi
- 
++
  # XXX: should this be deprecated at some point?
  if [ "x${GRUB_TERMINAL}" != "x" ] ; then
 @@ -224,6 +229,7 @@
    GRUB_ENABLE_CRYPTODISK \
    GRUB_BADRAM \
    GRUB_CMDLINE_LINUX_RECOVERY \
-+  GRUB_DISABLE_VENDOR_CONF
+   GRUB_CMDLINE_LINUX_RECOVERY \
++  GRUB_DISABLE_VENDOR_CONF \
    GRUB_OS_PROBER_SKIP_LIST \
    GRUB_DISABLE_SUBMENU
  
