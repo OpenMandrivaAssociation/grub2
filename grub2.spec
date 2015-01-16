@@ -150,6 +150,7 @@ ln -sf %{_bindir}/ld.bfd bfd/ld
 export PATH=$(pwd)/bfd:$PATH
 export LDFLAGS_PROGRAM=$(pwd)/bfd/ld
 export TARGET_LDFLAGS=" -fuse-ld=bfd"
+export CFLAGS="$CFLAGS -fuse-ld=bfd"
 
 # (tpg) regenerate stuff
 ./autogen.sh
