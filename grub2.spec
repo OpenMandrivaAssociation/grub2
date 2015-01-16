@@ -142,15 +142,16 @@ export CC="gcc -fuse-ld=bfd"
 export GRUB_CONTRIB="$PWD/grub-extras"
 export CONFIGURE_TOP="$PWD"
 
-# (tpg) regenerate stuff
-./autogen.sh
-
 #(proyvind): debugedit will fail on some binaries if linked using gold
+# https://savannah.gnu.org/bugs/?34539
 # https://sourceware.org/bugzilla/show_bug.cgi?id=14187
 mkdir -p bfd
 ln -sf %{_bindir}/ld.bfd bfd/ld
-export PATH=$PWD/bfd:$PATH
-export LDFLAGS_PROGRAM=$PWD/bfd/ld
+export PATH=$(pwd)/bfd:$PATH
+export LDFLAGS_PROGRAM=$(pwd)/bfd/ld
+
+# (tpg) regenerate stuff
+./autogen.sh
 
 %ifarch %{efi}
 mkdir -p efi
