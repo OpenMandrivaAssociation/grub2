@@ -137,6 +137,7 @@ pushd po-update; sh ./update.sh; popd
 
 #-----------------------------------------------------------------------
 %build
+%define _disable_ld_no_undefined 1
 export CXX="g++ -fuse-ld=bfd"
 export CC="gcc -fuse-ld=bfd"
 export GRUB_CONTRIB="$PWD/grub-extras"
