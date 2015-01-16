@@ -138,8 +138,8 @@ pushd po-update; sh ./update.sh; popd
 
 #-----------------------------------------------------------------------
 %build
-export CXX="g++ -fuse-ld=bfd"
-export CC="gcc -fuse-ld=bfd"
+#export CXX="g++ -fuse-ld=bfd"
+#export CC="gcc -fuse-ld=bfd"
 export GRUB_CONTRIB="$PWD/grub-extras"
 export CONFIGURE_TOP="$PWD"
 
