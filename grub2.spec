@@ -176,8 +176,8 @@ pushd efi
 	--enable-grub-mkfont \
 	--enable-device-mapper
 
-#see if it's fixed. Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
-%make  all
+# Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
+make  all
 
 %ifarch %{ix86}
 %define grubefiarch i386-efi
