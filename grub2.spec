@@ -138,20 +138,20 @@ pushd po-update; sh ./update.sh; popd
 #-----------------------------------------------------------------------
 %build
 %define _disable_ld_no_undefined 1
-export CXX="g++ -fuse-ld=bfd"
-export CC="gcc -fuse-ld=bfd"
+#export CXX="g++ -fuse-ld=bfd"
+#export CC="gcc -fuse-ld=bfd"
 export GRUB_CONTRIB="$PWD/grub-extras"
 export CONFIGURE_TOP="$PWD"
 
 #(proyvind): debugedit will fail on some binaries if linked using gold
 # https://savannah.gnu.org/bugs/?34539
 # https://sourceware.org/bugzilla/show_bug.cgi?id=14187
-mkdir -p bfd
-ln -sf %{_bindir}/ld.bfd bfd/ld
-export PATH=$(pwd)/bfd:$PATH
-export LDFLAGS_PROGRAM=$(pwd)/bfd/ld
-export TARGET_LDFLAGS=" -fuse-ld=bfd"
-export CFLAGS="$CFLAGS -Os -fuse-ld=bfd"
+#mkdir -p bfd
+#ln -sf %{_bindir}/ld.bfd bfd/ld
+#export PATH=$(pwd)/bfd:$PATH
+#export LDFLAGS_PROGRAM=$(pwd)/bfd/ld
+#export TARGET_LDFLAGS=" -fuse-ld=bfd"
+#export CFLAGS="$CFLAGS -Os -fuse-ld=bfd"
 
 # (tpg) regenerate stuff
 ./autogen.sh
@@ -164,7 +164,7 @@ pushd efi
 	CC=talpo \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
 %else
-	CFLAGS="-O2" \
+	CFLAGS="-O2 -fuse-ld=bfd" \
 %endif
 	TARGET_LDFLAGS="-static" \
 	--with-platform=efi \
@@ -176,8 +176,8 @@ pushd efi
 	--enable-grub-mkfont \
 	--enable-device-mapper
 
-#Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
-make  all
+#see if it's fixed. Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
+%make  all
 
 %ifarch %{ix86}
 %define grubefiarch i386-efi
@@ -208,6 +208,7 @@ cd pc
 	CC=talpo  \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
 %endif
+	CFLAGS="-O2 -fuse-ld=bfd" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=pc \
     %ifarch x86_64
