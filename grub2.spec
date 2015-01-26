@@ -165,7 +165,7 @@ pushd efi
 	--enable-device-mapper
 
 #Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
-%make  -j1 all
+%make all
 %ifarch %{ix86}
 %define grubefiarch i386-efi
 %else
