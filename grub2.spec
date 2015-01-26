@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.11
+Release:	1.beta2.12
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -138,22 +138,10 @@ pushd po-update; sh ./update.sh; popd
 #-----------------------------------------------------------------------
 %build
 %define _disable_ld_no_undefined 1
-#export CXX="g++ -fuse-ld=bfd"
-#export CC="gcc -fuse-ld=bfd"
-export GRUB_CONTRIB="$PWD/grub-extras"
-export CONFIGURE_TOP="$PWD"
 
 #(proyvind): debugedit will fail on some binaries if linked using gold
 # https://savannah.gnu.org/bugs/?34539
 # https://sourceware.org/bugzilla/show_bug.cgi?id=14187
-#mkdir -p bfd
-#ln -sf %{_bindir}/ld.bfd bfd/ld
-#export PATH=$(pwd)/bfd:$PATH
-#export LDFLAGS_PROGRAM=$(pwd)/bfd/ld
-#export TARGET_LDFLAGS=" -fuse-ld=bfd"
-#export CFLAGS="$CFLAGS -Os -fuse-ld=bfd"
-
-# (tpg) regenerate stuff
 ./autogen.sh
 
 %ifarch %{efi}
@@ -176,9 +164,8 @@ pushd efi
 	--enable-grub-mkfont \
 	--enable-device-mapper
 
-#see if it's fixed. Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
-%make  all
-
+#Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
+%make  -j1 all
 %ifarch %{ix86}
 %define grubefiarch i386-efi
 %else
