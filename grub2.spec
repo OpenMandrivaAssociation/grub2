@@ -138,6 +138,8 @@ pushd po-update; sh ./update.sh; popd
 #-----------------------------------------------------------------------
 %build
 %define _disable_ld_no_undefined 1
+export GRUB_CONTRIB="$PWD/grub-extras"
+export CONFIGURE_TOP="$PWD"
 
 #(proyvind): debugedit will fail on some binaries if linked using gold
 # https://savannah.gnu.org/bugs/?34539
@@ -165,7 +167,7 @@ pushd efi
 	--enable-device-mapper
 
 #Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
-%make all
+%make -j1  all
 %ifarch %{ix86}
 %define grubefiarch i386-efi
 %else
