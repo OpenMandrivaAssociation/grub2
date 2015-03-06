@@ -2,7 +2,7 @@
 %define platform pc
 %define efi 1
 %define debug_package %{nil}
-
+%define snapshot 20150306
 
 %global efi %{ix86} x86_64
 
@@ -16,7 +16,9 @@ Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
 #Source0:	http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
-Source0:	grub-%{version}-2014-10-8.tar.xz
+# git git://git.sv.gnu.org/grub.git
+# git archive --format=tar --prefix grub-2.02-$(date +%Y%m%d)/ HEAD | xz -vf > grub-2.02-$(date +%Y%m%d).tar.xz
+Source0:	grub-%{version}-%{snapshot}.tar.xz
 Source1:	90_persistent
 Source2:	grub.default
 Source3:	grub.melt
@@ -47,8 +49,6 @@ Patch10:	grub-2.00-autoreconf-sucks.patch
 Patch11:	0468-Don-t-write-messages-to-the-screen.patch
 Patch12:	grub-2.00-add-recovery_option.patch
 Patch13:	grub2-2.02~beta2-class-via-os-prober.patch
-Patch14:	30_os-prober_UEFI_support.patch
-Patch15:	0085-Add-support-for-UEFI-operating-systems-returned-by-o.patch
 Patch16:	grub-2.02-remove-efivar-kernel-module-requirement.patch
 Patch17:	grub-2.02-beta2-custom-vendor-config.patch
 
@@ -113,7 +113,7 @@ for EFI systems.
 #-----------------------------------------------------------------------
 
 %prep
-%setup -qn grub-%{version}-2014-10-8 -a12
+%setup -qn grub-%{version}-%{snapshot} -a12
 %apply_patches
 cp %{SOURCE10} .
 
@@ -305,34 +305,34 @@ cp %{buildroot}/%{_datadir}/locale/en@quot/LC_MESSAGES/grub.mo %{buildroot}/%{_d
 #find %{buildroot} -size 0 -delete
 
 # Workaround for non-identical binaries getting the same build-id
-%__strip --strip-unneeded %buildroot%_bindir/grub2-efi-fstest \
-	%buildroot%_bindir/grub2-efi-editenv \
-	%buildroot%_bindir/grub2-efi-menulst2cfg \
-	%buildroot%_bindir/grub2-efi-mkfont \
-	%buildroot%_bindir/grub2-efi-mkimage \
-	%buildroot%_bindir/grub2-efi-mklayout \
-	%buildroot%_bindir/grub2-efi-mkpasswd-pbkdf2 \
-	%buildroot%_bindir/grub2-efi-mkrelpath \
-	%buildroot%_bindir/grub2-efi-mount \
-	%buildroot%_bindir/grub2-efi-script-check \
-	%buildroot%_bindir/grub2-fstest \
-	%buildroot%_bindir/grub2-editenv \
-	%buildroot%_bindir/grub2-menulst2cfg \
-	%buildroot%_bindir/grub2-mkfont \
-	%buildroot%_bindir/grub2-mkimage \
-	%buildroot%_bindir/grub2-mklayout \
-	%buildroot%_bindir/grub2-mkpasswd-pbkdf2 \
-	%buildroot%_bindir/grub2-mkrelpath \
-	%buildroot%_bindir/grub2-mount \
-	%buildroot%_bindir/grub2-script-check \
-	%buildroot%_sbindir/grub2-efi-ofpathname \
-	%buildroot%_sbindir/grub2-efi-bios-setup \
-	%buildroot%_sbindir/grub2-efi-probe \
-	%buildroot%_sbindir/grub2-efi-sparc64-setup \
-	%buildroot%_sbindir/grub2-bios-setup \
-	%buildroot%_sbindir/grub2-ofpathname \
-	%buildroot%_sbindir/grub2-probe \
-	%buildroot%_sbindir/grub2-sparc64-setup
+%__strip --strip-unneeded %{buildroot}%{_bindir}/grub2-efi-fstest \
+	%{buildroot}%{_bindir}/grub2-efi-editenv \
+	%{buildroot}%{_bindir}/grub2-efi-menulst2cfg \
+	%{buildroot}%{_bindir}/grub2-efi-mkfont \
+	%{buildroot}%{_bindir}/grub2-efi-mkimage \
+	%{buildroot}%{_bindir}/grub2-efi-mklayout \
+	%{buildroot}%{_bindir}/grub2-efi-mkpasswd-pbkdf2 \
+	%{buildroot}%{_bindir}/grub2-efi-mkrelpath \
+	%{buildroot}%{_bindir}/grub2-efi-mount \
+	%{buildroot}%{_bindir}/grub2-efi-script-check \
+	%{buildroot}%{_bindir}/grub2-fstest \
+	%{buildroot}%{_bindir}/grub2-editenv \
+	%{buildroot}%{_bindir}/grub2-menulst2cfg \
+	%{buildroot}%{_bindir}/grub2-mkfont \
+	%{buildroot}%{_bindir}/grub2-mkimage \
+	%{buildroot}%{_bindir}/grub2-mklayout \
+	%{buildroot}%{_bindir}/grub2-mkpasswd-pbkdf2 \
+	%{buildroot}%{_bindir}/grub2-mkrelpath \
+	%{buildroot}%{_bindir}/grub2-mount \
+	%{buildroot}%{_bindir}/grub2-script-check \
+	%{buildroot}%{_sbindir}/grub2-efi-ofpathname \
+	%{buildroot}%{_sbindir}/grub2-efi-bios-setup \
+	%{buildroot}%{_sbindir}/grub2-efi-probe \
+	%{buildroot}%{_sbindir}/grub2-efi-sparc64-setup \
+	%{buildroot}%{_sbindir}/grub2-bios-setup \
+	%{buildroot}%{_sbindir}/grub2-ofpathname \
+	%{buildroot}%{_sbindir}/grub2-probe \
+	%{buildroot}%{_sbindir}/grub2-sparc64-setup
 
 %post
 exec >/dev/null 2>&1
@@ -340,7 +340,7 @@ exec >/dev/null 2>&1
 if [ -e /boot/grub/device.map ]; then
 # Create device.map or reuse one from GRUB Legacy
 cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
-	%{_sbindir}/%{name}-mkdevicemap
+    %{_sbindir}/%{name}-mkdevicemap
 fi
 
 # Do not install grub2 if running in a chroot
