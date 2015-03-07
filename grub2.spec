@@ -150,7 +150,7 @@ export CONFIGURE_TOP="$PWD"
 %ifarch %{efi}
 mkdir -p efi
 pushd efi
-%configure \
+%configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
 %if %{with talpo}
 	CC=talpo \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
@@ -168,7 +168,7 @@ pushd efi
 	--enable-device-mapper
 
 #Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
-%make -j1  all
+%make -j1 all 
 %ifarch %{ix86}
 %define grubefiarch i386-efi
 %else
@@ -193,7 +193,7 @@ popd
 
 mkdir -p pc
 cd pc
-%configure \
+%configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
 %if %{with talpo}
 	CC=talpo  \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
@@ -213,7 +213,7 @@ cd pc
 	--enable-grub-mkfont \
 	--enable-device-mapper
 
-%make all
+%make all 
 
 %make html pdf
 
