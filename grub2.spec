@@ -213,7 +213,7 @@ cd pc
 	--enable-grub-mkfont \
 	--enable-device-mapper
 
-%make all 
+%make all
 
 %make html pdf
 
@@ -255,7 +255,7 @@ install -m755 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/grub.d/90_persistent
 # Ghost config file
 install -d %{buildroot}/boot/%{name}
 install -d %{buildroot}/boot/%{name}/locale
-cp $RPM_BUILD_DIR/grub-%{version}-2014-10-8/po/*.gmo %{buildroot}/boot/%{name}/locale/
+cp $RPM_BUILD_DIR/grub-%{version}-%{snapshot}/po/*.gmo %{buildroot}/boot/%{name}/locale/
 touch %{buildroot}/boot/%{name}/grub.cfg
 ln -s ../boot/%{name}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}.cfg
 
