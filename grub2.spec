@@ -50,7 +50,6 @@ Patch11:	0468-Don-t-write-messages-to-the-screen.patch
 Patch12:	grub-2.00-add-recovery_option.patch
 Patch13:	grub2-2.02~beta2-class-via-os-prober.patch
 Patch16:	grub-2.02-remove-efivar-kernel-module-requirement.patch
-Patch17:	grub-2.02-beta2-custom-vendor-config.patch
 
 BuildRequires:	autogen
 BuildRequires:	bison
@@ -82,9 +81,6 @@ Requires:	xorriso
 Provides:	bootloader
 Requires:	os-prober
 Requires:	distro-theme-common
-Conflicts:	grub2-tools < 2.02-1.beta2.6
-%rename		grub2-tools
-Requires(post):	grub2-theme
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
