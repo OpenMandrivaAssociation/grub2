@@ -150,7 +150,7 @@ export CONFIGURE_TOP="$PWD"
 %ifarch %{efi}
 mkdir -p efi
 pushd efi
-%configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
+%configure2_5x BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
 %if %{with talpo}
 	CC=talpo \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
@@ -193,7 +193,7 @@ popd
 
 mkdir -p pc
 cd pc
-%configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
+%configure2_5x BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
 %if %{with talpo}
 	CC=talpo  \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
