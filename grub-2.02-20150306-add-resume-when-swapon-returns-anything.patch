@@ -7,7 +7,7 @@ diff -Naur grub-2.02-20150306/util/grub.d/10_linux.in grub-2.02-20150306.tpg/uti
  
 +  # (tpg) check for swap
 +  if `swapon -s | grep '/dev/sd.[0-9]\{1,\}'`; then
-+    swap=`swapon -s | grep '/dev/sd.[0-9]\{1,\}'`
++    swap=swap=`swapon -s | grep '/dev/sd.[0-9]\{1,\}'|awk '{print $1}'`;
 +    resumepoint="resume=$swap"
 +  fi
 +
