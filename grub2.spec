@@ -136,6 +136,8 @@ sh linguas.sh
 tar -xf %{SOURCE8}
 pushd po-update; sh ./update.sh; popd
 
+./autogen.sh
+
 #-----------------------------------------------------------------------
 %build
 %define _disable_ld_no_undefined 1
@@ -145,7 +147,6 @@ export CONFIGURE_TOP="$PWD"
 #(proyvind): debugedit will fail on some binaries if linked using gold
 # https://savannah.gnu.org/bugs/?34539
 # https://sourceware.org/bugzilla/show_bug.cgi?id=14187
-./autogen.sh
 
 %ifarch %{efi}
 mkdir -p efi
