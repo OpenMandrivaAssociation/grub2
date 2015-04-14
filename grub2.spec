@@ -306,36 +306,6 @@ cp %{buildroot}/%{_datadir}/locale/en@quot/LC_MESSAGES/grub.mo %{buildroot}/%{_d
 #drop all zero-length file
 #find %{buildroot} -size 0 -delete
 
-# Workaround for non-identical binaries getting the same build-id
-%__strip --strip-unneeded %{buildroot}%{_bindir}/grub2-efi-fstest \
-	%{buildroot}%{_bindir}/grub2-efi-editenv \
-	%{buildroot}%{_bindir}/grub2-efi-menulst2cfg \
-	%{buildroot}%{_bindir}/grub2-efi-mkfont \
-	%{buildroot}%{_bindir}/grub2-efi-mkimage \
-	%{buildroot}%{_bindir}/grub2-efi-mklayout \
-	%{buildroot}%{_bindir}/grub2-efi-mkpasswd-pbkdf2 \
-	%{buildroot}%{_bindir}/grub2-efi-mkrelpath \
-	%{buildroot}%{_bindir}/grub2-efi-mount \
-	%{buildroot}%{_bindir}/grub2-efi-script-check \
-	%{buildroot}%{_bindir}/grub2-fstest \
-	%{buildroot}%{_bindir}/grub2-editenv \
-	%{buildroot}%{_bindir}/grub2-menulst2cfg \
-	%{buildroot}%{_bindir}/grub2-mkfont \
-	%{buildroot}%{_bindir}/grub2-mkimage \
-	%{buildroot}%{_bindir}/grub2-mklayout \
-	%{buildroot}%{_bindir}/grub2-mkpasswd-pbkdf2 \
-	%{buildroot}%{_bindir}/grub2-mkrelpath \
-	%{buildroot}%{_bindir}/grub2-mount \
-	%{buildroot}%{_bindir}/grub2-script-check \
-	%{buildroot}%{_sbindir}/grub2-efi-ofpathname \
-	%{buildroot}%{_sbindir}/grub2-efi-bios-setup \
-	%{buildroot}%{_sbindir}/grub2-efi-probe \
-	%{buildroot}%{_sbindir}/grub2-efi-sparc64-setup \
-	%{buildroot}%{_sbindir}/grub2-bios-setup \
-	%{buildroot}%{_sbindir}/grub2-ofpathname \
-	%{buildroot}%{_sbindir}/grub2-probe \
-	%{buildroot}%{_sbindir}/grub2-sparc64-setup
-
 %post
 exec >/dev/null 2>&1
 
