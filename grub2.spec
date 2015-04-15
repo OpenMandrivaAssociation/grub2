@@ -232,6 +232,11 @@ cp po/*.gmo %{buildroot}/boot/%{name}/locale/
 touch %{buildroot}/boot/%{name}/grub.cfg
 ln -s /boot/%{name}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}.cfg
 
+%if 0
+# (proyvind): not sure what the purpose of this might've been, but it's no
+#             longer made use of, so let's comment it out for now to avoid
+#             time being spent on doing nothing untill it gets removed or made
+#             use of again...
 # Install ELF files modules and images were created from into
 # the shadow root, where debuginfo generator will grab them from
 find %{buildroot} -name '*.mod' -o -name '*.img' |
@@ -245,6 +250,7 @@ do
         TGT=$(echo $MODULE |sed "s,%{buildroot},.debugroot,")
 #        install -m 755 -D $BASE$EXT $TGT
 done
+%endif
 
 ######EFI
 %ifarch %{efi}
@@ -255,6 +261,11 @@ install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/openmandriva/grub.efi
 touch %{buildroot}/boot/efi/EFI/openmandriva/grub.cfg
 ln -s /boot/efi/EFI/openmandriva/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
 
+%if 0
+# (proyvind): not sure what the purpose of this might've been, but it's no
+#             longer made use of, so let's comment it out for now to avoid
+#             time being spent on doing nothing untill it gets removed or made
+#             use of again...
 # Install ELF files modules and images were created from into
 # the shadow root, where debuginfo generator will grab them from
 find %{buildroot} -name '*.mod' -o -name '*.img' |
@@ -267,6 +278,7 @@ do
 	EXT=$(echo $MODULE |grep -q '.mod' && echo '.elf' || echo '.exec')
 	TGT=$(echo $MODULE |sed "s,%{buildroot},.debugroot,")
 done
+%endif
 %endif
 
 # Defaults
