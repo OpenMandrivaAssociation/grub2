@@ -195,11 +195,8 @@ pushd efi
 
 %make ascii.h widthspec.h
 %make -C grub-core 
-%ifarch %{ix86}
-%define grubefiarch i386-efi
-%else
+
 %define grubefiarch %{_arch}-efi
-%endif
 
 #This line loads all the modules but makes the efi image unstable.
 #./grub-mkimage -O %{grubefiarch} -p /EFI/openmandriva/%{name}-efi -o grub.efi -d grub-core `ls grub-core/*.mod | sed 's/.*\///g' | sed 's/\.mod//g' | xargs
@@ -231,9 +228,9 @@ install -m755 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/grub.d/90_persistent
 # Ghost config file
 install -d %{buildroot}/boot/%{name}
 install -d %{buildroot}/boot/%{name}/locale
-cp $RPM_BUILD_DIR/grub-%{version}-%{snapshot}/po/*.gmo %{buildroot}/boot/%{name}/locale/
+cp po/*.gmo %{buildroot}/boot/%{name}/locale/
 touch %{buildroot}/boot/%{name}/grub.cfg
-ln -s ../boot/%{name}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}.cfg
+ln -s /boot/%{name}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}.cfg
 
 # Install ELF files modules and images were created from into
 # the shadow root, where debuginfo generator will grab them from
@@ -256,7 +253,7 @@ done
 install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/openmandriva/grub.efi
 # Ghost config file
 touch %{buildroot}/boot/efi/EFI/openmandriva/grub.cfg
-ln -s ../boot/efi/EFI/openmandriva/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
+ln -s /boot/efi/EFI/openmandriva/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
 
 # Install ELF files modules and images were created from into
 # the shadow root, where debuginfo generator will grab them from
@@ -275,7 +272,7 @@ done
 # Defaults
 install -m755 %{SOURCE2} -D %{buildroot}%{_sysconfdir}/default/grub
 # (tpg) use default distro name
-sed -i -e 's#TMP_DISTRO#%{distribution}#' %{buildroot}%{_sysconfdir}/default/grub
+sed -e 's#TMP_DISTRO#%{distribution}#' -i %{buildroot}%{_sysconfdir}/default/grub
 
 #Add more useful update-grub2 script
 install -m755 %{SOURCE9} -D %{buildroot}%{_sbindir}
@@ -296,8 +293,8 @@ install -d %{buildroot}/boot/%{name}/themes/
 
 
 #bugfix: error message before loading of grub2 menu on boot
-mkdir -p %{buildroot}/%{_datadir}/locale/en/LC_MESSAGES
-cp %{buildroot}/%{_datadir}/locale/en@quot/LC_MESSAGES/grub.mo %{buildroot}/%{_datadir}/locale/en/LC_MESSAGES
+mkdir -p %{buildroot}%{_localedir}/en/LC_MESSAGES
+cp %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_localedir}/en/LC_MESSAGES
 
 
 %find_lang grub
@@ -326,19 +323,19 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
         %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
     fi
 # (tpg) remove wrong line in boot options
-    if [ -e /etc/default/grub ]; then
-		if grep -q "init=/lib/systemd/systemd" /etc/default/grub; then
-	    	sed -i -e 's#init=/lib/systemd/systemd##g' /etc/default/grub
+    if [ -e %{_sysconfdir}/default/grub ]; then
+		if grep -q "init=/lib/systemd/systemd" %{_sysconfdir}/default/grub; then
+	    	sed -i -e 's#init=/lib/systemd/systemd##g' %{_sysconfdir}/default/grub
             update-grub2
 		fi
 
-        if grep -q "acpi_backlight=vendor" /etc/default/grub; then
-        	sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' /etc/default/grub
+        if grep -q "acpi_backlight=vendor" %{_sysconfdir}/default/grub; then
+        	sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' %{_sysconfdir}/default/grub
             update-grub2
         fi
 # (tpg) disable audit messages
-        if ! grep -q "audit=0" /etc/default/grub; then
-    	    sed -i -e 's#quiet#quiet audit=0 #' /etc/default/grub
+        if ! grep -q "audit=0" %{_sysconfdir}/default/grub; then
+    	    sed -i -e 's#quiet#quiet audit=0 #' %{_sysconfdir}/default/grub
     	fi
 
     fi
@@ -422,7 +419,6 @@ fi
 # The install process creates all the files required to boot with grub via EFI
 %attr(0755,root,root) /boot/efi/EFI/openmandriva/grub.efi
 #%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/openmandriva/grub.cfg
-#%{_sysconfdir}/bash_completion.d/grub-efi
 
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 
