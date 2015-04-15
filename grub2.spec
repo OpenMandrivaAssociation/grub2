@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.15
+Release:	1.beta2.16
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -148,52 +148,8 @@ export CONFIGURE_TOP="$PWD"
 # https://savannah.gnu.org/bugs/?34539
 # https://sourceware.org/bugzilla/show_bug.cgi?id=14187
 
-%ifarch %{efi}
-mkdir -p efi
-pushd efi
-%configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
-%if %{with talpo}
-	CC=talpo \
-	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
-%else
-	CFLAGS="-O2 -fuse-ld=bfd" \
-%endif
-	TARGET_LDFLAGS="-static" \
-	--with-platform=efi \
-	--program-transform-name=s,grub,%{name}-efi, \
-	--libdir=%{libdir32} \
-	--libexecdir=%{libdir32} \
-	--with-grubdir=grub2 \
-	--disable-werror \
-	--enable-grub-mkfont \
-	--enable-device-mapper
-
-#Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
-%make -j1 all 
-%ifarch %{ix86}
-%define grubefiarch i386-efi
-%else
-%define grubefiarch %{_arch}-efi
-%endif
-
-
-
-#This line loads all the modules but makes the efi image unstable.
-#./grub-mkimage -O %{grubefiarch} -p /EFI/openmandriva/%{name}-efi -o grub.efi -d grub-core `ls grub-core/*.mod | sed 's/.*\///g' | sed 's/\.mod//g' | xargs
-#` In practice the grub.efi image is only required for the iso. when grub is installed it selects the modules it needs to boot the current install from the installed
-#  OS.
-
-#These lines produce a grub.efi suitable for an iso. Note the path in the -p option it points to the grub.cfg file on the iso.
-./grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d grub-core linux multiboot multiboot2 all_video boot \
-		btrfs cat chain configfile echo efifwsetup efinet ext2 fat font gfxmenu gfxterm gfxterm_menu gfxterm_background \
-		gzio halt hfsplus iso9660 jpeg lvm mdraid09 mdraid1x minicmd normal part_apple part_msdos part_gpt password_pbkdf2 \
-		png reboot search search_fs_uuid search_fs_file search_label sleep test tftp video xfs mdraid09 mdraid1x lua loopback \
-		squash4 syslinuxcfg
-popd
-%endif
-
 mkdir -p pc
-cd pc
+pushd pc
 %configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
 %if %{with talpo}
 	CC=talpo  \
@@ -214,36 +170,57 @@ cd pc
 	--enable-grub-mkfont \
 	--enable-device-mapper
 
-%make all
-
+#Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
+%make -1 all
 %make html pdf
+popd
+
+%ifarch %{efi}
+mkdir -p efi
+pushd efi
+%configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
+%if %{with talpo}
+	CC=talpo \
+	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
+%else
+	CFLAGS="-O2 -fuse-ld=bfd" \
+%endif
+	TARGET_LDFLAGS="-static" \
+	--with-platform=efi \
+	--program-transform-name=s,grub,%{name}-efi, \
+	--libdir=%{libdir32} \
+	--libexecdir=%{libdir32} \
+	--with-grubdir=grub2 \
+	--disable-werror \
+	--enable-grub-mkfont \
+	--enable-device-mapper
+
+make ascii.h widthspec.h
+%make -C grub-core 
+%ifarch %{ix86}
+%define grubefiarch i386-efi
+%else
+%define grubefiarch %{_arch}-efi
+%endif
+
+#This line loads all the modules but makes the efi image unstable.
+#./grub-mkimage -O %{grubefiarch} -p /EFI/openmandriva/%{name}-efi -o grub.efi -d grub-core `ls grub-core/*.mod | sed 's/.*\///g' | sed 's/\.mod//g' | xargs
+#` In practice the grub.efi image is only required for the iso. when grub is installed it selects the modules it needs to boot the current install from the installed
+#  OS.
+
+#These lines produce a grub.efi suitable for an iso. Note the path in the -p option it points to the grub.cfg file on the iso.
+../pc/grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d grub-core linux multiboot multiboot2 all_video boot \
+		btrfs cat chain configfile echo efifwsetup efinet ext2 fat font gfxmenu gfxterm gfxterm_menu gfxterm_background \
+		gzio halt hfsplus iso9660 jpeg lvm mdraid09 mdraid1x minicmd normal part_apple part_msdos part_gpt password_pbkdf2 \
+		png reboot search search_fs_uuid search_fs_file search_label sleep test tftp video xfs mdraid09 mdraid1x lua loopback \
+		squash4 syslinuxcfg
+popd
+%endif
+
 
 #-----------------------------------------------------------------------
 %install
-%ifarch %{efi}
-%makeinstall_std -C efi
-mv %{buildroot}%{_sysconfdir}/bash_completion.d/grub %{buildroot}%{_sysconfdir}/bash_completion.d/grub-efi
-
-install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/openmandriva/grub.efi
-# Ghost config file
-touch %{buildroot}/boot/efi/EFI/openmandriva/grub.cfg
-ln -s ../boot/efi/EFI/openmandriva/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
-
-# Install ELF files modules and images were created from into
-# the shadow root, where debuginfo generator will grab them from
-find %{buildroot} -name '*.mod' -o -name '*.img' |
-while read MODULE
-do
-	BASE=$(echo $MODULE |sed -r "s,.*/([^/]*)\.(mod|img),\1,")
-	# Symbols from .img files are in .exec files, while .mod
-	# modules store symbols in .elf. This is just because we
-	# have both boot.img and boot.mod ...
-	EXT=$(echo $MODULE |grep -q '.mod' && echo '.elf' || echo '.exec')
-	TGT=$(echo $MODULE |sed "s,%{buildroot},.debugroot,")
-done
-%endif
-
-######EFI
+######legacy
 %makeinstall_std -C pc
 %makeinstall_std -C pc/docs install-pdf install-html PACKAGE_TARNAME=%{name}
 
@@ -273,6 +250,30 @@ do
         TGT=$(echo $MODULE |sed "s,%{buildroot},.debugroot,")
 #        install -m 755 -D $BASE$EXT $TGT
 done
+
+######EFI
+%ifarch %{efi}
+%makeinstall_std -C efi/grub-core
+
+install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/openmandriva/grub.efi
+# Ghost config file
+touch %{buildroot}/boot/efi/EFI/openmandriva/grub.cfg
+ln -s ../boot/efi/EFI/openmandriva/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
+
+# Install ELF files modules and images were created from into
+# the shadow root, where debuginfo generator will grab them from
+find %{buildroot} -name '*.mod' -o -name '*.img' |
+while read MODULE
+do
+	BASE=$(echo $MODULE |sed -r "s,.*/([^/]*)\.(mod|img),\1,")
+	# Symbols from .img files are in .exec files, while .mod
+	# modules store symbols in .elf. This is just because we
+	# have both boot.img and boot.mod ...
+	EXT=$(echo $MODULE |grep -q '.mod' && echo '.elf' || echo '.exec')
+	TGT=$(echo $MODULE |sed "s,%{buildroot},.debugroot,")
+done
+%endif
+
 # Defaults
 install -m755 %{SOURCE2} -D %{buildroot}%{_sysconfdir}/default/grub
 # (tpg) use default distro name
@@ -417,9 +418,6 @@ fi
 %ifarch %{efi}
 %attr(0755,root,root) %dir /boot/efi/EFI/openmandriva
 %attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/openmandriva/grub.cfg
-%{_sysconfdir}/bash_completion.d/grub-efi
-%{_sbindir}/%{name}-efi*
-%{_bindir}/%{name}-efi*
 
 %files efi
 # Files in this package are only required for the creation of iso's
