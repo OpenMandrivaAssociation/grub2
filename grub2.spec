@@ -170,9 +170,7 @@ pushd pc
 	--enable-grub-mkfont \
 	--enable-device-mapper
 
-#Slow make as pedestrian as possible to try and avoid apparent race condition. Works Locally
-%make -1 all
-%make html pdf
+%make all html pdf
 popd
 
 %ifarch %{efi}
@@ -195,7 +193,7 @@ pushd efi
 	--enable-grub-mkfont \
 	--enable-device-mapper
 
-make ascii.h widthspec.h
+%make ascii.h widthspec.h
 %make -C grub-core 
 %ifarch %{ix86}
 %define grubefiarch i386-efi
