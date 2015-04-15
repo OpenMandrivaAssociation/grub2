@@ -110,6 +110,15 @@ architectures and hardware devices.  This subpackage provides support
 for EFI systems.
 %endif
 
+%package	starfield-theme
+Summary:	An example theme for GRUB
+Group:		System/Kernel and hardware
+Requires:	%{name} = %{EVRD}
+Provides:	%{name}-theme
+
+%description	starfield-theme
+Example 'starfield' theme for GRUB.
+
 #-----------------------------------------------------------------------
 
 %prep
@@ -402,6 +411,7 @@ fi
 %{_sbindir}/%{name}-set-default
 %{_sbindir}/%{name}-sparc64-setup
 %{_datadir}/grub
+%exclude %{_datadir}/grub/themes/*
 %attr(0700,root,root) %dir %{_sysconfdir}/grub.d
 %{_sysconfdir}/grub.d/README
 %config %{_sysconfdir}/grub.d/??_*
@@ -436,3 +446,5 @@ fi
 
 %endif
 
+%files starfield-theme
+%{_datadir}/grub/themes/starfield
