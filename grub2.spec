@@ -157,9 +157,11 @@ export CONFIGURE_TOP="$PWD"
 # https://savannah.gnu.org/bugs/?34539
 # https://sourceware.org/bugzilla/show_bug.cgi?id=14187
 
+#(proyvind): non-UEFI boot will fail with 'alloc magic broken' on x86_64
+#            if built with clang
 mkdir -p pc
 pushd pc
-%configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
+%configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
 %if %{with talpo}
 	CC=talpo  \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
