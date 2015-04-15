@@ -294,7 +294,7 @@ install -d %{buildroot}/boot/%{name}/themes/
 
 #bugfix: error message before loading of grub2 menu on boot
 mkdir -p %{buildroot}%{_localedir}/en/LC_MESSAGES
-cp %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_localedir}/en/LC_MESSAGES
+ln %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_localedir}/en/LC_MESSAGES
 
 
 %find_lang grub
