@@ -5,6 +5,6 @@ GRUB_GFXMODE=1680x1050,1360x768,1280x800,1024x768,1024x600,800x600,640x480
 GRUB_DEFAULT=saved
 GRUB_SAVEDEFAULT=true
 GRUB_TIMEOUT="10"
-GRUB_CMDLINE_LINUX_DEFAULT="quiet splash=silent logo.nologo acpi_osi=Linux video.use_native_backlight=1 audit=0"
-GRUB_CMDLINE_LINUX_RECOVERY=" failsafe nomodeset xdriver=vesa vga=788 systemd.log_level=debug systemd.log_target=kmsg log_buf_len=1M audit=0"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash=silent logo.nologo acpi_osi=Linux video.use_native_backlight=1 audit=0 rd.timeout=120"
+GRUB_CMDLINE_LINUX_RECOVERY=" failsafe nomodeset xdriver=vesa vga=788 systemd.log_level=debug systemd.log_target=kmsg log_buf_len=1M audit=0 rd.timeout=120"
 
