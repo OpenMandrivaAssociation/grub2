@@ -1,20 +1,22 @@
-diff -Naur grub-2.02-20150306/util/grub.d/10_linux.in grub-2.02-20150306.tpg/util/grub.d/10_linux.in
---- grub-2.02-20150306/util/grub.d/10_linux.in	2015-03-06 23:58:02.000000000 +0000
-+++ grub-2.02-20150306.tpg/util/grub.d/10_linux.in	2015-03-07 00:05:19.058570172 +0000
-@@ -74,6 +74,12 @@
+--- grub-2.02-20150306/util/grub.d/10_linux.in.0006~	2015-04-15 12:46:08.679204081 +0200
++++ grub-2.02-20150306/util/grub.d/10_linux.in	2015-05-18 23:25:44.186369275 +0200
+@@ -74,6 +74,15 @@ linux_entry ()
    type="$3"
    args="$4"
  
-+  # (tpg) check for swap
-+  if swapon -s | grep '/dev/sd.[0-9]\{1,\}'; then
-+    swap=`swapon -s | grep '/dev/sd.[0-9]\{1,\}'|awk '{print $1}'`
-+    resumepoint="resume=$swap"
++  # TODO: still need to figure out how to use pass several swap partitions directly
++  # so just use first swap partition for now...
++  swap="$(/sbin/blkid -s UUID -o value `/sbin/swapon -e --noheadings --show=NAME|head -n1`)"
++  # (tpg): check for swap
++  # (proyvind): check for multiple swap partitions and make sure to use UUID
++  if [ -n "$swap" ]; then
++     resumepoint="resume=$(echo UUID=$swap | sed -e 's# #:UUID=#g')"
 +  fi
 +
    if [ -z "$boot_device_id" ]; then
        boot_device_id="$(grub_get_device_id "${GRUB_DEVICE}")"
    fi
-@@ -129,7 +135,7 @@
+@@ -129,7 +138,7 @@ linux_entry ()
    message="$(gettext_printf "Loading Linux %s ..." ${version})"
    sed "s/^/$submenu_indentation/" << EOF
  	echo	'$(echo "$message" | grub_quote)'
