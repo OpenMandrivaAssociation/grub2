@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.17
+Release:	1.beta2.18
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -41,7 +41,6 @@ Patch2:		grub2-custom-color.patch
 Patch3:		grub2-read-cfg.patch
 Patch4:		grub2-symlink-is-garbage.patch
 Patch5:		grub2-name-corrections.patch
-Patch6:		grub-2.02-20150306-add-resume-when-swapon-returns-anything.patch
 Patch7:		grub-2.00.Linux.remove.patch
 Patch8:		grub-2.00-fix-dejavu-font.patch
 Patch9:		grub2-2.00-class-via-os-prober.patch
