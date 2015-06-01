@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.18
+Release:	1.beta2.19
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -359,8 +359,8 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
 # (tpg) disable audit messages
         if ! grep -q "audit=0" %{_sysconfdir}/default/grub; then
     	    sed -i -e 's#quiet#quiet audit=0 #' %{_sysconfdir}/default/grub
+            update-grub2
     	fi
-
     fi
 fi
 
