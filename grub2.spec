@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.19
+Release:	1.beta2.20
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -345,22 +345,29 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
     if [ $1 = 1 ]; then
         %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
     fi
-# (tpg) remove wrong line in boot options
-    if [ -e %{_sysconfdir}/default/grub ]; then
-		if grep -q "init=/lib/systemd/systemd" %{_sysconfdir}/default/grub; then
-	    	sed -i -e 's#init=/lib/systemd/systemd##g' %{_sysconfdir}/default/grub
-            update-grub2
-		fi
 
-        if grep -q "acpi_backlight=vendor" %{_sysconfdir}/default/grub; then
-        	sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' %{_sysconfdir}/default/grub
-            update-grub2
-        fi
+# (tpg) run only on update
+    if [ $1 -ge 2 ]; then
+# (tpg) remove wrong line in boot options
+	if [ -e %{_sysconfdir}/default/grub ]; then
+	    if grep -q "init=/lib/systemd/systemd" %{_sysconfdir}/default/grub; then
+		sed -i -e 's#init=/lib/systemd/systemd##g' %{_sysconfdir}/default/grub
+	    fi
+
+	    if grep -q "acpi_backlight=vendor" %{_sysconfdir}/default/grub; then
+		sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' %{_sysconfdir}/default/grub
+	    fi
 # (tpg) disable audit messages
-        if ! grep -q "audit=0" %{_sysconfdir}/default/grub; then
-    	    sed -i -e 's#quiet#quiet audit=0 #' %{_sysconfdir}/default/grub
-            update-grub2
-    	fi
+	    if ! grep -q "audit=0" %{_sysconfdir}/default/grub; then
+    		sed -i -e 's#quiet#quiet audit=0 #' %{_sysconfdir}/default/grub
+    	    fi
+# (tpg) remove resume= as it is not needed with tuxonice
+	    if ! grep -q "resume=" %{_sysconfdir}/default/grub; then
+    		sed -i -e 's#resume=.*[ \t]##' %{_sysconfdir}/default/grub
+    	    fi
+# (tpg) regenerate grub2 at the end
+	    update-grub2
+	fi
     fi
 fi
 
