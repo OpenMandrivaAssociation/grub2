@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.12
+Release:	1.beta2.13
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -41,7 +41,6 @@ Patch2:		grub2-custom-color.patch
 Patch3:		grub2-read-cfg.patch
 Patch4:		grub2-symlink-is-garbage.patch
 Patch5:		grub2-name-corrections.patch
-Patch6:		grub-2.02-20150306-add-resume-when-swapon-returns-anything.patch
 Patch7:		grub-2.00.Linux.remove.patch
 Patch8:		grub-2.00-fix-dejavu-font.patch
 Patch9:		grub2-2.00-class-via-os-prober.patch
@@ -351,23 +350,29 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
     if [ $1 = 1 ]; then
         %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
     fi
+# (tpg) run only on update
+	if [ $1 -ge 2 ]; then
 # (tpg) remove wrong line in boot options
-    if [ -e /etc/default/grub ]; then
-		if grep -q "init=/lib/systemd/systemd" /etc/default/grub; then
-	    	sed -i -e 's#init=/lib/systemd/systemd##g' /etc/default/grub
-            update-grub2
-		fi
+		if [ -e /etc/default/grub ]; then
+			if grep -q "init=/lib/systemd/systemd" /etc/default/grub; then
+            	sed -i -e 's#init=/lib/systemd/systemd##g' /etc/default/grub
+			fi
 
-        if grep -q "acpi_backlight=vendor" /etc/default/grub; then
-        	sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' /etc/default/grub
-            update-grub2
-        fi
+			if grep -q "acpi_backlight=vendor" /etc/default/grub; then
+				sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' /etc/default/grub
+			fi
 # (tpg) disable audit messages
-        if ! grep -q "audit=0" /etc/default/grub; then
-    	    sed -i -e 's#quiet#quiet audit=0 #' /etc/default/grub
-    	fi
-
-    fi
+			if ! grep -q "audit=0" /etc/default/grub; then
+				sed -i -e 's#quiet#quiet audit=0 #' /etc/default/grub
+			fi
+# (tpg) remove resume= as it is not needed with tuxonice
+			if ! grep -q "resume=" /etc/default/grub; then
+				sed -i -e 's#resume=.*[ \t]##' %{_sysconfdir}/default/grub
+			fi
+		fi
+# (tpg) regenerate grub2 at the end
+	update-grub2
+	fi
 fi
 
 %preun
