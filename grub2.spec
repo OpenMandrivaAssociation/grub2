@@ -2,7 +2,7 @@
 %define platform pc
 %define efi 1
 %define debug_package %{nil}
-%define snapshot 20150306
+%define snapshot 20150625
 
 %global efi %{ix86} x86_64
 
@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.20
+Release:	1.beta2.21
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -78,7 +78,7 @@ BuildRequires:	pkgconfig(ncursesw)
 %if %{with talpo}
 BuildRequires:	talpo
 %endif
-Requires:	xorriso
+Suggests:	xorriso
 Provides:	bootloader
 Requires:	os-prober
 Requires:	distro-theme-common
