@@ -1,2 +1,7 @@
 #!/bin/sh
-su --login root -c "/usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg"
+
+if [ -d /sys/firmware/efi -a -e "/boot/efi/EFI/openmandriva/grubx64.efi" -a `arch` = "x86_64" ]; then
+    su --login root -c "/usr/sbin/grub2-install --compress=xz --force --recheck --grub-setup=/bin/true"
+else
+    su --login root -c "/usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg"
+fi

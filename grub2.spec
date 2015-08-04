@@ -2,7 +2,7 @@
 %define platform pc
 %define efi 1
 %define debug_package %{nil}
-%define snapshot 20150625
+%define snapshot 20150804
 
 %global efi %{ix86} x86_64
 
