@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.21
+Release:	1.beta2.22
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -130,11 +130,6 @@ cp %{SOURCE10} .
 perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;' \
 	docs/grub-dev.texi
 
-perl -pi -e "s|(^FONT_SOURCE=)|\$1%{SOURCE6}|;" configure configure.ac
-
-sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure.ac
-
-perl -pi -e 's/-Werror//;' grub-core/Makefile.am
 mkdir grub-extras
 mv lua grub-extras
 export GRUB_CONTRIB=./grub-extras
@@ -146,6 +141,10 @@ tar -xf %{SOURCE8}
 pushd po-update; sh ./update.sh; popd
 
 ./autogen.sh
+
+perl -pi -e "s|(^FONT_SOURCE=)|\$1%{SOURCE6}|;" configure configure.ac
+sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure configure.ac
+perl -pi -e 's/-Werror//;' grub-core/Makefile.am
 
 #-----------------------------------------------------------------------
 %build
