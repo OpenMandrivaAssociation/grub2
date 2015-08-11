@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.22
+Release:	1.beta2.23
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -178,7 +178,8 @@ pushd pc
 	--disable-werror \
 	--enable-device-mapper \
 	--enable-grub-mkfont \
-	--enable-device-mapper
+	--enable-device-mapper \
+    --enable-grub-emu-sdl
 
 %make all html pdf
 popd
@@ -201,7 +202,8 @@ pushd efi
 	--with-grubdir=grub2 \
 	--disable-werror \
 	--enable-grub-mkfont \
-	--enable-device-mapper
+	--enable-device-mapper \
+    --enable-grub-emu-sdl
 
 %make ascii.h widthspec.h
 %make -C grub-core 
