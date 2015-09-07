@@ -2,7 +2,7 @@
 %define platform pc
 %define efi 1
 %define debug_package %{nil}
-%define snapshot 20150804
+%define snapshot 20150907
 
 %global efi %{ix86} x86_64
 
@@ -179,7 +179,7 @@ pushd pc
 	--enable-device-mapper \
 	--enable-grub-mkfont \
 	--enable-device-mapper \
-    --enable-grub-emu-sdl
+	--enable-grub-emu-sdl
 
 %make all html pdf
 popd
@@ -203,10 +203,10 @@ pushd efi
 	--disable-werror \
 	--enable-grub-mkfont \
 	--enable-device-mapper \
-    --enable-grub-emu-sdl
+	--enable-grub-emu-sdl
 
 %make ascii.h widthspec.h
-%make -C grub-core 
+%make -C grub-core
 
 %define grubefiarch %{_arch}-efi
 
