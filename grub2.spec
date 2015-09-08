@@ -100,6 +100,7 @@ The kernel, in turn, initializes the rest of the operating system (e.g. GNU).
 %package efi
 Summary:	GRUB for EFI systems
 Group:		System/Kernel and hardware
+#Requires:	pesign
 
 %description efi
 The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
