@@ -103,6 +103,7 @@ Summary:	GRUB for EFI systems
 Group:		System/Kernel and hardware
 # (tpg) this is needed to sign nour EFI image
 #BuildRequires:	pesign
+Requires:	efibootmgr
 
 %description efi
 The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
