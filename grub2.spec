@@ -5,6 +5,7 @@
 %define snapshot 20150907
 
 %global efi %{ix86} x86_64
+%define efidir openmandriva
 
 %bcond_with talpo
 
@@ -208,7 +209,7 @@ pushd efi
 	--enable-grub-emu-sdl
 
 %make ascii.h widthspec.h
-%make -C grub-core
+%make -C grub-core -j1
 
 %define grubefiarch %{_arch}-efi
 
@@ -274,10 +275,10 @@ done
 %ifarch %{efi}
 %makeinstall_std -C efi/grub-core
 
-install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/openmandriva/grub.efi
+install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/%{efidir}/grub.efi
 # Ghost config file
-touch %{buildroot}/boot/efi/EFI/openmandriva/grub.cfg
-ln -s /boot/efi/EFI/openmandriva/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
+touch %{buildroot}/boot/efi/EFI/%{efidir}/grub.cfg
+ln -s /boot/efi/EFI/%{efidir}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
 
 %if 0
 # (proyvind): not sure what the purpose of this might've been, but it's no
@@ -315,7 +316,13 @@ cat > %{buildroot}%{_filetriggers_dir}/%{name}.filter << EOF
 EOF
 cat > %{buildroot}%{_filetriggers_dir}/%{name}.script << EOF
 #!/bin/sh
-[ -e /boot/grub2/grub.cfg ] && %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+if [ -d /sys/firmware/efi -a -d "/boot/efi/EFI/%{efidir}" ]; then
+	%{_sbindir}/%{name}-mkconfig -o /boot/efi/EFI/%{efidir}/grub.cfg
+elif [ -e /boot/grub2/grub.cfg ]; then
+	%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+else
+	echo "Could not update your grub2 config"
+fi
 EOF
 chmod 755 %{buildroot}%{_filetriggers_dir}/%{name}.script
 
@@ -337,45 +344,55 @@ exec >/dev/null 2>&1
 
 if [ -e /boot/grub/device.map ]; then
 # Create device.map or reuse one from GRUB Legacy
-cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
-    %{_sbindir}/%{name}-mkdevicemap
+	cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
+	%{_sbindir}/%{name}-mkdevicemap
 fi
 
 # Do not install grub2 if running in a chroot
 # http://stackoverflow.com/questions/75182/detecting-a-chroot-jail-from-within
 if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
-    # Determine the partition with /boot
-    BOOT_PARTITION=$(df -h /boot |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
-    # (Re-)Generate core.img, but don't let it be installed in boot sector
-    %{_sbindir}/%{name}-install $BOOT_PARTITION
-    # Generate grub.cfg and add GRUB2 chainloader to menu on initial install
-    if [ $1 = 1 ]; then
-        %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
-    fi
+	# check for EFI
+	if [ -d /sys/firmware/efi -a -d "/boot/efi/EFI/openmandriva" ]; then
+		echo "Installing EFI image"
+		BOOT_PARTITION=$(df -h /boot/efi/EFI/%{efidir} |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
+		%{_sbindir}/%{name}-install --compress=xz --force --recheck --grub-setup=/bin/true
+		if [ $1 = 1 ]; then
+			%{_sbindir}/%{name}-mkconfig -o /boot/efi/EFI/%{efidir}/grub.cfg
+		fi
+	else
+# Determine the partition with /boot
+		BOOT_PARTITION=$(df -h /boot |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
+# (Re-)Generate core.img, but don't let it be installed in boot sector
+		%{_sbindir}/%{name}-install $BOOT_PARTITION
+# Generate grub.cfg and add GRUB2 chainloader to menu on initial install
+		if [ $1 = 1 ]; then
+			%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+		fi
+fi
 
 # (tpg) run only on update
     if [ $1 -ge 2 ]; then
 # (tpg) remove wrong line in boot options
-	if [ -e %{_sysconfdir}/default/grub ]; then
-	    if grep -q "init=/lib/systemd/systemd" %{_sysconfdir}/default/grub; then
-		sed -i -e 's#init=/lib/systemd/systemd##g' %{_sysconfdir}/default/grub
-	    fi
-
-	    if grep -q "acpi_backlight=vendor" %{_sysconfdir}/default/grub; then
-		sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' %{_sysconfdir}/default/grub
-	    fi
+		if [ -e %{_sysconfdir}/default/grub ]; then
+			if grep -q "init=/lib/systemd/systemd" %{_sysconfdir}/default/grub; then
+				sed -i -e 's#init=/lib/systemd/systemd##g' %{_sysconfdir}/default/grub
+			fi
+			
+			if grep -q "acpi_backlight=vendor" %{_sysconfdir}/default/grub; then
+				sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' %{_sysconfdir}/default/grub
+			fi
 # (tpg) disable audit messages
-	    if ! grep -q "audit=0" %{_sysconfdir}/default/grub; then
-    		sed -i -e 's#quiet#quiet audit=0 #' %{_sysconfdir}/default/grub
-    	    fi
+			if ! grep -q "audit=0" %{_sysconfdir}/default/grub; then
+				sed -i -e 's#quiet#quiet audit=0 #' %{_sysconfdir}/default/grub
+			fi
 # (tpg) remove resume= as it is not needed with tuxonice
-	    if ! grep -q "resume=" %{_sysconfdir}/default/grub; then
-    		sed -i -e 's#resume=.*[ \t]##' %{_sysconfdir}/default/grub
-    	    fi
+			if ! grep -q "resume=" %{_sysconfdir}/default/grub; then
+				sed -i -e 's#resume=.*[ \t]##' %{_sysconfdir}/default/grub
+			fi
 # (tpg) regenerate grub2 at the end
 	    update-grub2
+		fi
 	fi
-    fi
 fi
 
 %preun
@@ -449,14 +466,14 @@ fi
 %{_filetriggers_dir}/%{name}.*
 
 %ifarch %{efi}
-%attr(0755,root,root) %dir /boot/efi/EFI/openmandriva
-%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/openmandriva/grub.cfg
+%attr(0755,root,root) %dir /boot/efi/EFI/%{efidir}
+%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
 
 %files efi
 # Files in this package are only required for the creation of iso's
 # The install process creates all the files required to boot with grub via EFI
-%attr(0755,root,root) /boot/efi/EFI/openmandriva/grub.efi
-#%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/openmandriva/grub.cfg
+%attr(0755,root,root) /boot/efi/EFI/%{efidir}/grub.efi
+#%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
 
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 
