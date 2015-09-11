@@ -102,7 +102,7 @@ The kernel, in turn, initializes the rest of the operating system (e.g. GNU).
 Summary:	GRUB for EFI systems
 Group:		System/Kernel and hardware
 # (tpg) this is needed to sign nour EFI image
-Requires:	pesign
+#BuildRequires:	pesign
 
 %description efi
 The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
@@ -184,7 +184,7 @@ pushd pc
 	--enable-device-mapper \
 	--enable-grub-emu-sdl
 
-%make all html pdf
+%make -j1 all html pdf
 popd
 
 %ifarch %{efi}
@@ -209,7 +209,7 @@ pushd efi
 	--enable-grub-emu-sdl
 
 %make ascii.h widthspec.h
-%make -C grub-core -j1
+%make -C grub-core
 
 %define grubefiarch %{_arch}-efi
 
@@ -226,7 +226,7 @@ pushd efi
 		squash4 syslinuxcfg
 
 # sign our EFI image
-%pesign -s -i grub.efi.org -o grub.efi
+# %pesign -s -i grub.efi.org -o grub.efi
 
 popd
 %endif
