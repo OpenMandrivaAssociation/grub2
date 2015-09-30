@@ -12,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.25
+Release:	1.beta2.26
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -114,11 +114,10 @@ architectures and hardware devices.  This subpackage provides support
 for EFI systems.
 %endif
 
-%package	starfield-theme
+%package starfield-theme
 Summary:	An example theme for GRUB
 Group:		System/Kernel and hardware
 Requires:	%{name} = %{EVRD}
-Provides:	%{name}-theme
 
 %description	starfield-theme
 Example 'starfield' theme for GRUB.
