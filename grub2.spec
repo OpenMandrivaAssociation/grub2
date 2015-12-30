@@ -2,7 +2,7 @@
 %define platform pc
 %define efi 1
 %define debug_package %{nil}
-%define snapshot 20150306
+%define snapshot 20151230
 
 %global efi %{ix86} x86_64
 
@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.13
+Release:	1.beta2.14
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -76,10 +76,10 @@ BuildRequires:	pkgconfig(ncursesw)
 %if %{with talpo}
 BuildRequires:	talpo
 %endif
-Requires:	xorriso
 Provides:	bootloader
-Requires:	os-prober
-Requires:	distro-theme-common
+Suggests:	xorriso
+Suggests:	os-prober
+Suggests:	distro-theme-common
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
@@ -335,44 +335,55 @@ exec >/dev/null 2>&1
 
 if [ -e /boot/grub/device.map ]; then
 # Create device.map or reuse one from GRUB Legacy
-cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
+    cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
     %{_sbindir}/%{name}-mkdevicemap
 fi
 
 # Do not install grub2 if running in a chroot
 # http://stackoverflow.com/questions/75182/detecting-a-chroot-jail-from-within
 if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
-    # Determine the partition with /boot
-    BOOT_PARTITION=$(df -h /boot |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
-    # (Re-)Generate core.img, but don't let it be installed in boot sector
-    %{_sbindir}/%{name}-install $BOOT_PARTITION
-    # Generate grub.cfg and add GRUB2 chainloader to menu on initial install
-    if [ $1 = 1 ]; then
-        %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+# check for EFI
+    if [ -d /sys/firmware/efi -a -d "/boot/efi/EFI/openmandriva" ]; then
+        echo "Installing EFI image"
+        BOOT_PARTITION=$(df -h /boot/efi/EFI/%{efidir} |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
+        %{_sbindir}/%{name}-install --compress=xz --force --recheck --grub-setup=/bin/true
+        if [ $1 = 1 ]; then
+            %{_sbindir}/%{name}-mkconfig -o /boot/efi/EFI/%{efidir}/grub.cfg
+        fi
+    else
+# Determine the partition with /boot
+        BOOT_PARTITION=$(df -h /boot |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
+# (Re-)Generate core.img, but don't let it be installed in boot sector
+        %{_sbindir}/%{name}-install $BOOT_PARTITION
+# Generate grub.cfg and add GRUB2 chainloader to menu on initial install
+        if [ $1 = 1 ]; then
+            %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
+        fi
     fi
-# (tpg) run only on update
-	if [ $1 -ge 2 ]; then
-# (tpg) remove wrong line in boot options
-		if [ -e /etc/default/grub ]; then
-			if grep -q "init=/lib/systemd/systemd" /etc/default/grub; then
-            	sed -i -e 's#init=/lib/systemd/systemd##g' /etc/default/grub
-			fi
 
-			if grep -q "acpi_backlight=vendor" /etc/default/grub; then
-				sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' /etc/default/grub
-			fi
+# (tpg) run only on update
+    if [ $1 -ge 2 ]; then
+# (tpg) remove wrong line in boot options
+        if [ -e %{_sysconfdir}/default/grub ]; then
+            if grep -q "init=/lib/systemd/systemd" %{_sysconfdir}/default/grub; then
+                sed -i -e 's#init=/lib/systemd/systemd##g' %{_sysconfdir}/default/grub
+            fi
+
+            if grep -q "acpi_backlight=vendor" %{_sysconfdir}/default/grub; then
+                sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' %{_sysconfdir}/default/grub
+            fi
 # (tpg) disable audit messages
-			if ! grep -q "audit=0" /etc/default/grub; then
-				sed -i -e 's#quiet#quiet audit=0 #' /etc/default/grub
-			fi
+            if ! grep -q "audit=0" %{_sysconfdir}/default/grub; then
+                sed -i -e 's#quiet#quiet audit=0 #' %{_sysconfdir}/default/grub
+            fi
 # (tpg) remove resume= as it is not needed with tuxonice
-			if ! grep -q "resume=" /etc/default/grub; then
-				sed -i -e 's#resume=.*[ \t]##' %{_sysconfdir}/default/grub
-			fi
-		fi
+            if ! grep -q "resume=" %{_sysconfdir}/default/grub; then
+                sed -i -e 's#resume=.*[ \t]##' %{_sysconfdir}/default/grub
+            fi
 # (tpg) regenerate grub2 at the end
-	update-grub2
-	fi
+            update-grub2
+        fi
+    fi
 fi
 
 %preun
