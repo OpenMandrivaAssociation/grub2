@@ -1,5 +1,6 @@
---- grub-2.00/util/grub.d/30_os-prober.in.0016~	2014-10-09 09:50:59.572211840 +0100
-+++ grub-2.00/util/grub.d/30_os-prober.in	2014-10-09 10:05:42.190410515 +0100
+diff -Naur grub-2.02-20160210/util/grub.d/30_os-prober.in grub-2.02-20160210.tpg/util/grub.d/30_os-prober.in
+--- grub-2.02-20160210/util/grub.d/30_os-prober.in	2016-02-03 17:34:55.000000000 +0000
++++ grub-2.02-20160210.tpg/util/grub.d/30_os-prober.in	2016-02-10 21:00:13.885363316 +0000
 @@ -112,6 +112,11 @@
    LONGNAME="`echo ${OS} | cut -d ':' -f 2 | tr '^' ' '`"
    LABEL="`echo ${OS} | cut -d ':' -f 3 | tr '^' ' '`"
@@ -12,16 +13,16 @@
    if UUID="`${grub_probe} --target=fs_uuid --device ${DEVICE%@*}`"; then
      EXPUUID="$UUID"
  
-@@ -230,7 +235,7 @@
+@@ -233,7 +238,7 @@
  
  	if [ "x$is_top_level" = xtrue ] && [ "x${GRUB_DISABLE_SUBMENU}" != xy ]; then
              cat << EOF
--menuentry '$(echo "$OS $onstr" | grub_quote)' --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-simple-$boot_device_id' {
+-menuentry '$(echo "$OS $onstr" | grub_quote)' $CLASS --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-simple-$boot_device_id' {
 +menuentry '$(echo "$OS" | grub_quote)' --class ${CLASS} --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-simple-$boot_device_id' {
  EOF
  	    save_default_entry | grub_add_tab
  	    printf '%s\n' "${prepare_boot_cache}"
-@@ -250,7 +255,7 @@
+@@ -253,7 +258,7 @@
  	fi
  	title="${LLABEL} $onstr"
          cat << EOF
