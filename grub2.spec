@@ -12,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.28
+Release:	1.beta2.29
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -316,18 +316,12 @@ cat > %{buildroot}%{_filetriggers_dir}/%{name}.filter << EOF
 EOF
 cat > %{buildroot}%{_filetriggers_dir}/%{name}.script << EOF
 #!/bin/sh
-if [ -d /sys/firmware/efi -a -d "/boot/efi/EFI/%{efidir}" ]; then
-	%{_sbindir}/%{name}-mkconfig -o /boot/efi/EFI/%{efidir}/grub.cfg
-elif [ -e /boot/grub2/grub.cfg ]; then
-	%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
-else
-	echo "Could not update your grub2 config"
+    %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
 fi
 EOF
 chmod 755 %{buildroot}%{_filetriggers_dir}/%{name}.script
 
 install -d %{buildroot}/boot/%{name}/themes/
-
 
 #bugfix: error message before loading of grub2 menu on boot
 mkdir -p %{buildroot}%{_localedir}/en/LC_MESSAGES
@@ -351,23 +345,13 @@ fi
 # Do not install grub2 if running in a chroot
 # http://stackoverflow.com/questions/75182/detecting-a-chroot-jail-from-within
 if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
-# check for EFI
-    if [ -d /sys/firmware/efi -a -d "/boot/efi/EFI/openmandriva" ]; then
-	echo "Installing EFI image"
-	BOOT_PARTITION=$(df -h /boot/efi/EFI/%{efidir} |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
-	%{_sbindir}/%{name}-install --compress=xz --force --recheck --grub-setup=/bin/true
-	if [ $1 = 1 ]; then
-	    %{_sbindir}/%{name}-mkconfig -o /boot/efi/EFI/%{efidir}/grub.cfg
-	fi
-    else
 # Determine the partition with /boot
-	BOOT_PARTITION=$(df -h /boot |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
+    BOOT_PARTITION=$(df -h /boot |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
 # (Re-)Generate core.img, but don't let it be installed in boot sector
-	%{_sbindir}/%{name}-install $BOOT_PARTITION
+    %{_sbindir}/%{name}-install $BOOT_PARTITION
 # Generate grub.cfg and add GRUB2 chainloader to menu on initial install
-	if [ $1 = 1 ]; then
-	    %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
-	fi
+    if [ $1 = 1 ]; then
+	%{_sbindir}/update-grub2
     fi
 
 # (tpg) run only on update
@@ -390,7 +374,7 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
 		sed -i -e 's#resume=.*[ \t]##' %{_sysconfdir}/default/grub
 	    fi
 # (tpg) regenerate grub2 at the end
-	    update-grub2
+	    %{_sbindir}/update-grub2
 	fi
     fi
 fi
