@@ -2,7 +2,7 @@
 %define platform pc
 %define efi 1
 %define debug_package %{nil}
-%define snapshot 20151230
+%define snapshot 20160210
 
 %global efi %{ix86} x86_64
 %define efidir openmandriva
@@ -12,12 +12,12 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.27
+Release:	1.beta2.28
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
 #Source0:	http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
-# git git://git.sv.gnu.org/grub.git
+# git clone git://git.sv.gnu.org/grub.git
 # git archive --format=tar --prefix grub-2.02-$(date +%Y%m%d)/ HEAD | xz -vf > grub-2.02-$(date +%Y%m%d).tar.xz
 Source0:	grub-%{version}-%{snapshot}.tar.xz
 Source1:	90_persistent
