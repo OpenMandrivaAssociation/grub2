@@ -47,7 +47,6 @@ Patch9:		grub2-2.00-class-via-os-prober.patch
 Patch10:	grub-2.00-autoreconf-sucks.patch
 Patch11:	0468-Don-t-write-messages-to-the-screen.patch
 Patch12:	grub-2.00-add-recovery_option.patch
-Patch13:	grub2-2.02~beta2-class-via-os-prober.patch
 Patch16:	grub-2.02-remove-efivar-kernel-module-requirement.patch
 
 BuildRequires:	autogen
