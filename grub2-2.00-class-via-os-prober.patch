@@ -1,19 +1,37 @@
 diff -Naur grub-2.02-20160210/util/grub.d/30_os-prober.in grub-2.02-20160210.tpg/util/grub.d/30_os-prober.in
 --- grub-2.02-20160210/util/grub.d/30_os-prober.in	2016-02-03 17:34:55.000000000 +0000
-+++ grub-2.02-20160210.tpg/util/grub.d/30_os-prober.in	2016-02-10 21:00:13.885363316 +0000
-@@ -112,6 +112,11 @@
-   LONGNAME="`echo ${OS} | cut -d ':' -f 2 | tr '^' ' '`"
-   LABEL="`echo ${OS} | cut -d ':' -f 3 | tr '^' ' '`"
-   BOOT="`echo ${OS} | cut -d ':' -f 4`"
-+  CLASS="$(echo ${LABEL} | tr '[A-Z]' '[a-z]' | sed 's,[0-9]*$,,')"
-+  if [ -z "${CLASS}" ] ; then
-+    CLASS="unknown";
-+  fi
-+
-   if UUID="`${grub_probe} --target=fs_uuid --device ${DEVICE%@*}`"; then
-     EXPUUID="$UUID"
++++ grub-2.02-20160210.tpg/util/grub.d/30_os-prober.in	2016-02-11 01:21:28.245330006 +0000
+@@ -136,7 +136,10 @@
+   fi
  
-@@ -233,7 +238,7 @@
+   # os-prober returns text string followed by optional counter
+-  CLASS="--class $(echo "${LABEL}" | LC_ALL=C sed 's,[[:digit:]]*$,,' | cut -d' ' -f1 | tr 'A-Z' 'a-z' | LC_ALL=C sed 's,[^[:alnum:]_],_,g')"
++  CLASS="$(echo "${LABEL}" | LC_ALL=C sed 's,[[:digit:]]*$,,' | cut -d' ' -f1 | tr 'A-Z' 'a-z' | LC_ALL=C sed 's,[^[:alnum:]_],_,g')"
++  if [ -z "${CLASS}" ] ; then
++   CLASS="unknown";
++  fi
+ 
+   gettext_printf "Found %s on %s\n" "${LONGNAME}" "${DEVICE}" >&2
+ 
+@@ -145,7 +148,7 @@
+ 
+ 	  onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
+       cat << EOF
+-menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' $CLASS --class os \$menuentry_id_option 'osprober-chain-$(grub_get_device_id "${DEVICE}")' {
++menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class ${CLASS} --class os \$menuentry_id_option 'osprober-chain-$(grub_get_device_id "${DEVICE}")' {
+ EOF
+       save_default_entry | grub_add_tab
+       prepare_grub_to_access_device ${DEVICE} | grub_add_tab
+@@ -177,7 +180,7 @@
+ 	DEVICE=${DEVICE%@*}
+ 	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
+       cat << EOF
+-menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' $CLASS --class os \$menuentry_id_option 'osprober-efi-$(grub_get_device_id "${DEVICE}")' {
++menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class ${CLASS} --class os \$menuentry_id_option 'osprober-efi-$(grub_get_device_id "${DEVICE}")' {
+ EOF
+       save_default_entry | sed -e "s/^/\t/"
+       prepare_grub_to_access_device ${DEVICE} | sed -e "s/^/\t/"
+@@ -233,7 +236,7 @@
  
  	if [ "x$is_top_level" = xtrue ] && [ "x${GRUB_DISABLE_SUBMENU}" != xy ]; then
              cat << EOF
@@ -22,12 +40,12 @@ diff -Naur grub-2.02-20160210/util/grub.d/30_os-prober.in grub-2.02-20160210.tpg
  EOF
  	    save_default_entry | grub_add_tab
  	    printf '%s\n' "${prepare_boot_cache}"
-@@ -253,7 +258,7 @@
+@@ -253,7 +256,7 @@
  	fi
  	title="${LLABEL} $onstr"
          cat << EOF
 -	menuentry '$(echo "$title" | grub_quote)' --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-$LKERNEL-${recovery_params}-$boot_device_id' {
-+        menuentry '$(echo "$title" | grub_quote)' --class ${CLASS} --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-$LKERNEL-${recovery_params}-$boot_device_id' {
++	menuentry '$(echo "$title" | grub_quote)' --class ${CLASS} --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-$LKERNEL-${recovery_params}-$boot_device_id' {
  EOF
  	save_default_entry | sed -e "s/^/$grub_tab$grub_tab/"
  	printf '%s\n' "${prepare_boot_cache}" | grub_add_tab

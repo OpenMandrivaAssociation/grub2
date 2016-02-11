@@ -12,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.29
+Release:	1.beta2.30
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -48,7 +48,6 @@ Patch9:		grub2-2.00-class-via-os-prober.patch
 Patch10:	grub-2.00-autoreconf-sucks.patch
 Patch11:	0468-Don-t-write-messages-to-the-screen.patch
 Patch12:	grub-2.00-add-recovery_option.patch
-Patch13:	grub2-2.02~beta2-class-via-os-prober.patch
 Patch16:	grub-2.02-remove-efivar-kernel-module-requirement.patch
 Patch17:	grub-2.02-beta2-custom-vendor-config.patch
 
