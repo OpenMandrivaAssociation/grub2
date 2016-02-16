@@ -12,7 +12,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta2.30
+Release:	1.beta2.31
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -316,7 +316,6 @@ EOF
 cat > %{buildroot}%{_filetriggers_dir}/%{name}.script << EOF
 #!/bin/sh
     %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
-fi
 EOF
 chmod 755 %{buildroot}%{_filetriggers_dir}/%{name}.script
 
