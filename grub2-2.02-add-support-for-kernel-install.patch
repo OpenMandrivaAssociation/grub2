@@ -1,0 +1,15 @@
+diff -Naur grub-2.02-20160229/util/grub.d/10_linux.in grub-2.02-20160229.tpg/util/grub.d/10_linux.in
+--- grub-2.02-20160229/util/grub.d/10_linux.in	2016-03-31 16:54:54.000000000 +0000
++++ grub-2.02-20160229.tpg/util/grub.d/10_linux.in	2016-03-31 16:59:08.399706989 +0000
+@@ -187,9 +187,10 @@
+   version=`echo $basename | sed -e "s,^[^0-9]*-,,g"`
+   alt_version=`echo $version | sed -e "s,\.old$,,g"`
+   linux_root_device_thisversion="${LINUX_ROOT_DEVICE}"
++  [[ -s /etc/machine-id ]] && machine_id=`cat /etc/machine-id`
+ 
+   initrd=
+-  for i in "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
++  for i in "${machine_id}/${version}/initrd" "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
+ 	   "initrd-${version}" "initramfs-${version}.img" \
+ 	   "initrd.img-${alt_version}" "initrd-${alt_version}.img" \
+ 	   "initrd-${alt_version}" "initramfs-${alt_version}.img" \
