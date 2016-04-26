@@ -172,6 +172,7 @@ export CONFIGURE_TOP="$PWD"
 
 #(proyvind): non-UEFI boot will fail with 'alloc magic broken' on x86_64
 #            if built with clang
+%if %{platform}
 mkdir -p %{platform}
 pushd %{platform}
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
@@ -197,6 +198,7 @@ pushd %{platform}
 
 %make -j1 all html pdf
 popd
+%endif
 
 %ifarch %{efi}
 mkdir -p efi
@@ -246,6 +248,7 @@ popd
 #-----------------------------------------------------------------------
 %install
 ######legacy
+%if %{platform}
 %makeinstall_std -C %{platform}
 %makeinstall_std -C %{platform}/docs install-pdf install-html PACKAGE_TARNAME=%{name}
 
@@ -261,6 +264,7 @@ install -d %{buildroot}/boot/%{name}/locale
 cp po/*.gmo %{buildroot}/boot/%{name}/locale/
 touch %{buildroot}/boot/%{name}/grub.cfg
 ln -s /boot/%{name}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}.cfg
+%endif
 
 ######EFI
 %ifarch %{efi}
