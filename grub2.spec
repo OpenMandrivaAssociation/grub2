@@ -222,11 +222,11 @@ pushd efi
 #  OS.
 
 #These lines produce a grub.efi suitable for an iso. Note the path in the -p option it points to the grub.cfg file on the iso.
-../pc/grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d grub-core linux multiboot multiboot2 all_video boot \
-		btrfs cat chain configfile echo efifwsetup efinet ext2 fat f2fs font gfxmenu gfxterm gfxterm_menu gfxterm_background \
-		gzio halt hfsplus iso9660 jpeg lvm mdraid09 mdraid1x minicmd normal part_apple part_msdos part_gpt password_pbkdf2 \
-		png reboot regexp search search_fs_uuid search_fs_file search_label sleep test tftp video xfs mdraid09 mdraid1x lua loopback \
-		squash4 syslinuxcfg
+../pc/grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d all_video boot btrfs cat chain configfile echo efifwsetup \
+			efinet ext2 f2fs fat font gfxmenu gfxterm gfxterm_background gfxterm_menu grub-core gzio halt hfsplus \
+			iso9660 jpeg linux loadenv loopback lua lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt \
+			part_msdos password_pbkdf2 png reboot regexp search search_fs_file search_fs_uuid search_label sleep \
+			syslinuxcfg test tftp video xfs
 
 # sign our EFI image
 # %pesign -s -i grub.efi.org -o grub.efi
@@ -254,26 +254,6 @@ cp po/*.gmo %{buildroot}/boot/%{name}/locale/
 touch %{buildroot}/boot/%{name}/grub.cfg
 ln -s /boot/%{name}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}.cfg
 
-%if 0
-# (proyvind): not sure what the purpose of this might've been, but it's no
-#             longer made use of, so let's comment it out for now to avoid
-#             time being spent on doing nothing untill it gets removed or made
-#             use of again...
-# Install ELF files modules and images were created from into
-# the shadow root, where debuginfo generator will grab them from
-find %{buildroot} -name '*.mod' -o -name '*.img' |
-while read MODULE
-do
-        BASE=$(echo $MODULE |sed -r "s,.*/([^/]*)\.(mod|img),\1,")
-        # Symbols from .img files are in .exec files, while .mod
-        # modules store symbols in .elf. This is just because we
-        # have both boot.img and boot.mod ...
-        EXT=$(echo $MODULE |grep -q '.mod' && echo '.elf' || echo '.exec')
-        TGT=$(echo $MODULE |sed "s,%{buildroot},.debugroot,")
-#        install -m 755 -D $BASE$EXT $TGT
-done
-%endif
-
 ######EFI
 %ifarch %{efi}
 %makeinstall_std -C efi/grub-core
@@ -282,25 +262,6 @@ install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/%{efidir}/grub.efi
 # Ghost config file
 touch %{buildroot}/boot/efi/EFI/%{efidir}/grub.cfg
 ln -s /boot/efi/EFI/%{efidir}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
-
-%if 0
-# (proyvind): not sure what the purpose of this might've been, but it's no
-#             longer made use of, so let's comment it out for now to avoid
-#             time being spent on doing nothing untill it gets removed or made
-#             use of again...
-# Install ELF files modules and images were created from into
-# the shadow root, where debuginfo generator will grab them from
-find %{buildroot} -name '*.mod' -o -name '*.img' |
-while read MODULE
-do
-	BASE=$(echo $MODULE |sed -r "s,.*/([^/]*)\.(mod|img),\1,")
-	# Symbols from .img files are in .exec files, while .mod
-	# modules store symbols in .elf. This is just because we
-	# have both boot.img and boot.mod ...
-	EXT=$(echo $MODULE |grep -q '.mod' && echo '.elf' || echo '.exec')
-	TGT=$(echo $MODULE |sed "s,%{buildroot},.debugroot,")
-done
-%endif
 %endif
 
 # Defaults
@@ -328,7 +289,6 @@ install -d %{buildroot}/boot/%{name}/themes/
 #bugfix: error message before loading of grub2 menu on boot
 mkdir -p %{buildroot}%{_localedir}/en/LC_MESSAGES
 ln %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_localedir}/en/LC_MESSAGES
-
 
 %find_lang grub
 
