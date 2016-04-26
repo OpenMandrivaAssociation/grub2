@@ -1,10 +1,17 @@
 %define libdir32 %{_exec_prefix}/lib
+
+%ifarch %{ix86} x86_64
 %define platform pc
-%define efi 1
+%endif
+
+%ifarch armv7
+%define platform uboot
+%endif
+
 %define debug_package %{nil}
 %define snapshot 20160229
 
-%global efi %{ix86} x86_64
+%global efi %{ix86} x86_64 aarch64
 %define efidir openmandriva
 
 %bcond_with talpo
@@ -165,8 +172,8 @@ export CONFIGURE_TOP="$PWD"
 
 #(proyvind): non-UEFI boot will fail with 'alloc magic broken' on x86_64
 #            if built with clang
-mkdir -p pc
-pushd pc
+mkdir -p %{platform}
+pushd %{platform}
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
 %if %{with talpo}
 	CC=talpo  \
@@ -174,7 +181,7 @@ pushd pc
 %endif
 	CFLAGS="-O2 -fuse-ld=bfd" \
 	TARGET_LDFLAGS="-static" \
-	--with-platform=pc \
+	--with-platform=%{platform} \
     %ifarch x86_64
 	--enable-efiemu \
     %endif
@@ -239,8 +246,8 @@ popd
 #-----------------------------------------------------------------------
 %install
 ######legacy
-%makeinstall_std -C pc
-%makeinstall_std -C pc/docs install-pdf install-html PACKAGE_TARNAME=%{name}
+%makeinstall_std -C %{platform}
+%makeinstall_std -C %{platform}/docs install-pdf install-html PACKAGE_TARNAME=%{name}
 
 # (bor) grub.info is harcoded in sources
 mv %{buildroot}%{_infodir}/grub.info %{buildroot}%{_infodir}/%{name}.info
