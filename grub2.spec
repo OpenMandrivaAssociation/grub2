@@ -4,7 +4,7 @@
 %define platform pc
 %endif
 
-%ifarch armv7
+%ifarch armv7hl
 %define platform uboot
 %endif
 
