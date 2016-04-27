@@ -8,6 +8,10 @@
 %define platform uboot
 %endif
 
+%ifarch aarch64
+%define platform %{nil}
+%endif
+
 %define debug_package %{nil}
 %define snapshot 20160229
 
@@ -155,8 +159,7 @@ tar -xf %{SOURCE8}
 pushd po-update; sh ./update.sh; popd
 
 ./autogen.sh
-# (tpg) wtf is this ?
-# perl -pi -e "s|(^FONT_SOURCE=)|\$1%{SOURCE6}|;" configure configure.ac
+perl -pi -e "s|(^FONT_SOURCE=)|\$1%{SOURCE6}|;" configure configure.ac
 
 sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure configure.ac
 perl -pi -e 's/-Werror//;' grub-core/Makefile.am
