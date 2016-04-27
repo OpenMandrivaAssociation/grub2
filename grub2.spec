@@ -233,11 +233,11 @@ pushd efi
 #  OS.
 
 #These lines produce a grub.efi suitable for an iso. Note the path in the -p option it points to the grub.cfg file on the iso.
-../pc/grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d all_video boot btrfs cat chain configfile echo efifwsetup \
-			efinet ext2 f2fs fat font gfxmenu gfxterm gfxterm_background gfxterm_menu grub-core gzio halt hfsplus \
-			iso9660 jpeg linux loadenv loopback lua lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt \
-			part_msdos password_pbkdf2 png reboot regexp search search_fs_file search_fs_uuid search_label sleep \
-			syslinuxcfg test tftp video xfs
+../pc/grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d grub-core linux multiboot multiboot2 all_video boot \
+		btrfs cat chain configfile echo efifwsetup efinet ext2 fat f2fs font gfxmenu gfxterm gfxterm_menu gfxterm_background \
+		gzio halt hfsplus iso9660 jpeg lvm mdraid09 mdraid1x minicmd normal part_apple part_msdos part_gpt password_pbkdf2 \
+		png reboot regexp search search_fs_uuid search_fs_file search_label sleep test tftp video xfs mdraid09 mdraid1x lua loopback \
+		squash4 syslinuxcfg loadenv
 
 # sign our EFI image
 # %pesign -s -i grub.efi.org -o grub.efi
