@@ -148,6 +148,10 @@ cp %{SOURCE10} .
 perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;' \
 	docs/grub-dev.texi
 
+perl -pi -e "s|(^FONT_SOURCE=)|\$1%{SOURCE6}|;" configure configure.ac
+
+sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure configure.ac
+perl -pi -e 's/-Werror//;' grub-core/Makefile.am
 mkdir grub-extras
 mv lua grub-extras
 export GRUB_CONTRIB=./grub-extras
@@ -158,12 +162,6 @@ sh linguas.sh
 tar -xf %{SOURCE8}
 pushd po-update; sh ./update.sh; popd
 
-./autogen.sh
-perl -pi -e "s|(^FONT_SOURCE=)|\$1%{SOURCE6}|;" configure configure.ac
-
-sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure configure.ac
-perl -pi -e 's/-Werror//;' grub-core/Makefile.am
-
 #-----------------------------------------------------------------------
 %build
 %define _disable_ld_no_undefined 1
@@ -173,6 +171,7 @@ export CONFIGURE_TOP="$PWD"
 #(proyvind): debugedit will fail on some binaries if linked using gold
 # https://savannah.gnu.org/bugs/?34539
 # https://sourceware.org/bugzilla/show_bug.cgi?id=14187
+./autogen.sh
 
 #(proyvind): non-UEFI boot will fail with 'alloc magic broken' on x86_64
 #            if built with clang
