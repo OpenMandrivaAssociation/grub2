@@ -67,8 +67,9 @@ BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	fontpackages-devel
 BuildRequires:	unifont
-BuildRequires:	fonts-ttf-dejavu
-BuildRequires:	fonts-ttf-tamil
+# (tpg) these breaks build
+#BuildRequires:	fonts-ttf-dejavu
+#BuildRequires:	fonts-ttf-tamil
 BuildRequires:	unifont-fonts
 BuildRequires:	help2man
 BuildRequires:	rsync
