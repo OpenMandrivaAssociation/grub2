@@ -150,7 +150,8 @@ perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;' \
 
 perl -pi -e "s|(^FONT_SOURCE=)|\$1%{SOURCE6}|;" configure configure.ac
 
-sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure configure.ac
+sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure.ac
+
 perl -pi -e 's/-Werror//;' grub-core/Makefile.am
 mkdir grub-extras
 mv lua grub-extras
