@@ -11,7 +11,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta3.2
+Release:	1.beta3.3
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -361,17 +361,20 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
             if grep -q "init=/lib/systemd/systemd" %{_sysconfdir}/default/grub; then
                 sed -i -e 's#init=/lib/systemd/systemd##g' %{_sysconfdir}/default/grub
             fi
-
-            if grep -q "acpi_backlight=vendor" %{_sysconfdir}/default/grub; then
-                sed -i -e 's#acpi_backlight=vendor#video.use_native_backlight=1#g' %{_sysconfdir}/default/grub
+# (tpg) handle backlight parameter for varsious kernel versions
+	    if grep -q "acpi_backlight=vendor" %{_sysconfdir}/default/grub && [[ $(uname -r | awk -F[-] '{print $1}') < "4.3.0" ]] ; then
+                sed -e 's#acpi_backlight=vendor# video.use_native_backlight=1 #g' %{_sysconfdir}/default/grub
+	    fi
+            if grep -q "video.use_native_backlight=1" %{_sysconfdir}/default/grub && [[ $(uname -r | awk -F[-] '{print $1}') > "4.3.0" ]] ; then
+                sed -e 's#video.use_native_backlight=1# acpi_backlight=vendor #g' %{_sysconfdir}/default/grub
             fi
 # (tpg) disable audit messages
-            if ! grep -q "audit=0" %{_sysconfdir}/default/grub; then
-                sed -i -e 's#quiet#quiet audit=0 #' %{_sysconfdir}/default/grub
+            if ! grep -q "^GRUB_CMDLINE_LINUX_DEFAULT.*audit=0.*" %{_sysconfdir}/default/grub; then
+                sed -i -e 's#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" audit=0 #' %{_sysconfdir}/default/grub
             fi
 # (tpg) remove resume= as it is not needed with tuxonice
-            if ! grep -q "resume=" %{_sysconfdir}/default/grub; then
-                sed -i -e 's#resume=.*[ \t]##' %{_sysconfdir}/default/grub
+            if grep -q "resume=" %{_sysconfdir}/default/grub; then
+                sed -i -e 's#resume=[Aa/-Zz/]*\s##' %{_sysconfdir}/default/grub
             fi
 # (tpg) regenerate grub2 at the end
             %{_sbindir}/update-grub2
