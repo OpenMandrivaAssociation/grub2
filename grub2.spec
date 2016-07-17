@@ -23,7 +23,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta3.5
+Release:	1.beta3.6
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -352,7 +352,19 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
 	    fi
 # (tpg) remove resume= as it is not needed with tuxonice
 	    if grep -q "resume=" %{_sysconfdir}/default/grub; then
-		sed -i -e 's#resume=[Aa/-Zz/]*\s##' %{_sysconfdir}/default/grub
+		sed -i -e 's#resume=[Aa/-Zz/]*\s##g' %{_sysconfdir}/default/grub
+	    fi
+# (tpg) set GRUB_SAVEDEFAULT=false to fix bug https://issues.openmandriva.org/show_bug.cgi?id=1814
+	    if grep -q "GRUB_SAVEDEFAULT=false" %{_sysconfdir}/default/grub; then
+		sed -i -e 's#GRUB_SAVEDEFAULT=true#GRUB_SAVEDEFAULT=false#g' %{_sysconfdir}/default/grub
+	    fi
+# (tpg) set acpi_osi=Linux
+	    if ! grep -q "acpi_osi=Linux" %{_sysconfdir}/default/grub; then
+		sed -i -e 's#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" acpi_osi=Linux #' %{_sysconfdir}/default/grub
+	    fi
+# (tpg) set acpi_osi='!Windows 2012' for modern UEFI
+	    if ! grep -q "acpi_osi='\!Windows 2012'" %{_sysconfdir}/default/grub; then
+		sed -i -e "s#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" acpi_osi='\!Windows 2012' #" %{_sysconfdir}/default/grub
 	    fi
 # (tpg) regenerate grub2 at the end
 	    %{_sbindir}/update-grub2
@@ -363,7 +375,7 @@ fi
 %preun
 exec >/dev/null
 if [ $1 = 0 ]; then
-    # XXX Ugly
+# XXX Ugly
     rm -f /boot/%{name}/*.mod
     rm -f /boot/%{name}/*.img
     rm -f /boot/%{name}/*.lst
