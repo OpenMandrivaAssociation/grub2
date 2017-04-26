@@ -1,0 +1,26 @@
+--- grub-2.02/util/grub.d/10_linux.in.omv~	2017-04-26 21:58:22.019911399 +0200
++++ grub-2.02/util/grub.d/10_linux.in	2017-04-26 21:59:39.240275051 +0200
+@@ -133,12 +133,22 @@ linux_entry ()
+ 	echo	'$(echo "$message" | grub_quote)'
+ 	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args}
+ EOF
++  microcode_name=""
++  if [ -e /boot/microcode.img ]; then
++    microcode_name=`make_system_path_relative_to_its_root /boot/microcode.img`
++  fi
+   if test -n "${initrd}" ; then
+     # TRANSLATORS: ramdisk isn't identifier. Should be translated.
+     message="$(gettext_printf "Loading initial ramdisk ...")"
+     sed "s/^/$submenu_indentation/" << EOF
+ 	echo	'$(echo "$message" | grub_quote)'
+-	initrd	${rel_dirname}/${initrd}
++	initrd	${microcode_name} ${rel_dirname}/${initrd}
++EOF
++  elif test -n "${microcode_name}" ; then
++    message="$(gettext_printf "Loading CPU microcode ...")"
++    sed "s/^/$submenu_indentation/" << EOF
++	echo    '$(echo "$message" | grub_quote)'
++	initrd  ${microcode_name}
+ EOF
+   fi
+   sed "s/^/$submenu_indentation/" << EOF

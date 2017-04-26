@@ -13,7 +13,7 @@
 %endif
 
 %define debug_package %{nil}
-%define snapshot 20170129
+%define snapshot %{nil}
 
 %global efi %{ix86} x86_64 aarch64
 %define efidir openmandriva
@@ -23,14 +23,17 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	1.beta3.8
+Release:	2
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
-#Source0:	http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
+%if "%{snapshot}" == ""
+Source0:	http://ftp.gnu.org/pub/gnu/grub/grub-%{version}.tar.xz
+%else
 # git clone git://git.sv.gnu.org/grub.git
 # git archive --format=tar --prefix grub-2.02-$(date +%Y%m%d)/ HEAD | xz -vf > grub-2.02-$(date +%Y%m%d).tar.xz
 Source0:	grub-%{version}-%{snapshot}.tar.xz
+%endif
 Source1:	90_persistent
 Source2:	grub.default
 Source3:	grub.melt
@@ -65,7 +68,11 @@ Patch17:	grub-2.02-beta2-custom-vendor-config.patch
 Patch18:	grub2-2.02-add-support-for-kernel-install.patch
 # (tpg) latest v8 version of the F2FS patch
 # https://lists.gnu.org/archive/html/grub-devel/2016-03/msg00080.html
+# Maintained here:
+# https://github.com/frap129/grub-f2fs/
 Patch19:	grub2-F2FS-support.patch
+# (bero) Load Intel microcode if it exists
+Patch20:	grub-2.02-load-microcode.patch
 BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
@@ -99,6 +106,9 @@ Suggests:	xorriso
 Suggests:	os-prober
 Suggests:	distro-theme-common
 Suggests:	grub2-theme
+%ifarch %{ix86} x86_64
+Suggests:	microcode-intel
+%endif
 Conflicts:	grub2-tools < 2.02-1.beta2.6
 %rename		grub2-tools
 
@@ -140,7 +150,11 @@ Example 'starfield' theme for GRUB.
 #-----------------------------------------------------------------------
 
 %prep
+%if "%{snapshot}" == ""
+%setup -qn grub-%{version} -a12
+%else
 %setup -qn grub-%{version}-%{snapshot} -a12
+%endif
 %apply_patches
 
 cp %{SOURCE10} .
