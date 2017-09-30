@@ -1,6 +1,82 @@
---- grub-2.02/docs/grub.texi.0019~	2017-04-24 11:15:49.000000000 +0200
-+++ grub-2.02/docs/grub.texi	2017-04-26 22:01:25.211876701 +0200
-@@ -5368,7 +5368,7 @@ NTFS, JFS, UDF, HFS+, exFAT, long filena
+"F2FS (Flash-Friendly File System) is flash-friendly file system which was merged
+into Linux kernel v3.8 in 2013.
+
+The motive for F2FS was to build a file system that from the start, takes into
+account the characteristics of NAND flash memory-based storage devices (such as
+solid-state disks, eMMC, and SD cards).
+
+F2FS was designed on a basis of a log-structured file system approach, which
+remedies some known issues of the older log structured file systems, such as
+the snowball effect of wandering trees and high cleaning overhead. In addition,
+since a NAND-based storage device shows different characteristics according to
+its internal geometry or flash memory management scheme (such as the Flash
+Translation Layer or FTL), it supports various parameters not only for
+configuring on-disk layout, but also for selecting allocation and cleaning
+algorithm.", quote by https://en.wikipedia.org/wiki/F2FS.
+
+The source codes for F2FS are available from:
+
+http://git.kernel.org/cgit/linux/kernel/git/jaegeuk/f2fs.git
+http://git.kernel.org/cgit/linux/kernel/git/jaegeuk/f2fs-tools.git
+
+Update:
+ - This patch has been integrated in OpenMandriva Lx 3.
+   https://www.openmandriva.org/
+
+Acked-by: Andrei Borzenkov <arvidjaar@gmail.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ Makefile.util.def            |    7 +
+ docs/grub.texi               |    5 +-
+ grub-core/Makefile.core.def  |    5 +
+ grub-core/fs/f2fs.c          | 1289 ++++++++++++++++++++++++++++++++++++++++++
+ po/exclude.pot               |    1 +
+ tests/f2fs_test.in           |   19 +
+ tests/util/grub-fs-tester.in |   10 +-
+ 7 files changed, 1332 insertions(+), 4 deletions(-)
+# create mode 100644 grub-core/fs/f2fs.c
+# create mode 100644 tests/f2fs_test.in
+
+diff --git a/Makefile.util.def b/Makefile.util.def
+index f9caccb97..3180ac880 100644
+--- a/Makefile.util.def
++++ b/Makefile.util.def
+@@ -99,6 +99,7 @@ library = {
+   common = grub-core/fs/ext2.c;
+   common = grub-core/fs/fat.c;
+   common = grub-core/fs/exfat.c;
++  common = grub-core/fs/f2fs.c;
+   common = grub-core/fs/fshelp.c;
+   common = grub-core/fs/hfs.c;
+   common = grub-core/fs/hfsplus.c;
+@@ -776,6 +777,12 @@ script = {
+ 
+ script = {
+   testcase;
++  name = f2fs_test;
++  common = tests/f2fs_test.in;
++};
++
++script = {
++  testcase;
+   name = nilfs2_test;
+   common = tests/nilfs2_test.in;
+ };
+diff --git a/docs/grub.texi b/docs/grub.texi
+index e935af33e..7137d6d0d 100644
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -360,7 +360,8 @@ blocklist notation. The currently supported filesystem types are @dfn{Amiga
+ Fast FileSystem (AFFS)}, @dfn{AtheOS fs}, @dfn{BeFS},
+ @dfn{BtrFS} (including raid0, raid1, raid10, gzip and lzo),
+ @dfn{cpio} (little- and big-endian bin, odc and newc variants),
+-@dfn{Linux ext2/ext3/ext4}, @dfn{DOS FAT12/FAT16/FAT32}, @dfn{exFAT}, @dfn{HFS},
++@dfn{Linux ext2/ext3/ext4}, @dfn{DOS FAT12/FAT16/FAT32}, @dfn{exFAT},
++@dfn{f2fs}, @dfn{HFS},
+ @dfn{HFS+}, @dfn{ISO9660} (including Joliet, Rock-ridge and multi-chunk files),
+ @dfn{JFS}, @dfn{Minix fs} (versions 1, 2 and 3), @dfn{nilfs2},
+ @dfn{NTFS} (including compression), @dfn{ReiserFS}, @dfn{ROMFS},
+@@ -5368,7 +5369,7 @@ NTFS, JFS, UDF, HFS+, exFAT, long filenames in FAT, Joliet part of
  ISO9660 are treated as UTF-16 as per specification. AFS and BFS are read
  as UTF-8, again according to specification. BtrFS, cpio, tar, squash4, minix,
  minix2, minix3, ROMFS, ReiserFS, XFS, ext2, ext3, ext4, FAT (short names),
@@ -9,13 +85,32 @@
  to be UTF-8. This might be false on systems configured with legacy charset
  but as long as the charset used is superset of ASCII you should be able to
  access ASCII-named files. And it's recommended to configure your system to use
---- grub-2.02/grub-core/fs/f2fs.c.0019~	2017-04-26 22:01:25.212876714 +0200
-+++ grub-2.02/grub-core/fs/f2fs.c	2017-04-26 22:01:25.212876714 +0200
-@@ -0,0 +1,1293 @@
+diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
+index 2dfa22a92..7f084d466 100644
+--- a/grub-core/Makefile.core.def
++++ b/grub-core/Makefile.core.def
+@@ -1291,6 +1291,11 @@ module = {
+ };
+ 
+ module = {
++  name = f2fs;
++  common = fs/f2fs.c;
++};
++
++module = {
+   name = fshelp;
+   common = fs/fshelp.c;
+ };
+diff --git a/grub-core/fs/f2fs.c b/grub-core/fs/f2fs.c
+#new file mode 100644
+index 000000000..7fb256f20
+--- /dev/null
++++ b/grub-core/fs/f2fs.c
+@@ -0,0 +1,1289 @@
 +/*
 + *  f2fs.c - Flash-Friendly File System
 + *
-+ *  Written by Jaegeuk Kim <address@hidden>
++ *  Written by Jaegeuk Kim <jaegeuk@kernel.org>
 + *
 + *  Copyright (C) 2015  Free Software Foundation, Inc.
 + *
@@ -45,95 +140,92 @@
 +GRUB_MOD_LICENSE ("GPLv3+");
 +
 +/* F2FS Magic Number */
-+#define F2FS_SUPER_MAGIC       0xF2F52010
-+#define CHECKSUM_OFFSET                4092            /* must be aligned 4 
-+bytes */
-+#define U32_CHECKSUM_OFFSET    (CHECKSUM_OFFSET >> 2)
++#define F2FS_SUPER_MAGIC	0xF2F52010
++#define CHECKSUM_OFFSET		4092		/* must be aligned 4 bytes */
++#define U32_CHECKSUM_OFFSET	(CHECKSUM_OFFSET >> 2)
 +
 +/* byte-size offset */
-+#define F2FS_SUPER_OFFSET      ((grub_disk_addr_t)1024)
-+#define F2FS_SUPER_OFFSET0     (F2FS_SUPER_OFFSET >> GRUB_DISK_SECTOR_BITS)
-+#define F2FS_SUPER_OFFSET1     ((F2FS_SUPER_OFFSET + F2FS_BLKSIZE) >>  \
-+                                               GRUB_DISK_SECTOR_BITS)
++#define F2FS_SUPER_OFFSET	((grub_disk_addr_t)1024)
++#define F2FS_SUPER_OFFSET0	(F2FS_SUPER_OFFSET >> GRUB_DISK_SECTOR_BITS)
++#define F2FS_SUPER_OFFSET1	((F2FS_SUPER_OFFSET + F2FS_BLKSIZE) >>	\
++						GRUB_DISK_SECTOR_BITS)
 +
 +/* 9 bits for 512 bytes */
-+#define F2FS_MIN_LOG_SECTOR_SIZE       9
++#define F2FS_MIN_LOG_SECTOR_SIZE	9
 +
 +/* support only 4KB block */
-+#define F2FS_BLK_BITS  12
-+#define F2FS_BLKSIZE   (1 << F2FS_BLK_BITS)
-+#define F2FS_BLK_SEC_BITS      (F2FS_BLK_BITS - GRUB_DISK_SECTOR_BITS)
++#define F2FS_BLK_BITS	12
++#define F2FS_BLKSIZE	(1 << F2FS_BLK_BITS)
++#define F2FS_BLK_SEC_BITS	(F2FS_BLK_BITS - GRUB_DISK_SECTOR_BITS)
 +
-+#define VERSION_LEN    256
-+#define F2FS_MAX_EXTENSION     64
++#define VERSION_LEN	256
++#define F2FS_MAX_EXTENSION	64
 +
-+#define CP_COMPACT_SUM_FLAG    0x00000004
-+#define CP_UMOUNT_FLAG 0x00000001
++#define CP_COMPACT_SUM_FLAG	0x00000004
++#define CP_UMOUNT_FLAG	0x00000001
 +
-+#define MAX_ACTIVE_LOGS        16
-+#define MAX_ACTIVE_NODE_LOGS   8
-+#define MAX_ACTIVE_DATA_LOGS   8
-+#define        NR_CURSEG_DATA_TYPE     3
-+#define NR_CURSEG_NODE_TYPE    3
-+#define NR_CURSEG_TYPE (NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
++#define MAX_ACTIVE_LOGS	16
++#define MAX_ACTIVE_NODE_LOGS	8
++#define MAX_ACTIVE_DATA_LOGS	8
++#define	NR_CURSEG_DATA_TYPE	3
++#define NR_CURSEG_NODE_TYPE	3
++#define NR_CURSEG_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
 +
-+#define ENTRIES_IN_SUM 512
-+#define        SUMMARY_SIZE    7
-+#define        SUM_FOOTER_SIZE 5
-+#define JENTRY_SIZE    (sizeof(struct grub_f2fs_nat_jent))
-+#define SUM_ENTRIES_SIZE       (SUMMARY_SIZE * ENTRIES_IN_SUM)
-+#define SUM_JOURNAL_SIZE       (F2FS_BLKSIZE - SUM_FOOTER_SIZE -\
-+                               SUM_ENTRIES_SIZE)
-+#define NAT_JOURNAL_ENTRIES    ((SUM_JOURNAL_SIZE - 2) / JENTRY_SIZE)
-+#define NAT_JOURNAL_RESERVED   ((SUM_JOURNAL_SIZE - 2) % JENTRY_SIZE)
++#define ENTRIES_IN_SUM	512
++#define	SUMMARY_SIZE	7
++#define	SUM_FOOTER_SIZE	5
++#define JENTRY_SIZE	(sizeof(struct grub_f2fs_nat_jent))
++#define SUM_ENTRIES_SIZE	(SUMMARY_SIZE * ENTRIES_IN_SUM)
++#define SUM_JOURNAL_SIZE	(F2FS_BLKSIZE - SUM_FOOTER_SIZE -\
++				SUM_ENTRIES_SIZE)
++#define NAT_JOURNAL_ENTRIES	((SUM_JOURNAL_SIZE - 2) / JENTRY_SIZE)
++#define NAT_JOURNAL_RESERVED	((SUM_JOURNAL_SIZE - 2) % JENTRY_SIZE)
 +
 +#define NAT_ENTRY_SIZE (sizeof(struct grub_f2fs_nat_entry))
 +#define NAT_ENTRY_PER_BLOCK (F2FS_BLKSIZE / NAT_ENTRY_SIZE)
 +
-+#define F2FS_NAME_LEN  255
-+#define F2FS_SLOT_LEN  8
-+#define NR_DENTRY_IN_BLOCK     214
-+#define SIZE_OF_DIR_ENTRY      11      /* by byte */
-+#define BITS_PER_BYTE  8
-+#define SIZE_OF_DENTRY_BITMAP  ((NR_DENTRY_IN_BLOCK + BITS_PER_BYTE - 1) / \
-+                               BITS_PER_BYTE)
-+#define SIZE_OF_RESERVED       (F2FS_BLKSIZE - ((SIZE_OF_DIR_ENTRY + \
-+                               F2FS_SLOT_LEN) * \
-+                               NR_DENTRY_IN_BLOCK + SIZE_OF_DENTRY_BITMAP))
++#define F2FS_NAME_LEN	255
++#define F2FS_SLOT_LEN	8
++#define NR_DENTRY_IN_BLOCK	214
++#define SIZE_OF_DIR_ENTRY	11	/* by byte */
++#define BITS_PER_BYTE	8
++#define SIZE_OF_DENTRY_BITMAP	((NR_DENTRY_IN_BLOCK + BITS_PER_BYTE - 1) / \
++				BITS_PER_BYTE)
++#define SIZE_OF_RESERVED	(F2FS_BLKSIZE - ((SIZE_OF_DIR_ENTRY + \
++				F2FS_SLOT_LEN) * \
++				NR_DENTRY_IN_BLOCK + SIZE_OF_DENTRY_BITMAP))
 +
-+#define F2FS_INLINE_XATTR_ADDRS        50      /* 200 bytes for inline xattrs 
-+*/
-+#define DEF_ADDRS_PER_INODE    923     /* Address Pointers in an Inode */
++#define F2FS_INLINE_XATTR_ADDRS	50	/* 200 bytes for inline xattrs */
++#define DEF_ADDRS_PER_INODE	923	/* Address Pointers in an Inode */
 +
-+#define ADDRS_PER_BLOCK        1018    /* Address Pointers in a Direct Block */
-+#define NIDS_PER_BLOCK 1018    /* Node IDs in an Indirect Block */
-+#define        NODE_DIR1_BLOCK (DEF_ADDRS_PER_INODE + 1)
-+#define        NODE_DIR2_BLOCK (DEF_ADDRS_PER_INODE + 2)
-+#define        NODE_IND1_BLOCK (DEF_ADDRS_PER_INODE + 3)
-+#define        NODE_IND2_BLOCK (DEF_ADDRS_PER_INODE + 4)
-+#define        NODE_DIND_BLOCK (DEF_ADDRS_PER_INODE + 5)
++#define ADDRS_PER_BLOCK	1018	/* Address Pointers in a Direct Block */
++#define NIDS_PER_BLOCK	1018	/* Node IDs in an Indirect Block */
++#define	NODE_DIR1_BLOCK	(DEF_ADDRS_PER_INODE + 1)
++#define	NODE_DIR2_BLOCK	(DEF_ADDRS_PER_INODE + 2)
++#define	NODE_IND1_BLOCK	(DEF_ADDRS_PER_INODE + 3)
++#define	NODE_IND2_BLOCK	(DEF_ADDRS_PER_INODE + 4)
++#define	NODE_DIND_BLOCK	(DEF_ADDRS_PER_INODE + 5)
 +
-+#define MAX_INLINE_DATA        (4 * (DEF_ADDRS_PER_INODE - \
-+                       F2FS_INLINE_XATTR_ADDRS - 1))
-+#define NR_INLINE_DENTRY       (MAX_INLINE_DATA * BITS_PER_BYTE / \
-+                       ((SIZE_OF_DIR_ENTRY + F2FS_SLOT_LEN) * \
-+                        BITS_PER_BYTE + 1))
-+#define INLINE_DENTRY_BITMAP_SIZE      ((NR_INLINE_DENTRY + \
-+                       BITS_PER_BYTE - 1) / BITS_PER_BYTE)
-+#define INLINE_RESERVED_SIZE   (MAX_INLINE_DATA - \
-+                       ((SIZE_OF_DIR_ENTRY + F2FS_SLOT_LEN) * \
-+                        NR_INLINE_DENTRY + INLINE_DENTRY_BITMAP_SIZE))
-+#define CURSEG_HOT_DATA        0
++#define MAX_INLINE_DATA	(4 * (DEF_ADDRS_PER_INODE - \
++			F2FS_INLINE_XATTR_ADDRS - 1))
++#define NR_INLINE_DENTRY	(MAX_INLINE_DATA * BITS_PER_BYTE / \
++			((SIZE_OF_DIR_ENTRY + F2FS_SLOT_LEN) * \
++			 BITS_PER_BYTE + 1))
++#define INLINE_DENTRY_BITMAP_SIZE	((NR_INLINE_DENTRY + \
++			BITS_PER_BYTE - 1) / BITS_PER_BYTE)
++#define INLINE_RESERVED_SIZE	(MAX_INLINE_DATA - \
++			((SIZE_OF_DIR_ENTRY + F2FS_SLOT_LEN) * \
++			 NR_INLINE_DENTRY + INLINE_DENTRY_BITMAP_SIZE))
++#define CURSEG_HOT_DATA	0
 +
-+#define CKPT_FLAG_SET(ckpt, f) \
-+               (ckpt)->ckpt_flags & grub_cpu_to_le32_compile_time (f)
++#define CKPT_FLAG_SET(ckpt, f)	\
++		(ckpt)->ckpt_flags & grub_cpu_to_le32_compile_time (f)
 +
-+#define F2FS_INLINE_XATTR      0x01    /* file inline xattr flag */
-+#define F2FS_INLINE_DATA       0x02    /* file inline data flag */
-+#define F2FS_INLINE_DENTRY     0x04    /* file inline dentry flag */
-+#define F2FS_DATA_EXIST                0x08    /* file inline data exist flag 
-+*/
-+#define F2FS_INLINE_DOTS       0x10    /* file having implicit dot dentries */
++#define F2FS_INLINE_XATTR	0x01	/* file inline xattr flag */
++#define F2FS_INLINE_DATA	0x02	/* file inline data flag */
++#define F2FS_INLINE_DENTRY	0x04	/* file inline dentry flag */
++#define F2FS_DATA_EXIST		0x08	/* file inline data exist flag */
++#define F2FS_INLINE_DOTS	0x10	/* file having implicit dot dentries */
 +
 +enum FILE_TYPE
 +{
@@ -143,7 +235,7 @@
 +  F2FS_FT_SYMLINK = 7,
 +};
 +
-+#define MAX_VOLUME_NAME                512
++#define MAX_VOLUME_NAME		512
 +
 +struct grub_f2fs_superblock
 +{
@@ -290,7 +382,7 @@
 +    struct grub_f2fs_inode i;
 +    struct grub_direct_node dn;
 +    struct grub_indirect_node in;
-+    char buf[F2FS_BLKSIZE - 40];       /* Should occupy F2FS_BLKSIZE totally */
++    char buf[F2FS_BLKSIZE - 40];	/* Should occupy F2FS_BLKSIZE totally */
 +  };
 +  grub_uint8_t dummy[40];
 +} GRUB_PACKED;
@@ -384,8 +476,8 @@
 +  struct grub_f2fs_checkpoint *ckpt = &data->ckpt;
 +
 +  return __start_cp_addr (data) +
-+       grub_le_to_cpu32 (ckpt->cp_pack_total_block_count)
-+       - (base + 1) + type;
++	grub_le_to_cpu32 (ckpt->cp_pack_total_block_count)
++	- (base + 1) + type;
 +}
 +
 +static inline void *
@@ -410,12 +502,11 @@
 +}
 +
 +static inline grub_err_t
-+grub_f2fs_block_read (struct grub_f2fs_data *data, grub_uint32_t blkaddr, void 
-+*buf)
++grub_f2fs_block_read (struct grub_f2fs_data *data, grub_uint32_t blkaddr, void *buf)
 +{
 +  return grub_disk_read (data->disk,
-+               ((grub_disk_addr_t)blkaddr) << F2FS_BLK_SEC_BITS,
-+               0, F2FS_BLKSIZE, buf);
++		((grub_disk_addr_t)blkaddr) << F2FS_BLK_SEC_BITS,
++		0, F2FS_BLKSIZE, buf);
 +}
 +
 +/*
@@ -502,7 +593,7 @@
 +
 +static void *
 +validate_checkpoint (struct grub_f2fs_data *data, grub_uint32_t cp_addr,
-+       grub_uint64_t *version)
++	grub_uint64_t *version)
 +{
 +  grub_uint32_t *cp_page_1, *cp_page_2;
 +  struct grub_f2fs_checkpoint *cp_block;
@@ -678,8 +769,8 @@
 +
 +  seg_off = block_off / data->blocks_per_seg;
 +  block_addr = data->nat_blkaddr +
-+       ((seg_off * data->blocks_per_seg) << 1) +
-+       (block_off & (data->blocks_per_seg - 1));
++	((seg_off * data->blocks_per_seg) << 1) +
++	(block_off & (data->blocks_per_seg - 1));
 +
 +  if (grub_f2fs_test_bit (block_off, data->nat_bitmap))
 +    block_addr += data->blocks_per_seg;
@@ -700,7 +791,7 @@
 +
 +static int
 +grub_get_node_path (struct grub_f2fs_inode *inode, grub_uint32_t block,
-+       grub_uint32_t offset[4], grub_uint32_t noffset[4])
++	grub_uint32_t offset[4], grub_uint32_t noffset[4])
 +{
 +  grub_uint32_t direct_blks = ADDRS_PER_BLOCK;
 +  grub_uint32_t dptrs_per_blk = NIDS_PER_BLOCK;
@@ -775,7 +866,7 @@
 +      offset[n - 1] * (dptrs_per_blk + 1);
 +      offset[n++] = (block / direct_blks) % dptrs_per_blk;
 +      noffset[n] = 7 + (dptrs_per_blk * 2) +
-+               offset[n - 2] * (dptrs_per_blk + 1) + offset[n - 1];
++		offset[n - 2] * (dptrs_per_blk + 1) + offset[n - 1];
 +      offset[n] = block % direct_blks;
 +      level = 3;
 +      goto got;
@@ -786,7 +877,7 @@
 +
 +static grub_err_t
 +grub_f2fs_read_node (struct grub_f2fs_data *data,
-+       grub_uint32_t nid, struct grub_f2fs_node *np)
++	grub_uint32_t nid, struct grub_f2fs_node *np)
 +{
 +  grub_uint32_t blkaddr;
 +
@@ -815,7 +906,7 @@
 +        {
 +          if (grub_errno == GRUB_ERR_NONE)
 +            grub_error (GRUB_ERR_BAD_FS,
-+                       "not a F2FS filesystem (no superblock)");
++			"not a F2FS filesystem (no superblock)");
 +          goto fail;
 +        }
 +    }
@@ -824,7 +915,7 @@
 +  data->cp_blkaddr = grub_le_to_cpu32 (data->sblock.cp_blkaddr);
 +  data->nat_blkaddr = grub_le_to_cpu32 (data->sblock.nat_blkaddr);
 +  data->blocks_per_seg = 1 <<
-+       grub_le_to_cpu32 (data->sblock.log_blocks_per_seg);
++	grub_le_to_cpu32 (data->sblock.log_blocks_per_seg);
 +
 +  err = grub_f2fs_read_cp (data);
 +  if (err)
@@ -892,8 +983,8 @@
 +
 +static grub_ssize_t
 +grub_f2fs_read_file (grub_fshelp_node_t node,
-+               grub_disk_read_hook_t read_hook, void *read_hook_data,
-+               grub_off_t pos, grub_size_t len, char *buf)
++		grub_disk_read_hook_t read_hook, void *read_hook_data,
++		grub_off_t pos, grub_size_t len, char *buf)
 +{
 +  struct grub_f2fs_inode *inode = &node->inode.i;
 +  grub_off_t filesize = grub_f2fs_file_size (inode);
@@ -911,10 +1002,10 @@
 +    }
 +
 +  return grub_fshelp_read_file (node->data->disk, node,
-+                       read_hook, read_hook_data,
-+                       pos, len, buf, grub_f2fs_get_block,
-+                       filesize,
-+                       F2FS_BLK_SEC_BITS, 0);
++			read_hook, read_hook_data,
++			pos, len, buf, grub_f2fs_get_block,
++			filesize,
++			F2FS_BLK_SEC_BITS, 0);
 +}
 +
 +static char *
@@ -1007,7 +1098,7 @@
 +
 +static int
 +grub_f2fs_iterate_inline_dir (struct grub_f2fs_inode *dir,
-+       struct grub_f2fs_dir_iter_ctx *ctx)
++	struct grub_f2fs_dir_iter_ctx *ctx)
 +{
 +  struct grub_f2fs_inline_dentry *de_blk;
 +
@@ -1023,7 +1114,7 @@
 +
 +static int
 +grub_f2fs_iterate_dir (grub_fshelp_node_t dir,
-+       grub_fshelp_iterate_dir_hook_t hook, void *hook_data)
++	grub_fshelp_iterate_dir_hook_t hook, void *hook_data)
 +{
 +  struct grub_fshelp_node *diro = (struct grub_fshelp_node *) dir;
 +  struct grub_f2fs_inode *inode;
@@ -1038,7 +1129,7 @@
 +    {
 +      grub_f2fs_read_node (diro->data, diro->ino, &diro->inode);
 +      if (grub_errno)
-+       return 0;
++	return 0;
 +    }
 +
 +  inode = &diro->inode.i;
@@ -1082,7 +1173,7 @@
 +
 +static int
 +grub_f2fs_dir_iter (const char *filename, enum grub_fshelp_filetype filetype,
-+             grub_fshelp_node_t node, void *data)
++	      grub_fshelp_node_t node, void *data)
 +{
 +  struct grub_f2fs_dir_ctx *ctx = data;
 +  struct grub_dirhook_info info;
@@ -1108,7 +1199,7 @@
 +
 +static grub_err_t
 +grub_f2fs_dir (grub_device_t device, const char *path,
-+       grub_fs_dir_hook_t hook, void *hook_data)
++	grub_fs_dir_hook_t hook, void *hook_data)
 +{
 +  struct grub_f2fs_dir_ctx ctx = {
 +    .hook = hook,
@@ -1123,8 +1214,8 @@
 +    goto fail;
 +
 +  grub_fshelp_find_file (path, &ctx.data->diropen, &fdiro,
-+               grub_f2fs_iterate_dir, grub_f2fs_read_symlink,
-+               GRUB_FSHELP_DIR);
++		grub_f2fs_iterate_dir, grub_f2fs_read_symlink,
++		GRUB_FSHELP_DIR);
 +  if (grub_errno)
 +    goto fail;
 +
@@ -1154,8 +1245,8 @@
 +    goto fail;
 +
 +  grub_fshelp_find_file (name, &data->diropen, &fdiro,
-+                       grub_f2fs_iterate_dir, grub_f2fs_read_symlink,
-+                       GRUB_FSHELP_REG);
++			grub_f2fs_iterate_dir, grub_f2fs_read_symlink,
++			GRUB_FSHELP_REG);
 +  if (grub_errno)
 +    goto fail;
 +
@@ -1163,7 +1254,7 @@
 +    {
 +      grub_f2fs_read_node (data, fdiro->ino, &fdiro->inode);
 +      if (grub_errno)
-+       goto fail;
++	goto fail;
 +    }
 +
 +  grub_memcpy (data->inode, &fdiro->inode, sizeof (*data->inode));
@@ -1194,8 +1285,8 @@
 +  struct grub_f2fs_data *data = (struct grub_f2fs_data *) file->data;
 +
 +  return grub_f2fs_read_file (&data->diropen,
-+               file->read_hook, file->read_hook_data,
-+               file->offset, len, buf);
++		file->read_hook, file->read_hook_data,
++		file->offset, len, buf);
 +}
 +
 +static grub_err_t
@@ -1261,16 +1352,16 @@
 +  if (data)
 +    {
 +      *uuid =
-+       grub_xasprintf
-+       ("%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-+               data->sblock.uuid[0], data->sblock.uuid[1],
-+               data->sblock.uuid[2], data->sblock.uuid[3],
-+               data->sblock.uuid[4], data->sblock.uuid[5],
-+               data->sblock.uuid[6], data->sblock.uuid[7],
-+               data->sblock.uuid[8], data->sblock.uuid[9],
-+               data->sblock.uuid[10], data->sblock.uuid[11],
-+               data->sblock.uuid[12], data->sblock.uuid[13],
-+               data->sblock.uuid[14], data->sblock.uuid[15]);
++	grub_xasprintf
++	("%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
++		data->sblock.uuid[0], data->sblock.uuid[1],
++		data->sblock.uuid[2], data->sblock.uuid[3],
++		data->sblock.uuid[4], data->sblock.uuid[5],
++		data->sblock.uuid[6], data->sblock.uuid[7],
++		data->sblock.uuid[8], data->sblock.uuid[9],
++		data->sblock.uuid[10], data->sblock.uuid[11],
++		data->sblock.uuid[12], data->sblock.uuid[13],
++		data->sblock.uuid[14], data->sblock.uuid[15]);
 +    }
 +  else
 +    *uuid = NULL;
@@ -1305,45 +1396,10 @@
 +{
 +  grub_fs_unregister (&grub_f2fs_fs);
 +}
---- grub-2.02/grub-core/Makefile.core.def.0019~	2017-04-24 11:15:49.000000000 +0200
-+++ grub-2.02/grub-core/Makefile.core.def	2017-04-26 22:01:25.211876701 +0200
-@@ -1291,6 +1291,11 @@ module = {
- };
- 
- module = {
-+  name = f2fs;
-+  common = fs/f2fs.c;
-+};
-+
-+module = {
-   name = fshelp;
-   common = fs/fshelp.c;
- };
---- grub-2.02/Makefile.util.def.0019~	2017-04-24 11:15:49.000000000 +0200
-+++ grub-2.02/Makefile.util.def	2017-04-26 22:01:25.210876688 +0200
-@@ -99,6 +99,7 @@ library = {
-   common = grub-core/fs/ext2.c;
-   common = grub-core/fs/fat.c;
-   common = grub-core/fs/exfat.c;
-+  common = grub-core/fs/f2fs.c;
-   common = grub-core/fs/fshelp.c;
-   common = grub-core/fs/hfs.c;
-   common = grub-core/fs/hfsplus.c;
-@@ -775,6 +776,12 @@ script = {
- };
- 
- script = {
-+  testcase;
-+  name = f2fs_test;
-+  common = tests/f2fs_test.in;
-+};
-+
-+script = {
-   testcase;
-   name = nilfs2_test;
-   common = tests/nilfs2_test.in;
---- grub-2.02/po/exclude.pot.0019~	2016-02-28 15:22:21.000000000 +0100
-+++ grub-2.02/po/exclude.pot	2017-04-26 22:01:25.212876714 +0200
+diff --git a/po/exclude.pot b/po/exclude.pot
+index 0a9b215ea..816089c30 100644
+--- a/po/exclude.pot
++++ b/po/exclude.pot
 @@ -1214,6 +1214,7 @@ msgstr ""
  
  #: grub-core/commands/xnu_uuid.c:75 grub-core/fs/jfs.c:924
@@ -1352,8 +1408,11 @@
  #, c-format
  msgid "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x"
  msgstr ""
---- grub-2.02/tests/f2fs_test.in.0019~	2017-04-26 22:01:25.212876714 +0200
-+++ grub-2.02/tests/f2fs_test.in	2017-04-26 22:01:25.212876714 +0200
+diff --git a/tests/f2fs_test.in b/tests/f2fs_test.in
+new file mode 100644
+index 000000000..1ea77c826
+--- /dev/null
++++ b/tests/f2fs_test.in
 @@ -0,0 +1,19 @@
 +#!/bin/sh
 +
@@ -1374,9 +1433,11 @@
 +
 +
 +"@builddir@/grub-fs-tester" f2fs
---- grub-2.02/tests/util/grub-fs-tester.in.0019~	2017-04-24 11:16:00.000000000 +0200
-+++ grub-2.02/tests/util/grub-fs-tester.in	2017-04-26 22:07:45.606530019 +0200
-@@ -145,7 +145,7 @@ for ((LOGSECSIZE=MINLOGSECSIZE;LOGSECSIZ
+diff --git a/tests/util/grub-fs-tester.in b/tests/util/grub-fs-tester.in
+index 2337771a1..333c45035 100644
+--- a/tests/util/grub-fs-tester.in
++++ b/tests/util/grub-fs-tester.in
+@@ -145,7 +145,7 @@ for ((LOGSECSIZE=MINLOGSECSIZE;LOGSECSIZE<=MAXLOGSECSIZE;LOGSECSIZE=LOGSECSIZE +
  	xsquash*)
  	    MINBLKSIZE=4096
  	    MAXBLKSIZE=1048576;;
@@ -1385,18 +1446,18 @@
  	    MINBLKSIZE=$SECSIZE
  		# OS Limitation: GNU/Linux doesn't accept > 4096
  	    MAXBLKSIZE=4096;;
-@@ -268,6 +268,10 @@ for ((LOGSECSIZE=MINLOGSECSIZE;LOGSECSIZ
+@@ -268,6 +268,10 @@ for ((LOGSECSIZE=MINLOGSECSIZE;LOGSECSIZE<=MAXLOGSECSIZE;LOGSECSIZE=LOGSECSIZE +
  		x"btrfs"*)
  		    FSLABEL="grub_;/testé莭莽😁киритi urewfceniuewruevrewnuuireurevueurnievrewfnerfcnevirivinrewvnirewnivrewiuvcrewvnuewvrrrewniuerwreiuviurewiuviurewnuvewnvrenurnunuvrevuurerejiremvreijnvcreivire nverivnreivrevnureiorfnfrvoeoiroireoireoifrefoieroifoireoi";;
  
 +	    # FS LIMITATION: f2fs label is at most 512 UTF-16 chars
-+	        x"f2fs")
-+	            FSLABEL="grub_;/testé莭莽😁киритi urewfceniuewruewnuuireurevueurnievrewfnerfcnevirivinrewvnirewnivrewiuvcrewvnuewvrrrewniuerwreiuviurewiuviurewnuvewnvrenurnunuvrevuurerejiremvreijnvvcreivirenverivnreivrevnureiorfnfrvoeoiroireoireoifrefoieroifoirvcreivirenverivnreivrevnureiorfnfrvoeoiroireoireoifrefoieroifoircreivirenverivnreivrevnureiorfnfrvoeoiroireoireoifrefoieroifoireoifoiq";;
++		x"f2fs")
++		    FSLABEL="grub_;/testé䏌䐓䏕киритiurewfceniuewruewnuuireurevueurnievrewfnerfcnevirivinrewvnirewnivrewiuvcrewvnuewvrrrewniuerwreiuviurewiuviurewnuvewnvrenurnunuvrevuurerejiremvreijnvvcreivire nverivnreivrevnureiorfnfrvoeoiroireoireoifrefoieroifoirvcreivire nverivnreivrevnureiorfnfrvoeoiroireoireoifrefoieroifoircreivire nverivnreivrevnureiorfnfrvoeoiroireoireoifrefoieroifoireoifoiq";;
 +
  	    # FS LIMITATION: exfat is at most 15 UTF-16 chars
  		x"exfat")
  		    FSLABEL="géт ;/莭莽😁кир";;
-@@ -477,7 +481,7 @@ for ((LOGSECSIZE=MINLOGSECSIZE;LOGSECSIZ
+@@ -477,7 +481,7 @@ for ((LOGSECSIZE=MINLOGSECSIZE;LOGSECSIZE<=MAXLOGSECSIZE;LOGSECSIZE=LOGSECSIZE +
  	    # FIXME: Not sure about BtrFS, NTFS, JFS, AFS, UDF and SFS. Check it.
  	# FS LIMITATION: as far as I know those FS don't store their last modification date.
  		x"jfs_caseins" | x"jfs" | x"xfs" | x"xfs_crc" | x"btrfs"* | x"reiserfs_old" | x"reiserfs" \
@@ -1405,12 +1466,15 @@
  		    | x"tarfs" | x"cpio_"* | x"minix" | x"minix2" \
  		    | x"minix3" | x"ntfs"* | x"udf" | x"sfs"*)
  		    NOFSTIME=y;;
-@@ -756,6 +760,8 @@ for ((LOGSECSIZE=MINLOGSECSIZE;LOGSECSIZ
+@@ -756,6 +760,8 @@ for ((LOGSECSIZE=MINLOGSECSIZE;LOGSECSIZE<=MAXLOGSECSIZE;LOGSECSIZE=LOGSECSIZE +
  		    MOUNTDEVICE="/dev/mapper/grub_test-testvol"
  		    MOUNTFS=ext2
  		    "mkfs.ext2" -L "$FSLABEL" -q "${MOUNTDEVICE}"  ;;
-+                xf2fs)
-+                    "mkfs.f2fs" -l "$FSLABEL" -q "${LODEVICES[0]}" ;;
++		xf2fs)
++		    "mkfs.f2fs" -l "$FSLABEL" -q "${LODEVICES[0]}" ;;
  		xnilfs2)
  		    "mkfs.nilfs2" -L "$FSLABEL" -b $BLKSIZE  -q "${LODEVICES[0]}" ;;
  		xext2_old)
+-- 
+2.11.0
+
