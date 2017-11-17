@@ -23,7 +23,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	4
+Release:	5
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -182,9 +182,6 @@ pushd po-update; sh ./update.sh; popd
 %define _disable_ld_no_undefined 1
 export GRUB_CONTRIB="$PWD/grub-extras"
 export CONFIGURE_TOP="$PWD"
-
-# (tpg) Lower test timeout
-sed -i -e 's/^BOOTCHECK_TIMEOUT=.*/BOOTCHECK_TIMEOUT=3/g' Makefile*
 
 #(proyvind): debugedit will fail on some binaries if linked using gold
 # https://savannah.gnu.org/bugs/?34539
