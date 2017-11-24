@@ -5,6 +5,6 @@ GRUB_GFXMODE=1680x1050,1360x768,1280x800,1024x768,1024x600,800x600,640x480
 GRUB_DEFAULT=saved
 GRUB_SAVEDEFAULT=true
 GRUB_TIMEOUT="10"
-GRUB_CMDLINE_LINUX_DEFAULT=" rw quiet splash=silent logo.nologo acpi_osi=Linux acpi_osi='!Windows 2012' acpi_backlight=vendor audit=0 rd.timeout=120 "
+GRUB_CMDLINE_LINUX_DEFAULT=" rw quiet splash=silent logo.nologo acpi_osi=Linux acpi_osi='!Windows 2012' acpi_backlight=vendor audit=0 rd.timeout=120 scsi_mod.use_blk_mq=1 "
 GRUB_CMDLINE_LINUX_RECOVERY=" failsafe nomodeset xdriver=vesa vga=788 acpi_osi=Linux acpi_osi='!Windows 2012' acpi_backlight=vendor systemd.log_level=debug systemd.log_target=kmsg log_buf_len=1M audit=0 rd.timeout=120 "
 

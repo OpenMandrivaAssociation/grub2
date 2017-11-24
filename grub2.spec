@@ -381,6 +381,10 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
 	    if ! grep -q "acpi_osi='\!Windows 2012'" %{_sysconfdir}/default/grub; then
 		sed -i -e "s#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" acpi_osi='\!Windows 2012' #" %{_sysconfdir}/default/grub
 	    fi
+# (tpg) enable Multi-Queue Block IO Queueing Mechanism
+	    if ! grep -q "scsi_mod.use_blk_mq=1" %{_sysconfdir}/default/grub; then
+		sed -i -e "s#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" scsi_mod.use_blk_mq=1 #" %{_sysconfdir}/default/grub
+	    fi
 # (tpg) regenerate grub2 at the end
 	    %{_sbindir}/update-grub2
 	fi
