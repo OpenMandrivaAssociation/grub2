@@ -1,0 +1,94 @@
+--- grub-2.02/configure.ac.0006~	2017-04-24 13:30:15.000000000 +0200
++++ grub-2.02/configure.ac	2017-12-01 15:27:59.375189898 +0100
+@@ -1684,15 +1684,15 @@ if test x"$enable_grub_mount" = xno ; th
+ fi
+ 
+ if test x"$grub_mount_excuse" = x ; then
+-  AC_CHECK_LIB([fuse], [fuse_main_real], [],
++  AC_CHECK_LIB([fuse3], [fuse_main_real], [],
+                [grub_mount_excuse="need FUSE library"])
+ fi
+ 
+ if test x"$grub_mount_excuse" = x ; then
+   # Check for fuse headers.
+   SAVED_CPPFLAGS="$CPPFLAGS"
+-  CPPFLAGS="$CPPFLAGS -DFUSE_USE_VERSION=26"
+-  AC_CHECK_HEADERS([fuse/fuse.h], [],
++  CPPFLAGS="$CPPFLAGS -I/usr/include/fuse3 -DFUSE_USE_VERSION=30"
++  AC_CHECK_HEADERS([fuse.h], [],
+   	[grub_mount_excuse=["need FUSE headers"]])
+   CPPFLAGS="$SAVED_CPPFLAGS"
+ fi
+--- grub-2.02/Makefile.util.am.0006~	2017-04-24 13:30:20.000000000 +0200
++++ grub-2.02/Makefile.util.am	2017-12-01 15:27:59.375189898 +0100
+@@ -198,7 +198,7 @@ nodist_grub_mount_SOURCES  = grub_fstest
+ grub_mount_LDADD  = libgrubmods.a libgrubgcry.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) -lfuse 
+ grub_mount_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
+ grub_mount_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
+-grub_mount_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
++grub_mount_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -I/usr/include/fuse3
+ grub_mount_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_PROGRAM) 
+ dist_noinst_DATA += 
+ BUILT_SOURCES += $(nodist_grub_mount_SOURCES)
+--- grub-2.02/Makefile.util.def.0006~	2017-12-01 15:27:59.376189901 +0100
++++ grub-2.02/Makefile.util.def	2017-12-01 15:28:28.166275641 +0100
+@@ -287,11 +287,13 @@ program = {
+   common = grub-core/disk/host.c;
+   common = grub-core/osdep/init.c;
+ 
++  cppflags = '-I/usr/include/fuse3';
++
+   ldadd = libgrubmods.a;
+   ldadd = libgrubgcry.a;
+   ldadd = libgrubkern.a;
+   ldadd = grub-core/gnulib/libgnu.a;
+-  ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) -lfuse';
++  ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) -lfuse3';
+   condition = COND_GRUB_MOUNT;
+ };
+ 
+--- grub-2.02/util/grub-mount.c.0006~	2017-04-24 11:16:00.000000000 +0200
++++ grub-2.02/util/grub-mount.c	2017-12-01 15:27:59.376189901 +0100
+@@ -16,7 +16,7 @@
+  *  You should have received a copy of the GNU General Public License
+  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
+  */
+-#define FUSE_USE_VERSION 26
++#define FUSE_USE_VERSION 30
+ #include <config.h>
+ #include <grub/types.h>
+ #include <grub/emu/misc.h>
+@@ -34,7 +34,7 @@
+ #include <grub/command.h>
+ #include <grub/zfs/zfs.h>
+ #include <grub/i18n.h>
+-#include <fuse/fuse.h>
++#include <fuse.h>
+ 
+ #include <stdio.h>
+ #include <unistd.h>
+@@ -147,7 +147,7 @@ fuse_getattr_find_file (const char *cur_
+ }
+ 
+ static int
+-fuse_getattr (const char *path, struct stat *st)
++fuse_getattr (const char *path, struct stat *st, struct fuse_file_info *fi)
+ {
+   struct fuse_getattr_ctx ctx;
+   char *pathname, *path2;
+@@ -330,13 +330,13 @@ fuse_readdir_call_fill (const char *file
+   st.st_blocks = (st.st_size + 511) >> 9;
+   st.st_atime = st.st_mtime = st.st_ctime
+     = info->mtimeset ? info->mtime : 0;
+-  ctx->fill (ctx->buf, filename, &st, 0);
++  ctx->fill (ctx->buf, filename, &st, 0, 0);
+   return 0;
+ }
+ 
+ static int 
+ fuse_readdir (const char *path, void *buf,
+-	      fuse_fill_dir_t fill, off_t off, struct fuse_file_info *fi)
++	      fuse_fill_dir_t fill, off_t off, struct fuse_file_info *fi, enum fuse_readdir_flags fl)
+ {
+   struct fuse_readdir_ctx ctx = {
+     .path = path,
