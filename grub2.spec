@@ -23,7 +23,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	5
+Release:	6
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -73,6 +73,7 @@ Patch18:	grub2-2.02-add-support-for-kernel-install.patch
 Patch19:	grub-add-f2fs-support-2017_05.patch
 # (bero) Load Intel microcode if it exists
 Patch20:	grub-2.02-load-microcode.patch
+Patch21:	fix-microcode-os-prober-initrd-line-parsing.patch
 BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
@@ -212,8 +213,8 @@ pushd %{platform}
 	--enable-device-mapper \
 	--enable-grub-mkfont \
 	--enable-device-mapper \
-	--enable-grub-emu-sdl
-
+	--enable-grub-emu-sdl \
+	--enable-grub-mount
 %make -j1 all html pdf
 popd
 %endif
