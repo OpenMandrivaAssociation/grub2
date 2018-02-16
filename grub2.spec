@@ -192,7 +192,7 @@ export CONFIGURE_TOP="$PWD"
 
 #(proyvind): non-UEFI boot will fail with 'alloc magic broken' on x86_64
 #            if built with clang
-%if %{platform}
+%if "%{platform}" != ""
 mkdir -p %{platform}
 pushd %{platform}
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
