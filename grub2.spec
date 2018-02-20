@@ -107,7 +107,7 @@ Provides:	bootloader
 Suggests:	xorriso
 Suggests:	os-prober
 Suggests:	distro-theme-common
-Suggests:	grub2-theme
+Suggests:	distro-theme-OpenMandriva-grub2
 %ifarch %{ix86} x86_64
 Suggests:	microcode-intel
 %endif
