@@ -49,7 +49,6 @@ Source12:	grub-lua-rev30.tar.xz
 # documentation and simple test script for testing grub2 themes
 Source13:	mandriva-grub2-theme-test.sh
 Source14:	linguas.sh
-
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
 Patch2:		grub2-custom-color.patch
@@ -113,6 +112,11 @@ Suggests:	microcode-intel
 %endif
 Conflicts:	grub2-tools < 2.02-1.beta2.6
 %rename		grub2-tools
+Suggests:	%{name}-doc = %{EVRD}
+Suggests:	%{name}-extra = %{EVRD}
+%ifarch %{efi}
+Requires:	%{name}-efi = %{EVRD}
+%endif
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
@@ -131,6 +135,7 @@ Group:		System/Kernel and hardware
 # (tpg) this is needed to sign our EFI image
 #BuildRequires:	pesign
 Requires:	efibootmgr
+Conflicts:	%{name} < 2.02-8
 
 %description efi
 The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
@@ -141,13 +146,31 @@ architectures and hardware devices.  This subpackage provides support
 for EFI systems.
 %endif
 
+%package extra
+Summary:	Extra tools for GRUB
+Group:		System/Kernel and hardware
+Requires:	%{name} = %{EVRD}
+Conflicts:	%{name} < 2.02-8
+
+%description extra
+Extra tools and files for GRUB.
+
 %package starfield-theme
 Summary:	An example theme for GRUB
 Group:		System/Kernel and hardware
 Requires:	%{name} = %{EVRD}
 
-%description	starfield-theme
+%description starfield-theme
 Example 'starfield' theme for GRUB.
+
+%package doc
+Summary:	Documentation for GRUB
+Group:		System/Kernel and hardware
+Requires:	%{name} = %{EVRD}
+Conflicts:	%{name} < 2.02-8
+
+%description doc
+Documentation for GRUB.
 
 #-----------------------------------------------------------------------
 
@@ -203,9 +226,9 @@ pushd %{platform}
 	CFLAGS="-O2 -fuse-ld=bfd" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=%{platform} \
-    %ifarch x86_64
+%ifarch x86_64
 	--enable-efiemu \
-    %endif
+%endif
 	--program-transform-name=s,grub,%{name}, \
 	--libdir=%{libdir32} \
 	--libexecdir=%{libdir32} \
@@ -280,8 +303,6 @@ install -m755 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/grub.d/90_persistent
 
 # Ghost config file
 install -d %{buildroot}/boot/%{name}
-install -d %{buildroot}/boot/%{name}/locale
-cp po/*.gmo %{buildroot}/boot/%{name}/locale/
 touch %{buildroot}/boot/%{name}/grub.cfg
 ln -s /boot/%{name}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}.cfg
 %endif
@@ -291,6 +312,7 @@ ln -s /boot/%{name}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}.cfg
 %makeinstall_std -C efi/grub-core
 
 install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/%{efidir}/grub.efi
+
 # Ghost config file
 touch %{buildroot}/boot/efi/EFI/%{efidir}/grub.cfg
 ln -s /boot/efi/EFI/%{efidir}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
@@ -304,28 +326,16 @@ sed -e 's#TMP_DISTRO#%{distribution}#' -i %{buildroot}%{_sysconfdir}/default/gru
 #Add more useful update-grub2 script
 install -m755 %{SOURCE9} -D %{buildroot}%{_sbindir}
 
-# Install filetriggers to update grub.cfg on kernel add or remove
-install -d %{buildroot}%{_filetriggers_dir}
-cat > %{buildroot}%{_filetriggers_dir}/%{name}.filter << EOF
-^./boot/vmlinuz-
-^./boot/grub2/themes/
-EOF
-cat > %{buildroot}%{_filetriggers_dir}/%{name}.script << EOF
-#!/bin/sh
-    %{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg
-EOF
-chmod 755 %{buildroot}%{_filetriggers_dir}/%{name}.script
-
 install -d %{buildroot}/boot/%{name}/themes/
 
 #bugfix: error message before loading of grub2 menu on boot
 mkdir -p %{buildroot}%{_localedir}/en/LC_MESSAGES
 ln %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_localedir}/en/LC_MESSAGES
 
-%find_lang grub
+# (tpg) remove *.modules and leave *.mod
+find %{buildroot}%{libdir32}/grub/*-%{platform} -name "*.module" -delete
 
-#drop all zero-length file
-#find %{buildroot} -size 0 -delete
+%find_lang grub
 
 %post
 exec >/dev/null 2>&1
@@ -393,54 +403,51 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
     fi
 fi
 
+
+%transfiletriggerin -p <lua> -- /boot/ /boot/grub2/themes/
+os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
+
+%transfiletriggerpostun -p <lua> -- /boot/ /boot/grub2/themes/
+os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
+
 %preun
 exec >/dev/null
 if [ $1 = 0 ]; then
 # XXX Ugly
-    rm -f /boot/%{name}/*.mod
-    rm -f /boot/%{name}/*.img
-    rm -f /boot/%{name}/*.lst
-    rm -f /boot/%{name}/*.o
-    rm -f /boot/%{name}/device.map
+    rm -f /boot/%{name}/*.mod ||:
+    rm -f /boot/%{name}/*.img ||:
+    rm -f /boot/%{name}/*.lst ||:
+    rm -f /boot/%{name}/*.o ||:
+    rm -f /boot/%{name}/device.map ||:
 fi
 
 #-----------------------------------------------------------------------
-%files -f grub.lang
-%doc NEWS README THANKS TODO
-#%{libdir32}/%{name}
+%files  -f grub.lang
 %{libdir32}/grub/*-%{platform}
 #Files here are needed for install. Moved from efi package
 %{libdir32}/grub/%{_arch}-efi/
-#%{_sbindir}/%{name}-*
-#%{_bindir}/%{name}-*
-%{_sbindir}/update-grub2
 %{_bindir}/%{name}-editenv
-%{_bindir}/%{name}-fstest
-%{_bindir}/%{name}-kbdcomp
 %{_bindir}/%{name}-menulst2cfg
-%{_bindir}/%{name}-mkfont
 %{_bindir}/%{name}-mkimage
-%{_bindir}/%{name}-mklayout
 %{_bindir}/%{name}-mkpasswd-pbkdf2
 %{_bindir}/%{name}-mkrelpath
-%{_bindir}/%{name}-mkrescue
-%{_bindir}/%{name}-mkstandalone
 %{_bindir}/%{name}-mount
 %{_bindir}/%{name}-script-check
 %{_bindir}/%{name}-file
-%{_bindir}/%{name}-glue-efi
-%{_bindir}/%{name}-mknetdir
-%{_bindir}/%{name}-render-label
-%{_bindir}/%{name}-syslinux2cfg
-%{_sbindir}/%{name}-macbless
+%{_sbindir}/update-grub2
 %{_sbindir}/%{name}-bios-setup
 %{_sbindir}/%{name}-install
 %{_sbindir}/%{name}-mkconfig
-%{_sbindir}/%{name}-ofpathname
 %{_sbindir}/%{name}-probe
 %{_sbindir}/%{name}-reboot
 %{_sbindir}/%{name}-set-default
+%ifarch %{sparc}
 %{_sbindir}/%{name}-sparc64-setup
+%{_sbindir}/%{name}-ofpathname
+%else
+%exclude %{_sbindir}/%{name}-sparc64-setup
+%exclude %{_sbindir}/%{name}-ofpathname
+%endif
 %{_datadir}/grub
 %exclude %{_datadir}/grub/themes/*
 %attr(0700,root,root) %dir %{_sysconfdir}/grub.d
@@ -450,32 +457,42 @@ fi
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/default/grub
 %{_sysconfdir}/bash_completion.d/grub
 %dir /boot/%{name}
-%dir /boot/%{name}/locale
-%dir /boot/%{name}/locale/*.gmo
 %dir /boot/%{name}/themes
 # Actually, this is replaced by update-grub from scriptlets,
 # but it takes care of modified persistent part
 %config(noreplace) /boot/%{name}/grub.cfg
-%{_infodir}/%{name}.info*
-%{_infodir}/grub-dev.info*
+
+%files extra
+%{_bindir}/%{name}-fstest
+%{_bindir}/%{name}-kbdcomp
+%{_bindir}/%{name}-glue-efi
+%{_bindir}/%{name}-mkfont
+%{_bindir}/%{name}-mklayout
+%{_bindir}/%{name}-mknetdir
+%{_bindir}/%{name}-mkrescue
+%{_bindir}/%{name}-mkstandalone
+%{_bindir}/%{name}-syslinux2cfg
 %{_mandir}/man1/%{name}-*.1*
 %{_mandir}/man8/%{name}-*.8*
-# RPM filetriggers
-%{_filetriggers_dir}/%{name}.*
 
 %ifarch %{efi}
 %attr(0755,root,root) %dir /boot/efi/EFI/%{efidir}
 %attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
-
 %files efi
 # Files in this package are only required for the creation of iso's
 # The install process creates all the files required to boot with grub via EFI
 %attr(0755,root,root) /boot/efi/EFI/%{efidir}/grub.efi
 #%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
-
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
-
+%{_bindir}/%{name}-render-label
+%{_sbindir}/%{name}-macbless
 %endif
 
 %files starfield-theme
 %{_datadir}/grub/themes/starfield
+
+%files doc
+%doc NEWS README THANKS TODO
+%{_docdir}/%{name}
+%{_infodir}/%{name}.info*
+%{_infodir}/grub-dev.info*
