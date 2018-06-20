@@ -1,13 +1,20 @@
-diff -Naur grub-2.02-20160229/util/grub.d/10_linux.in grub-2.02-20160229.tpg/util/grub.d/10_linux.in
---- grub-2.02-20160229/util/grub.d/10_linux.in	2016-03-31 16:54:54.000000000 +0000
-+++ grub-2.02-20160229.tpg/util/grub.d/10_linux.in	2016-03-31 16:59:08.399706989 +0000
-@@ -187,9 +187,10 @@
+diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
+index 61ebd7d..43d6811 100644
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
+@@ -201,7 +201,7 @@ while [ "x$list" != "x" ] ; do
    version=`echo $basename | sed -e "s,^[^0-9]*-,,g"`
    alt_version=`echo $version | sed -e "s,\.old$,,g"`
    linux_root_device_thisversion="${LINUX_ROOT_DEVICE}"
+-
 +  [[ -s /etc/machine-id ]] && machine_id=`cat /etc/machine-id`
+   initrd_early=
+   for i in ${GRUB_EARLY_INITRD_LINUX_STOCK} \
+ 	   ${GRUB_EARLY_INITRD_LINUX_CUSTOM}; do
+@@ -211,7 +211,7 @@ while [ "x$list" != "x" ] ; do
+   done
  
-   initrd=
+   initrd_real=
 -  for i in "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
 +  for i in "${machine_id}/${version}/initrd" "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
  	   "initrd-${version}" "initramfs-${version}.img" \

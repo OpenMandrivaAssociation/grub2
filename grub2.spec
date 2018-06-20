@@ -13,7 +13,7 @@
 %endif
 
 %define debug_package %{nil}
-%define snapshot %{nil}
+%define snapshot 20180620
 
 %global efi %{ix86} x86_64 aarch64
 %define efidir openmandriva
@@ -55,7 +55,8 @@ Patch2:		grub2-custom-color.patch
 Patch3:		grub2-read-cfg.patch
 Patch4:		grub2-symlink-is-garbage.patch
 Patch5:		grub2-name-corrections.patch
-Patch6:		grub-2.02-fuse3.patch
+# itchka not required for cooker as fuse3 is default named as fuse
+#Patch6:		grub-2.02-fuse3.patch
 Patch7:		grub-2.00.Linux.remove.patch
 Patch8:		grub-2.00-fix-dejavu-font.patch
 Patch9:		grub2-2.00-class-via-os-prober.patch
@@ -70,9 +71,10 @@ Patch18:	grub2-2.02-add-support-for-kernel-install.patch
 # https://lists.gnu.org/archive/html/grub-devel/2016-03/msg00080.html
 # Maintained here:
 # https://github.com/frap129/grub-f2fs/
-Patch19:	grub-add-f2fs-support-2017_05.patch
+# This is now in grub git and will be released in V2.04
+#Patch19:	grub-add-f2fs-support-2017_05.patch
 # (bero) Load Intel microcode if it exists
-Patch20:	grub-2.02-load-microcode.patch
+#Patch20:	grub-2.02-load-microcode.patch
 Patch21:	fix-microcode-os-prober-initrd-line-parsing.patch
 BuildRequires:	autogen
 BuildRequires:	bison
@@ -91,7 +93,7 @@ BuildRequires:	glibc-static-devel
 BuildRequires:	gettext-devel
 BuildRequires:	lzo-devel
 BuildRequires:	pkgconfig(devmapper)
-BuildRequires:	pkgconfig(fuse3)
+BuildRequires:	pkgconfig(fuse)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(liblzma)
 BuildRequires:	pkgconfig(libusb)
@@ -333,6 +335,9 @@ ln %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_localedi
 # (tpg) remove *.modules and leave *.mod
 find %{buildroot}%{libdir32}/grub/*-%{platform} -name "*.module" -delete
 
+rm %{buildroot}%{_sbindir}/%{name}-sparc64-setup
+rm %{buildroot}%{_sbindir}/%{name}-ofpathname
+
 %find_lang grub
 
 %post
@@ -439,13 +444,6 @@ fi
 %{_sbindir}/%{name}-probe
 %{_sbindir}/%{name}-reboot
 %{_sbindir}/%{name}-set-default
-%ifarch %{sparc}
-%{_sbindir}/%{name}-sparc64-setup
-%{_sbindir}/%{name}-ofpathname
-%else
-%exclude %{_sbindir}/%{name}-sparc64-setup
-%exclude %{_sbindir}/%{name}-ofpathname
-%endif
 %{_datadir}/grub
 %exclude %{_datadir}/grub/themes/*
 %attr(0700,root,root) %dir %{_sysconfdir}/grub.d
