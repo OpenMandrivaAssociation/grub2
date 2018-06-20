@@ -85,6 +85,7 @@ BuildRequires:	fonts-ttf-dejavu
 BuildRequires:	unifont-fonts
 BuildRequires:	help2man
 BuildRequires:	rsync
+BuildRequires:	texinfo
 BuildRequires:	glibc-static-devel
 BuildRequires:	gettext-devel
 BuildRequires:	lzo-devel
