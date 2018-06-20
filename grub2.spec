@@ -85,10 +85,6 @@ BuildRequires:	fonts-ttf-dejavu
 BuildRequires:	unifont-fonts
 BuildRequires:	help2man
 BuildRequires:	rsync
-BuildRequires:	texinfo
-BuildRequires:	texlive-latex
-BuildRequires:	texlive-epsf
-BuildRequires:	texlive-kpathsea.bin
 BuildRequires:	glibc-static-devel
 BuildRequires:	gettext-devel
 BuildRequires:	lzo-devel
@@ -239,7 +235,7 @@ pushd %{platform}
 	--enable-device-mapper \
 	--enable-grub-emu-sdl
 
-%make -j1 all html pdf
+%make -j1 all
 popd
 %endif
 
