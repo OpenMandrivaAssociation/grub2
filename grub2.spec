@@ -86,6 +86,7 @@ BuildRequires:	unifont-fonts
 BuildRequires:	help2man
 BuildRequires:	rsync
 BuildRequires:	texinfo
+BuildRequires:	texlive-tex.bin
 BuildRequires:	glibc-static-devel
 BuildRequires:	gettext-devel
 BuildRequires:	lzo-devel
