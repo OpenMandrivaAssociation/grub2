@@ -295,9 +295,6 @@ popd
 %if %{platform}
 %makeinstall_std -C %{platform}
 
-# (bor) grub.info is harcoded in sources
-mv %{buildroot}%{_infodir}/grub.info %{buildroot}%{_infodir}/%{name}.info
-
 # Script that makes part of grub.cfg persist across updates
 install -m755 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/grub.d/90_persistent
 
@@ -490,5 +487,3 @@ fi
 %files doc
 %doc NEWS README THANKS TODO
 %{_docdir}/%{name}
-%{_infodir}/%{name}.info*
-%{_infodir}/grub-dev.info*
