@@ -190,7 +190,7 @@ perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;' \
 perl -pi -e "s|(^FONT_SOURCE=)|\$1%{SOURCE6}|;" configure configure.ac
 
 sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure.ac
-
+sed -e 's|SUBDIRS += po docs util/bash-completion.d|SUBDIRS += po util/bash-completion.d|g' Makefile.am
 perl -pi -e 's/-Werror//;' grub-core/Makefile.am
 mkdir grub-extras
 mv lua grub-extras
@@ -262,8 +262,8 @@ pushd efi
 	--disable-werror \
 	--enable-grub-mkfont \
 	--enable-device-mapper \
-	--enable-grub-emu-sdl
-
+	--enable-grub-emu-sdl \
+	--enable-grub-mount
 %make ascii.h widthspec.h
 %make -C grub-core
 
