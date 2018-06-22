@@ -211,6 +211,7 @@ export CONFIGURE_TOP="$PWD"
 #(proyvind): debugedit will fail on some binaries if linked using gold
 # https://savannah.gnu.org/bugs/?34539
 # https://sourceware.org/bugzilla/show_bug.cgi?id=14187
+automake
 ./autogen.sh
 
 #(proyvind): non-UEFI boot will fail with 'alloc magic broken' on x86_64
@@ -262,8 +263,8 @@ pushd efi
 	--disable-werror \
 	--enable-grub-mkfont \
 	--enable-device-mapper \
-	--enable-grub-emu-sdl \
-	--enable-grub-mount
+	--enable-grub-emu-sdl
+
 %make ascii.h widthspec.h
 %make -C grub-core
 
