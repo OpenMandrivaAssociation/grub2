@@ -1,0 +1,23 @@
+diff -Naur grub-2.02-20180620/Makefile.am grub-2.02-20180620.tpg/Makefile.am
+--- grub-2.02-20180620/Makefile.am	2018-06-05 11:04:04.000000000 +0000
++++ grub-2.02-20180620.tpg/Makefile.am	2018-06-22 14:54:26.954840507 +0000
+@@ -5,7 +5,7 @@
+ if COND_real_platform
+ SUBDIRS += grub-core
+ endif
+-SUBDIRS += po docs util/bash-completion.d
++SUBDIRS += po util/bash-completion.d
+ 
+ include $(top_srcdir)/conf/Makefile.common
+ include $(top_srcdir)/conf/Makefile.extra-dist
+diff -Naur grub-2.02-20180620/configure.ac grub-2.02-20180620.tpg/configure.ac
+--- grub-2.02-20180620/configure.ac	2018-06-22 14:52:27.335848000 +0000
++++ grub-2.02-20180620.tpg/configure.ac	2018-06-22 14:55:10.959837626 +0000
+@@ -2000,7 +2000,6 @@
+ AC_CONFIG_FILES([grub-core/Makefile])
+ AC_CONFIG_FILES([grub-core/gnulib/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+-AC_CONFIG_FILES([docs/Makefile])
+ AC_CONFIG_FILES([util/bash-completion.d/Makefile])
+ AC_CONFIG_FILES([stamp-h], [echo timestamp > stamp-h])
+ AC_CONFIG_FILES([config.h])

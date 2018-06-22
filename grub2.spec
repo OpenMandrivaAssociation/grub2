@@ -76,6 +76,8 @@ Patch18:	grub2-2.02-add-support-for-kernel-install.patch
 # (bero) Load Intel microcode if it exists
 #Patch20:	grub-2.02-load-microcode.patch
 Patch21:	fix-microcode-os-prober-initrd-line-parsing.patch
+Patch22:	grub-2.02-20180620-disable-docs.patch
+
 BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
@@ -190,7 +192,6 @@ perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;' \
 perl -pi -e "s|(^FONT_SOURCE=)|\$1%{SOURCE6}|;" configure configure.ac
 
 sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure.ac
-sed -i -e 's|SUBDIRS += po docs util/bash-completion.d|SUBDIRS += po util/bash-completion.d|g' Makefile.am
 perl -pi -e 's/-Werror//;' grub-core/Makefile.am
 mkdir grub-extras
 mv lua grub-extras
@@ -211,7 +212,6 @@ export CONFIGURE_TOP="$PWD"
 #(proyvind): debugedit will fail on some binaries if linked using gold
 # https://savannah.gnu.org/bugs/?34539
 # https://sourceware.org/bugzilla/show_bug.cgi?id=14187
-automake
 ./autogen.sh
 
 #(proyvind): non-UEFI boot will fail with 'alloc magic broken' on x86_64
