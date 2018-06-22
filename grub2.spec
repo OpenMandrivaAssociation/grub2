@@ -9,7 +9,7 @@
 %endif
 
 %ifarch aarch64
-%define platform %{nil}
+%define platform efi
 %endif
 
 %define debug_package %{nil}
