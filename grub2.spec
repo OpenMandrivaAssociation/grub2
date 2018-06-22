@@ -486,4 +486,6 @@ fi
 
 %files doc
 %doc NEWS README THANKS TODO
-%{_docdir}/%{name}
+#{_docdir}/%{name}
+#{_infodir}/%{name}.info*
+#{_infodir}/grub-dev.info*
