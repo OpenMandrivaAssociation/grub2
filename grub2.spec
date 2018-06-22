@@ -294,7 +294,6 @@ popd
 ######legacy
 %if %{platform}
 %makeinstall_std -C %{platform}
-%makeinstall_std -C %{platform}/docs install-pdf install-html PACKAGE_TARNAME=%{name}
 
 # (bor) grub.info is harcoded in sources
 mv %{buildroot}%{_infodir}/grub.info %{buildroot}%{_infodir}/%{name}.info
