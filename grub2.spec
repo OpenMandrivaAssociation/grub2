@@ -268,7 +268,11 @@ pushd efi
 %make ascii.h widthspec.h
 %make -C grub-core
 
+%ifarch aarch64
+%define grubefiarch aa64-efi
+%else
 %define grubefiarch %{_arch}-efi
+%endif
 
 #This line loads all the modules but makes the efi image unstable.
 #./grub-mkimage -O %{grubefiarch} -p /EFI/openmandriva/%{name}-efi -o grub.efi -d grub-core `ls grub-core/*.mod | sed 's/.*\///g' | sed 's/\.mod//g' | xargs
