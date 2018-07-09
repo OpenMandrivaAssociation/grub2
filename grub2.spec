@@ -48,7 +48,9 @@ Source11:	grub2.rpmlintrc
 Source12:	grub-lua-rev30.tar.xz
 # documentation and simple test script for testing grub2 themes
 Source13:	mandriva-grub2-theme-test.sh
-Source14:	linguas.sh
+Source14:	linguas.tar.xz
+# Used to generate source 14
+Source15:	linguas.sh
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
 Patch2:		grub2-custom-color.patch
@@ -178,9 +180,9 @@ Documentation for GRUB.
 
 %prep
 %if "%{snapshot}" == ""
-%setup -qn grub-%{version} -a12
+%setup -qn grub-%{version} -a12 -a14
 %else
-%setup -qn grub-%{version}-%{snapshot} -a12
+%setup -qn grub-%{version}-%{snapshot} -a12 -a14
 %endif
 %apply_patches
 
@@ -197,8 +199,6 @@ mkdir grub-extras
 mv lua grub-extras
 export GRUB_CONTRIB=./grub-extras
 sed -i -e 's,-I m4,-I m4 --dont-fix,g' autogen.sh
-cp %{SOURCE14} .
-sh linguas.sh
 
 tar -xf %{SOURCE8}
 cd po-update; sh ./update.sh; cd -

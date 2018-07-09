@@ -18,3 +18,5 @@ done
 	done
     ) | sort | uniq | xargs
 ) >po/LINGUAS
+
+tar cJf linguas.tar.xz po
