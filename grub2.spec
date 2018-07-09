@@ -23,7 +23,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	8
+Release:	9
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -79,6 +79,9 @@ Patch18:	grub2-2.02-add-support-for-kernel-install.patch
 #Patch20:	grub-2.02-load-microcode.patch
 Patch21:	fix-microcode-os-prober-initrd-line-parsing.patch
 Patch22:	grub-2.02-20180620-disable-docs.patch
+# Revert http://git.savannah.gnu.org/cgit/grub.git/patch/?id=0ba90a7f017889d32a47897d9107ef45cc50a049
+# because of http://savannah.gnu.org/bugs/?53517
+Patch23:	revert-0ba90a7f017889d32a47897d9107ef45cc50a049.patch
 
 BuildRequires:	autogen
 BuildRequires:	bison
