@@ -271,14 +271,14 @@ pushd efi
 %make ascii.h widthspec.h
 %make -C grub-core
 
-%define grub_modules_default blscfg boot btrfs cat chain configfile echo efifwsetup efinet ext2 f2fs fat font gfxmenu gfxterm gfxterm_background gfxterm_menu grub-core gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi lua lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep sleep squash4 syslinuxcfg test tftp video xfs
+%define grub_modules_default boot btrfs cat chain configfile echo efifwsetup efinet ext2 f2fs fat font gfxmenu gfxterm gfxterm_background gfxterm_menu grub-core gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi lua lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep sleep squash4 syslinuxcfg test tftp video xfs
 
 %ifarch aarch64
 %define grubefiarch arm64-efi
 %define grub_modules %{grub_modules_default}
 %else
 %define grubefiarch %{_arch}-efi
-%define grub_modules %{grub_modules_default} all_video multiboot multiboot2 linuxefi
+%define grub_modules %{grub_modules_default} all_video multiboot multiboot2 linuxefi blscfg
 %endif
 
 #This line loads all the modules but makes the efi image unstable.
