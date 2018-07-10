@@ -272,7 +272,7 @@ pushd efi
 %make -C grub-core
 
 %ifarch aarch64
-%define grubefiarch aa64-efi
+%define grubefiarch arm64-efi
 %else
 %define grubefiarch %{_arch}-efi
 %endif
