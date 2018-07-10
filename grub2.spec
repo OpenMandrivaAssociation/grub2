@@ -271,10 +271,14 @@ pushd efi
 %make ascii.h widthspec.h
 %make -C grub-core
 
+%define grub_modules_default all_videoblscfg boot btrfs cat chain configfile echo efifwsetup efinet ext2 f2fs fat font gfxmenu gfxterm gfxterm_background gfxterm_menu grub-core gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi lua lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep sleep squash4 syslinuxcfg test tftp video xfs
+
 %ifarch aarch64
 %define grubefiarch arm64-efi
+%define grub_modules %{grub_modules_default}
 %else
 %define grubefiarch %{_arch}-efi
+%define grub_modules %{grub_modules_default} multiboot multiboot2 linuxefi
 %endif
 
 #This line loads all the modules but makes the efi image unstable.
@@ -283,11 +287,7 @@ pushd efi
 #  OS.
 
 #These lines produce a grub.efi suitable for an iso. Note the path in the -p option it points to the grub.cfg file on the iso.
-../%{platform}/grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d grub-core linux multiboot multiboot2 all_video boot \
-		btrfs cat chain configfile echo efifwsetup efinet ext2 fat f2fs font gfxmenu gfxterm gfxterm_menu gfxterm_background \
-		gzio halt hfsplus iso9660 jpeg lvm mdraid09 mdraid1x minicmd normal part_apple part_msdos part_gpt password_pbkdf2 \
-		png reboot regexp search search_fs_uuid search_fs_file search_label sleep test tftp video xfs mdraid09 mdraid1x lua loopback \
-		squash4 syslinuxcfg loadenv
+../%{platform}/grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d %{grub_modules}
 
 # sign our EFI image
 # %pesign -s -i grub.efi.org -o grub.efi
