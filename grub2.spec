@@ -15,7 +15,7 @@
 %define debug_package %{nil}
 %define snapshot 20180620
 
-%global efi %{ix86} x86_64 aarch64
+%global efi %{ix86} x86_64 aarch64 znver1
 %define efidir openmandriva
 
 %bcond_with talpo
@@ -114,7 +114,7 @@ Suggests:	xorriso
 Suggests:	os-prober
 Suggests:	distro-theme-common
 Suggests:	distro-theme-OpenMandriva-grub2
-%ifarch %{ix86} x86_64
+%ifarch %{ix86} x86_64 znver1
 Suggests:	microcode-intel
 %endif
 Conflicts:	grub2-tools < 2.02-1.beta2.6
@@ -230,7 +230,7 @@ pushd %{platform}
 	CFLAGS="-O2 -fuse-ld=bfd" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=%{platform} \
-%ifarch x86_64
+%ifarch x86_64 znver1
 	--enable-efiemu \
 %endif
 	--program-transform-name=s,grub,%{name}, \
