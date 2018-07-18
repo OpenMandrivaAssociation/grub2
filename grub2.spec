@@ -278,7 +278,7 @@ pushd efi
 %define grub_modules %{grub_modules_default}
 %else
 %define grubefiarch %{_arch}-efi
-%define grub_modules grub-core linux multiboot multiboot2 all_video boot linuxefi blscfg %{grub_modules_default} 
+%define grub_modules grub-core linux multiboot multiboot2 all_video boot blscfg %{grub_modules_default} 
 %endif
 
 #This line loads all the modules but makes the efi image unstable.
