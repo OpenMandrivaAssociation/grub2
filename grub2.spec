@@ -23,7 +23,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	10
+Release:	11
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -158,6 +158,7 @@ Summary:	Extra tools for GRUB
 Group:		System/Kernel and hardware
 Requires:	%{name} = %{EVRD}
 Conflicts:	%{name} < 2.02-8
+Requires:	console-setup
 
 %description extra
 Extra tools and files for GRUB.
@@ -334,7 +335,7 @@ install -d %{buildroot}/boot/%{name}/themes/
 
 #bugfix: error message before loading of grub2 menu on boot
 mkdir -p %{buildroot}%{_localedir}/en/LC_MESSAGES
-ln %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_localedir}/en/LC_MESSAGES
+cp -f %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_localedir}/en/LC_MESSAGES/grub.mo
 
 # (tpg) remove *.modules and leave *.mod
 find %{buildroot}%{libdir32}/grub/*-%{platform} -name "*.module" -delete
