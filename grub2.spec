@@ -84,7 +84,7 @@ Patch22:	grub-2.02-20180620-disable-docs.patch
 Patch23:	revert-0ba90a7f017889d32a47897d9107ef45cc50a049.patch
 
 # Patches from Mageia
-Patch100:	Patch20002:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
+Patch100:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
 Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
 
 # Patches from SuSe
