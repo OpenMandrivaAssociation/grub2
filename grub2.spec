@@ -282,8 +282,8 @@ pushd efi
 %endif
 
 #This line loads all the modules but makes the efi image unstable.
-#./grub-mkimage -O %{grubefiarch} -p /EFI/openmandriva/%{name}-efi -o grub.efi -d grub-core `ls grub-core/*.mod | sed 's/.*\///g' | sed 's/\.mod//g' | xargs
-#` In practice the grub.efi image is only required for the iso. when grub is installed it selects the modules it needs to boot the current install from the installed
+#./grub-mkimage -O %{grubefiarch} -p /EFI/openmandriva/%{name}-efi -o grub.efi -d grub-core $(ls grub-core/*.mod | sed 's/.*\///g' | sed 's/\.mod//g' | xargs
+#) In practice the grub.efi image is only required for the iso. when grub is installed it selects the modules it needs to boot the current install from the installed
 #  OS.
 
 #These lines produce a grub.efi suitable for an iso. Note the path in the -p option it points to the grub.cfg file on the iso.
@@ -338,6 +338,7 @@ ln %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_localedi
 
 # (tpg) remove *.modules and leave *.mod
 find %{buildroot}%{libdir32}/grub/*-%{platform} -name "*.module" -delete
+find %{buildroot}%{libdir32}/grub/%{_arch}-efi/ -name "*.module" -delete
 
 rm %{buildroot}%{_sbindir}/%{name}-sparc64-setup
 rm %{buildroot}%{_sbindir}/%{name}-ofpathname
