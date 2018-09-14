@@ -1,6 +1,6 @@
 %define libdir32 %{_exec_prefix}/lib
 
-%ifarch %{ix86} x86_64 znver1
+%ifarch %{ix86} %{x86_64}
 %define platform pc
 %endif
 
@@ -15,7 +15,7 @@
 %define debug_package %{nil}
 %define snapshot 20180620
 
-%global efi %{ix86} x86_64 aarch64 znver1
+%global efi %{ix86} %{x86_64} aarch64
 %define efidir openmandriva
 
 %bcond_with talpo
@@ -23,7 +23,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	9
+Release:	10
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -114,7 +114,7 @@ Suggests:	xorriso
 Suggests:	os-prober
 Suggests:	distro-theme-common
 Suggests:	distro-theme-OpenMandriva-grub2
-%ifarch %{ix86} x86_64 znver1
+%ifarch %{ix86} %{x86_64}
 Suggests:	microcode-intel
 %endif
 Conflicts:	grub2-tools < 2.02-1.beta2.6
@@ -230,7 +230,7 @@ pushd %{platform}
 	CFLAGS="-O2 -fuse-ld=bfd" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=%{platform} \
-%ifarch x86_64 znver1
+%ifarch %{x86_64}
 	--enable-efiemu \
 %endif
 	--program-transform-name=s,grub,%{name}, \
