@@ -83,6 +83,16 @@ Patch22:	grub-2.02-20180620-disable-docs.patch
 # because of http://savannah.gnu.org/bugs/?53517
 Patch23:	revert-0ba90a7f017889d32a47897d9107ef45cc50a049.patch
 
+# Patches from Mageia
+Patch100:	Patch20002:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
+Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
+
+# Patches from SuSe
+Patch200:	grub2-setup-try-fs-embed-if-mbr-gap-too-small.patch
+
+# Patches from Unity
+Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
+
 BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
@@ -188,7 +198,7 @@ Documentation for GRUB.
 %else
 %setup -qn grub-%{version}-%{snapshot} -a12 -a14
 %endif
-%apply_patches
+%autopatch -p1
 
 cp %{SOURCE10} .
 
@@ -244,7 +254,7 @@ pushd %{platform}
 	--enable-device-mapper \
 	--enable-grub-emu-sdl
 
-%make -j1 all
+%make_build -j1 all
 popd
 %endif
 
@@ -269,8 +279,8 @@ pushd efi
 	--enable-device-mapper \
 	--enable-grub-emu-sdl
 
-%make ascii.h widthspec.h
-%make -C grub-core
+%make_build ascii.h widthspec.h
+%make_build -C grub-core
 
 %define grub_modules_default cat chain configfile echo efifwsetup efinet ext2 f2fs fat font gfxmenu gfxterm gfxterm_background gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi lua lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep sleep squash4 syslinuxcfg test tftp video xfs btrfs
 
@@ -301,7 +311,7 @@ popd
 %install
 ######legacy
 %if %{platform}
-%makeinstall_std -C %{platform}
+%make_install -C %{platform}
 
 # Script that makes part of grub.cfg persist across updates
 install -m755 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/grub.d/90_persistent
@@ -314,7 +324,7 @@ ln -s /boot/%{name}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}.cfg
 
 ######EFI
 %ifarch %{efi}
-%makeinstall_std -C efi/grub-core
+%make_install -C efi/grub-core
 
 install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/%{efidir}/grub.efi
 
