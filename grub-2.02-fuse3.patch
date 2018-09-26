@@ -19,17 +19,6 @@
    	[grub_mount_excuse=["need FUSE headers"]])
    CPPFLAGS="$SAVED_CPPFLAGS"
  fi
---- grub-2.02/Makefile.util.am.0006~	2017-04-24 13:30:20.000000000 +0200
-+++ grub-2.02/Makefile.util.am	2017-12-01 15:27:59.375189898 +0100
-@@ -198,7 +198,7 @@ nodist_grub_mount_SOURCES  = grub_fstest
- grub_mount_LDADD  = libgrubmods.a libgrubgcry.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) -lfuse 
- grub_mount_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
- grub_mount_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
--grub_mount_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
-+grub_mount_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -I/usr/include/fuse3
- grub_mount_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_PROGRAM) 
- dist_noinst_DATA += 
- BUILT_SOURCES += $(nodist_grub_mount_SOURCES)
 --- grub-2.02/Makefile.util.def.0006~	2017-12-01 15:27:59.376189901 +0100
 +++ grub-2.02/Makefile.util.def	2017-12-01 15:28:28.166275641 +0100
 @@ -287,11 +287,13 @@ program = {
