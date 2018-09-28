@@ -13,7 +13,7 @@
 %endif
 
 %define debug_package %{nil}
-%define snapshot 20180620
+%define snapshot 20180928
 
 %global efi %{ix86} %{x86_64} aarch64
 %define efidir openmandriva
@@ -23,7 +23,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	13
+Release:	14
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
