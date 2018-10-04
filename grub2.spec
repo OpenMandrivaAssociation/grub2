@@ -77,9 +77,6 @@ Patch18:	grub2-2.02-add-support-for-kernel-install.patch
 #Patch20:	grub-2.02-load-microcode.patch
 Patch21:	fix-microcode-os-prober-initrd-line-parsing.patch
 Patch22:	grub-2.02-20180620-disable-docs.patch
-# Revert http://git.savannah.gnu.org/cgit/grub.git/patch/?id=0ba90a7f017889d32a47897d9107ef45cc50a049
-# because of http://savannah.gnu.org/bugs/?53517
-Patch23:	revert-0ba90a7f017889d32a47897d9107ef45cc50a049.patch
 
 # Patches from Mageia
 Patch100:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
