@@ -23,7 +23,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	14
+Release:	15
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -113,6 +113,9 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(liblzma)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(ncursesw)
+%ifarch %{efi}
+BuildRequires:	pesign
+%endif
 
 %if %{with talpo}
 BuildRequires:	talpo
@@ -299,7 +302,7 @@ pushd efi
 ../%{platform}/grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d %{grub_modules}
 
 # sign our EFI image
-# %pesign -s -i grub.efi.org -o grub.efi
+%pesign -s -i %{buildroot}/boot/efi/EFI/%{efidir}/grub.efi
 
 popd
 %endif
