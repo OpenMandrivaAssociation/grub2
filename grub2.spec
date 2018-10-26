@@ -23,7 +23,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	15
+Release:	16
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -43,7 +43,6 @@ Source5:	DroidSansMonoLicense.txt
 Source6:	DroidSansMono.ttf
 Source8:	grub2-po-update.tar.gz
 Source9:	update-grub2
-Source10:	README.urpmi
 Source11:	grub2.rpmlintrc
 Source12:	grub-lua-rev30.tar.xz
 # documentation and simple test script for testing grub2 themes
@@ -200,7 +199,6 @@ Documentation for GRUB.
 %endif
 %autopatch -p1
 
-cp %{SOURCE10} .
 
 perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;' \
 	docs/grub-dev.texi
@@ -375,50 +373,49 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
     if [ $1 = 1 ]; then
 	%{_sbindir}/update-grub2
     fi
+fi
 
+%triggerin -- %{name} < %{EVRD}
 # (tpg) run only on update
-    if [ $1 -ge 2 ]; then
 # (tpg) remove wrong line in boot options
-	if [ -e %{_sysconfdir}/default/grub ]; then
-	    if grep -q "init=/lib/systemd/systemd" %{_sysconfdir}/default/grub; then
-		sed -i -e 's#init=/lib/systemd/systemd##g' %{_sysconfdir}/default/grub
-	    fi
+if [ -e %{_sysconfdir}/default/grub ]; then
+    if grep -q "init=/lib/systemd/systemd" %{_sysconfdir}/default/grub; then
+	sed -i -e 's#init=/lib/systemd/systemd##g' %{_sysconfdir}/default/grub
+    fi
 # (tpg) handle backlight parameter for varsious kernel versions
-	    if grep -q "acpi_backlight=vendor" %{_sysconfdir}/default/grub && [[ $(uname -r | awk -F[-] '{print $1}') < "4.3.0" ]] ; then
-		sed -e 's#acpi_backlight=vendor# video.use_native_backlight=1 #g' %{_sysconfdir}/default/grub
-	    fi
-	    if grep -q "video.use_native_backlight=1" %{_sysconfdir}/default/grub && [[ $(uname -r | awk -F[-] '{print $1}') > "4.3.0" ]] ; then
-		sed -e 's#video.use_native_backlight=1# acpi_backlight=vendor #g' %{_sysconfdir}/default/grub
-	    fi
+    if grep -q "acpi_backlight=vendor" %{_sysconfdir}/default/grub && [[ $(uname -r | awk -F[-] '{print $1}') < "4.3.0" ]] ; then
+	sed -e 's#acpi_backlight=vendor# video.use_native_backlight=1 #g' %{_sysconfdir}/default/grub
+    fi
+    if grep -q "video.use_native_backlight=1" %{_sysconfdir}/default/grub && [[ $(uname -r | awk -F[-] '{print $1}') > "4.3.0" ]] ; then
+	sed -e 's#video.use_native_backlight=1# acpi_backlight=vendor #g' %{_sysconfdir}/default/grub
+    fi
 # (tpg) disable audit messages
-	    if ! grep -q "^GRUB_CMDLINE_LINUX_DEFAULT.*audit=0.*" %{_sysconfdir}/default/grub; then
-		sed -i -e 's#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" audit=0 #' %{_sysconfdir}/default/grub
-	    fi
+    if ! grep -q "^GRUB_CMDLINE_LINUX_DEFAULT.*audit=0.*" %{_sysconfdir}/default/grub; then
+	sed -i -e 's#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" audit=0 #' %{_sysconfdir}/default/grub
+    fi
 # (tpg) remove resume= as it is not needed with tuxonice
-	    if grep -q "resume=" %{_sysconfdir}/default/grub; then
-		sed -i -e 's#resume=[Aa/-Zz/]*\s##g' %{_sysconfdir}/default/grub
-	    fi
+    if grep -q "resume=" %{_sysconfdir}/default/grub; then
+	sed -i -e 's#resume=[Aa/-Zz/]*\s##g' %{_sysconfdir}/default/grub
+    fi
 # (tpg) set GRUB_SAVEDEFAULT=false to fix bug https://issues.openmandriva.org/show_bug.cgi?id=1814
 # (tpg) revert because of https://issues.openmandriva.org/show_bug.cgi?id=1915
-	    if grep -q "GRUB_SAVEDEFAULT=" %{_sysconfdir}/default/grub; then
-		sed -i -e 's#GRUB_SAVEDEFAULT=false#GRUB_SAVEDEFAULT=true#g' %{_sysconfdir}/default/grub
-	    fi
-# (tpg) set acpi_osi=Linux
-	    if ! grep -q "acpi_osi=Linux" %{_sysconfdir}/default/grub; then
-		sed -i -e 's#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" acpi_osi=Linux #' %{_sysconfdir}/default/grub
-	    fi
-# (tpg) set acpi_osi='!Windows 2012' for modern UEFI
-	    if ! grep -q "acpi_osi='\!Windows 2012'" %{_sysconfdir}/default/grub; then
-		sed -i -e "s#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" acpi_osi='\!Windows 2012' #" %{_sysconfdir}/default/grub
-	    fi
-# (tpg) enable Multi-Queue Block IO Queueing Mechanism
-	    if ! grep -q "scsi_mod.use_blk_mq=1" %{_sysconfdir}/default/grub; then
-		sed -i -e "s#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" scsi_mod.use_blk_mq=1 #" %{_sysconfdir}/default/grub
-	    fi
-# (tpg) regenerate grub2 at the end
-	    %{_sbindir}/update-grub2
-	fi
+    if grep -q "GRUB_SAVEDEFAULT=" %{_sysconfdir}/default/grub; then
+	sed -i -e 's#GRUB_SAVEDEFAULT=false#GRUB_SAVEDEFAULT=true#g' %{_sysconfdir}/default/grub
     fi
+# (tpg) set acpi_osi=Linux
+    if ! grep -q "acpi_osi=Linux" %{_sysconfdir}/default/grub; then
+	sed -i -e 's#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" acpi_osi=Linux #' %{_sysconfdir}/default/grub
+    fi
+# (tpg) set acpi_osi='!Windows 2012' for modern UEFI
+    if ! grep -q "acpi_osi='\!Windows 2012'" %{_sysconfdir}/default/grub; then
+	sed -i -e "s#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" acpi_osi='\!Windows 2012' #" %{_sysconfdir}/default/grub
+    fi
+# (tpg) enable Multi-Queue Block IO Queueing Mechanism
+    if ! grep -q "scsi_mod.use_blk_mq=1" %{_sysconfdir}/default/grub; then
+	sed -i -e "s#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" scsi_mod.use_blk_mq=1 #" %{_sysconfdir}/default/grub
+    fi
+# (tpg) regenerate grub2 at the end
+    %{_sbindir}/update-grub2
 fi
 
 
