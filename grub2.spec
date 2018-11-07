@@ -23,7 +23,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	17
+Release:	18
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -89,6 +89,7 @@ Patch200:	grub2-setup-try-fs-embed-if-mbr-gap-too-small.patch
 # Patches from Unity
 Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 
+Patch400:	x86-64-Treat-R_X86_64_PLT32-as-R_X86_64_PC32.patch
 BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
