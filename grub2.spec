@@ -296,7 +296,7 @@ pushd efi
 #  OS.
 
 #These lines produce a grub.efi suitable for an iso. Note the path in the -p option it points to the grub.cfg file on the iso.
-../%{platform}/grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d grub-core %{grub_modules}
+../%{platform}/grub-mkimage -v -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d grub-core %{grub_modules}
 
 # sign our EFI image
 #%%pesign -s -i%%{buildroot}/boot/efi/EFI/%{efidir}/grub.efi -o %{buildroot}/boot/efi/EFI/%{efidir}/OMgrub.efi
