@@ -287,7 +287,7 @@ pushd efi
 %define grub_modules %nil
 %else
 %define grubefiarch %{_arch}-efi
-%define grub_modules grub-core linux multiboot multiboot2 all_video boot %{grub_modules_default}
+%define grub_modules -d grub-core linux multiboot multiboot2 all_video boot %{grub_modules_default}
 %endif
 
 #This line loads all the modules but makes the efi image unstable.
@@ -296,7 +296,7 @@ pushd efi
 #  OS.
 
 #These lines produce a grub.efi suitable for an iso. Note the path in the -p option it points to the grub.cfg file on the iso.
-../%{platform}/grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d %{grub_modules}
+../%{platform}/grub-mkimage -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi %{grub_modules}
 
 # sign our EFI image
 #%%pesign -s -i%%{buildroot}/boot/efi/EFI/%{efidir}/grub.efi -o %{buildroot}/boot/efi/EFI/%{efidir}/OMgrub.efi
