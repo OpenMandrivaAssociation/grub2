@@ -23,7 +23,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	19
+Release:	20
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -78,6 +78,9 @@ Patch19:	0001-Revert-Make-grub-install-check-for-errors-from-efibo.patch
 #Patch20:	grub-2.02-load-microcode.patch
 Patch21:	fix-microcode-os-prober-initrd-line-parsing.patch
 Patch22:	grub-2.02-20180620-disable-docs.patch
+# Without this, build fails on aarch64 w/ unresolved symbol abort
+# while running grub-mkimage
+Patch23:	grub-2.02-define-abort.patch
 
 # Patches from Mageia
 Patch100:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
