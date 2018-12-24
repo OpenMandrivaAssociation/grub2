@@ -470,8 +470,8 @@ fi
 %{_sbindir}/%{name}-mkconfig
 %{_sbindir}/%{name}-probe
 %{_sbindir}/%{name}-reboot
-%endif
 %{_sbindir}/%{name}-set-default
+%endif
 %{_datadir}/grub
 %exclude %{_datadir}/grub/themes/*
 %attr(0700,root,root) %dir %{_sysconfdir}/grub.d
