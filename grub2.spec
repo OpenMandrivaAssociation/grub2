@@ -194,6 +194,11 @@ Documentation for GRUB.
 
 #-----------------------------------------------------------------------
 
+%ifarch %{arm} %{armx}
+%global optflags %{optflags} -fuse-ld=bfd
+%global ldflags %{ldflags} -fuse-ld=bfd
+%endif
+
 %prep
 %if "%{snapshot}" == ""
 %setup -qn grub-%{version} -a12 -a14
@@ -262,7 +267,11 @@ popd
 %ifarch %{efi}
 mkdir -p efi
 pushd efi
+%ifarch %{arm} %{armx}
+%configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
+%else
 %configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
+%endif
 %if %{with talpo}
 	CC=talpo \
 	CFLAGS=-fplugin-arg-melt-option=talpo-arg-file:%{SOURCE3} \
