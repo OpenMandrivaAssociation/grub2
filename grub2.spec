@@ -362,8 +362,8 @@ cp -f %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_local
 find %{buildroot}%{libdir32}/grub/*-%{platform} -name "*.module" -delete || :
 find %{buildroot}%{libdir32}/grub/%{_arch}-efi/ -name "*.module" -delete || :
 
-rm %{buildroot}%{_sbindir}/%{name}-sparc64-setup
-rm %{buildroot}%{_sbindir}/%{name}-ofpathname
+rm -f %{buildroot}%{_sbindir}/%{name}-sparc64-setup
+rm -f %{buildroot}%{_sbindir}/%{name}-ofpathname
 
 %find_lang grub
 
