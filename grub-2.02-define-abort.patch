@@ -5,9 +5,9 @@ diff -up grub-2.02-20180928/grub-core/kern/misc.c.omv~ grub-2.02-20180928/grub-c
    grub_exit ();
  }
  
-+#if defined(__aarch64__) && defined (__clang__) && !defined (GRUB_UTIL)
-+/* clang emits references to abort().  */
-+void __attribute__ ((noreturn))
++#if defined(__aarch64__) && !defined (GRUB_UTIL)
++/* On aarch64, we get references to abort().  */
++void __attribute__ ((noreturn)) __attribute__((visibility("default")))
 +abort (void)
 +{
 +  grub_abort ();
