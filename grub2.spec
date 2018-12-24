@@ -357,8 +357,10 @@ mkdir -p %{buildroot}%{_localedir}/en/LC_MESSAGES
 cp -f %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_localedir}/en/LC_MESSAGES/grub.mo
 
 # (tpg) remove *.modules and leave *.mod
-find %{buildroot}%{libdir32}/grub/*-%{platform} -name "*.module" -delete
-find %{buildroot}%{libdir32}/grub/%{_arch}-efi/ -name "*.module" -delete
+# Allow stuff to fail because some modules may not have been built
+# (e.g. no EFI)
+find %{buildroot}%{libdir32}/grub/*-%{platform} -name "*.module" -delete || :
+find %{buildroot}%{libdir32}/grub/%{_arch}-efi/ -name "*.module" -delete || :
 
 rm %{buildroot}%{_sbindir}/%{name}-sparc64-setup
 rm %{buildroot}%{_sbindir}/%{name}-ofpathname
