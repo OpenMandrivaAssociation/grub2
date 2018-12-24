@@ -453,6 +453,7 @@ fi
 #-----------------------------------------------------------------------
 %files  -f grub.lang
 %{libdir32}/grub/*-%{platform}
+%ifnarch %{aarch64}
 #Files here are needed for install. Moved from efi package
 %{libdir32}/grub/%{_arch}-efi/
 %{_bindir}/%{name}-editenv
@@ -469,6 +470,7 @@ fi
 %{_sbindir}/%{name}-mkconfig
 %{_sbindir}/%{name}-probe
 %{_sbindir}/%{name}-reboot
+%endif
 %{_sbindir}/%{name}-set-default
 %{_datadir}/grub
 %exclude %{_datadir}/grub/themes/*
