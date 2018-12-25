@@ -508,8 +508,10 @@ fi
 %attr(0755,root,root) /boot/efi/EFI/%{efidir}/grub.efi
 #%%attr(0755,root,root) %%ghost %%config(noreplace) /boot/efi/EFI/%%{efidir}/grub.cfg
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
+%ifnarch %{aarch64}
 %{_bindir}/%{name}-render-label
 %{_sbindir}/%{name}-macbless
+%endif
 %endif
 
 %files starfield-theme
