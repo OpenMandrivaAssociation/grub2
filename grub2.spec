@@ -342,6 +342,21 @@ touch %{buildroot}/boot/efi/EFI/%{efidir}/grub.cfg
 ln -s /boot/efi/EFI/%{efidir}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
 %endif
 
+%if "%{platform}" == "efi"
+cd %{buildroot}%{_bindir}
+for i in grub2-efi-*; do
+	GENERICNAME="`echo $i |sed -e 's,-efi,,'`"
+	mv $i $GENERICNAME
+done
+cd -
+cd %{buildroot}%{_sbindir}
+for i in grub2-efi-*; do
+	GENERICNAME="`echo $i |sed -e 's,-efi,,'`"
+	mv $i $GENERICNAME
+done
+cd -
+%endif
+
 # Defaults
 install -m755 %{SOURCE2} -D %{buildroot}%{_sysconfdir}/default/grub
 # (tpg) use default distro name
@@ -456,6 +471,7 @@ fi
 %ifnarch %{aarch64}
 #Files here are needed for install. Moved from efi package
 %{libdir32}/grub/%{_arch}-efi/
+%endif
 %{_bindir}/%{name}-editenv
 %{_bindir}/%{name}-menulst2cfg
 %{_bindir}/%{name}-mkimage
@@ -471,7 +487,6 @@ fi
 %{_sbindir}/%{name}-probe
 %{_sbindir}/%{name}-reboot
 %{_sbindir}/%{name}-set-default
-%endif
 %{_datadir}/grub
 %exclude %{_datadir}/grub/themes/*
 %attr(0700,root,root) %dir %{_sysconfdir}/grub.d
@@ -508,10 +523,8 @@ fi
 %attr(0755,root,root) /boot/efi/EFI/%{efidir}/grub.efi
 #%%attr(0755,root,root) %%ghost %%config(noreplace) /boot/efi/EFI/%%{efidir}/grub.cfg
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
-%ifnarch %{aarch64}
 %{_bindir}/%{name}-render-label
 %{_sbindir}/%{name}-macbless
-%endif
 %endif
 
 %files starfield-theme
