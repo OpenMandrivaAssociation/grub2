@@ -1,0 +1,13 @@
+diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/grub.d/10_linux.in
+--- grub-2.02-20180928/util/grub.d/10_linux.in	2019-02-06 22:23:40.763466308 +0100
++++ grub-2.02-20180928-p/util/grub.d/10_linux.in	2019-02-06 22:22:23.991023237 +0100
+@@ -75,6 +75,9 @@
+ 	rootsubvol="${rootsubvol#/}"
+ 	if [ "x${rootsubvol}" != x ]; then
+ 	    GRUB_CMDLINE_LINUX="rootflags=subvol=${rootsubvol} ${GRUB_CMDLINE_LINUX}"
++		if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
++			GRUB_CMDLINE_LINUX_RECOVERY="rootflags=subvol=${rootsubvol} ${GRUB_CMDLINE_LINUX_RECOVERY}"
++		fi
+ 	fi;;
+     xzfs)
+ 	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || true`

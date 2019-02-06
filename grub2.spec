@@ -81,6 +81,8 @@ Patch22:	grub-2.02-20180620-disable-docs.patch
 # Without this, build fails on aarch64 w/ unresolved symbol abort
 # while running grub-mkimage
 Patch23:	grub-2.02-define-abort.patch
+# (crazy) https://issues.openmandriva.org/show_bug.cgi?id=2423
+Patch24:	fix-btrfs-GRUB_CMDLINE_LINUX_RECOVERY.patch
 
 # (crazy) these are 2 BAD patches , FIXME after Lx4
 # Patches from Mageia
