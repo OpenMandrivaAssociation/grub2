@@ -7,12 +7,12 @@ diff -up grub-2.02-20180620/util/grub.d/10_linux.in.7~ grub-2.02-20180620/util/g
  if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
 -  OS=GNU/Linux
 +  if [ -e /etc/system-release ]; then
-+    OS="$(sed 's, release .*$,,g' /etc/system-release)"
++    OS="$(sed 's, release .*$,,g' /etc/openmandriva-release)"
 +  else
 +    OS=GNU/Linux
 +  fi
-+elif [ "x${GRUB_DISTRIBUTOR}" = "xROSA" ] ; then
-+  OS="$(sed 's, release .*$,,g' /etc/system-release)"
++elif [ "x${GRUB_DISTRIBUTOR}" = "xopenmandriva" ] ; then
++  OS="$(sed 's, release .*$,,g' /etc/openmandriva-release)"
  else
 -  OS="${GRUB_DISTRIBUTOR} GNU/Linux"
 +  OS="${GRUB_DISTRIBUTOR}"
