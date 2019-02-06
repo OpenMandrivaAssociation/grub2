@@ -422,6 +422,7 @@ if [ -e %{_sysconfdir}/default/grub ]; then
     if ! grep -q "^GRUB_CMDLINE_LINUX_DEFAULT.*audit=0.*" %{_sysconfdir}/default/grub; then
 	sed -i -e 's#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" audit=0 #' %{_sysconfdir}/default/grub
     fi
+# (crazy) FIXME: this need patch , btrfs and f2fs
 # (tpg) set GRUB_SAVEDEFAULT=false to fix bug https://issues.openmandriva.org/show_bug.cgi?id=1814
 # (tpg) revert because of https://issues.openmandriva.org/show_bug.cgi?id=1915
     if grep -q "GRUB_SAVEDEFAULT=" %{_sysconfdir}/default/grub; then
