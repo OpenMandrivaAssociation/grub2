@@ -329,7 +329,6 @@ install -m755 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/grub.d/90_persistent
 # Ghost config file
 install -d %{buildroot}/boot/%{name}
 touch %{buildroot}/boot/%{name}/grub.cfg
-ln -s /boot/%{name}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}.cfg
 %endif
 
 ######EFI
@@ -340,7 +339,6 @@ install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/%{efidir}/grub.efi
 #%%pesign -s -i %%{buildroot}/boot/efi/EFI/%%{efidir}/grub.efi -o %%{buildroot}/boot/efi/EFI/%%{efidir}/grub.efi
 # Ghost config file
 touch %{buildroot}/boot/efi/EFI/%{efidir}/grub.cfg
-ln -s /boot/efi/EFI/%{efidir}/grub.cfg %{buildroot}%{_sysconfdir}/%{name}-efi.cfg
 %endif
 
 %if "%{platform}" == "efi"
