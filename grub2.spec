@@ -158,10 +158,10 @@ Conflicts:	%{name} < 2.02-8
 
 %description efi
 The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
-bootloader with modular architecture. 
+bootloader with modular architecture.
 
-It support rich variety of kernel formats, file systems, computer 
-architectures and hardware devices.  This subpackage provides support 
+It support rich variety of kernel formats, file systems, computer
+architectures and hardware devices.  This subpackage provides support
 for EFI systems.
 %endif
 
