@@ -82,6 +82,7 @@ Patch22:	grub-2.02-20180620-disable-docs.patch
 # while running grub-mkimage
 Patch23:	grub-2.02-define-abort.patch
 
+# (crazy) these are 2 BAD patches , FIXME after Lx4
 # Patches from Mageia
 Patch100:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
 Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
