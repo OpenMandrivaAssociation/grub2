@@ -490,7 +490,6 @@ fi
 %attr(0700,root,root) %dir %{_sysconfdir}/grub.d
 %{_sysconfdir}/grub.d/README
 %config %{_sysconfdir}/grub.d/??_*
-%{_sysconfdir}/%{name}.cfg
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/default/grub
 %{_sysconfdir}/bash_completion.d/grub
 %dir /boot/%{name}
@@ -520,7 +519,6 @@ fi
 # The install process creates all the files required to boot with grub via EFI
 %attr(0755,root,root) /boot/efi/EFI/%{efidir}/grub.efi
 #%%attr(0755,root,root) %%ghost %%config(noreplace) /boot/efi/EFI/%%{efidir}/grub.cfg
-%config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 %{_bindir}/%{name}-render-label
 %{_sbindir}/%{name}-macbless
 %endif
