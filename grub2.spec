@@ -513,12 +513,12 @@ fi
 
 %ifarch %{efi}
 %attr(0755,root,root) %dir /boot/efi/EFI/%{efidir}
+## (crazy) not needed remove after Lx4
 %attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
 %files efi
 # Files in this package are only required for the creation of iso's
 # The install process creates all the files required to boot with grub via EFI
 %attr(0755,root,root) /boot/efi/EFI/%{efidir}/grub.efi
-#%%attr(0755,root,root) %%ghost %%config(noreplace) /boot/efi/EFI/%%{efidir}/grub.cfg
 %{_bindir}/%{name}-render-label
 %{_sbindir}/%{name}-macbless
 %endif
