@@ -23,7 +23,7 @@
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 Version:	2.02
-Release:	21
+Release:	22
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
