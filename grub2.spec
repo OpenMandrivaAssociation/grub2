@@ -386,12 +386,6 @@ rm -f %{buildroot}%{_sbindir}/%{name}-ofpathname
 %post
 exec >/dev/null 2>&1
 
-if [ -e /boot/grub/device.map ]; then
-# Create device.map or reuse one from GRUB Legacy
-    cp -u /boot/grub/device.map /boot/%{name}/device.map 2>/dev/null ||
-    %{_sbindir}/%{name}-mkdevicemap
-fi
-
 # Do not install grub2 if running in a chroot
 # http://stackoverflow.com/questions/75182/detecting-a-chroot-jail-from-within
 if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
