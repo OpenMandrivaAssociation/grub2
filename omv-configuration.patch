@@ -1,0 +1,139 @@
+diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/grub.d/10_linux.in
+--- grub-2.02-20180928/util/grub.d/10_linux.in	2018-09-27 14:56:45.000000000 +0200
++++ grub-2.02-20180928-p/util/grub.d/10_linux.in	2019-02-14 15:30:56.189256816 +0100
+@@ -29,9 +29,15 @@
+ CLASS="--class gnu-linux --class gnu --class os"
+ 
+ if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
+-  OS=GNU/Linux
++  if [ -e /etc/system-release ]; then
++    OS="$(sed 's, release .*$,,g' /etc/openmandriva-release)"
++  else
++    OS=GNU/Linux
++  fi
++elif [ "x${GRUB_DISTRIBUTOR}" = "xopenmandriva" ] ; then
++  OS="$(sed 's, release .*$,,g' /etc/openmandriva-release)"
+ else
+-  OS="${GRUB_DISTRIBUTOR} GNU/Linux"
++  OS="${GRUB_DISTRIBUTOR}"
+   CLASS="--class $(echo ${GRUB_DISTRIBUTOR} | tr 'A-Z' 'a-z' | cut -d' ' -f1|LC_ALL=C sed 's,[^[:alnum:]_],_,g') ${CLASS}"
+ fi
+ 
+@@ -65,11 +71,20 @@
+ 
+ case x"$GRUB_FS" in
+     xbtrfs)
++	## (crazy) does not work with this FS
++	GRUB_SAVEDEFAULT=false
+ 	rootsubvol="`make_system_path_relative_to_its_root /`"
+ 	rootsubvol="${rootsubvol#/}"
+ 	if [ "x${rootsubvol}" != x ]; then
+ 	    GRUB_CMDLINE_LINUX="rootflags=subvol=${rootsubvol} ${GRUB_CMDLINE_LINUX}"
++		if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
++			GRUB_CMDLINE_LINUX_RECOVERY="rootflags=subvol=${rootsubvol} ${GRUB_CMDLINE_LINUX_RECOVERY}"
++		fi
+ 	fi;;
++    xf2fs)
++	## (crazy) does not work with this FS
++	GRUB_SAVEDEFAULT=false
++	;;
+     xzfs)
+ 	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || true`
+ 	bootfs="`make_system_path_relative_to_its_root / | sed -e "s,@$,,"`"
+@@ -89,13 +104,22 @@
+   if [ -z "$boot_device_id" ]; then
+       boot_device_id="$(grub_get_device_id "${GRUB_DEVICE}")"
+   fi
++
++  # (crazy) do it that way so we have these translated
+   if [ x$type != xsimple ] ; then
+       case $type in
+-	  recovery)
+-	      title="$(gettext_printf "%s, with Linux %s (recovery mode)" "${os}" "${version}")" ;;
+-	  *)
+-	      title="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")" ;;
++          recovery)
++              title_r="(recovery mode)"
++              title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
++              title="${title_} ${title_r}" ;;
++          console)
++              title_c="(console mode)"
++              title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
++              title="${title_} ${title_c}" ;;
++          *)
++              title="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")" ;;
+       esac
++
+       if [ x"$title" = x"$GRUB_ACTUAL_DEFAULT" ] || [ x"Previous Linux versions>$title" = x"$GRUB_ACTUAL_DEFAULT" ]; then
+ 	  replacement_title="$(echo "Advanced options for ${OS}" | sed 's,>,>>,g')>$(echo "$title" | sed 's,>,>>,g')"
+ 	  quoted="$(echo "$GRUB_ACTUAL_DEFAULT" | grub_quote)"
+@@ -105,7 +129,7 @@
+       echo "menuentry '$(echo "$title" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-$version-$type-$boot_device_id' {" | sed "s/^/$submenu_indentation/"
+   else
+       echo "menuentry '$(echo "$os" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-simple-$boot_device_id' {" | sed "s/^/$submenu_indentation/"
+-  fi      
++  fi
+   if [ x$type != xrecovery ] ; then
+       save_default_entry | grub_add_tab
+   fi
+@@ -201,7 +225,7 @@
+   version=`echo $basename | sed -e "s,^[^0-9]*-,,g"`
+   alt_version=`echo $version | sed -e "s,\.old$,,g"`
+   linux_root_device_thisversion="${LINUX_ROOT_DEVICE}"
+-
++  [[ -s /etc/machine-id ]] && machine_id=`cat /etc/machine-id`
+   initrd_early=
+   for i in ${GRUB_EARLY_INITRD_LINUX_STOCK} \
+ 	   ${GRUB_EARLY_INITRD_LINUX_CUSTOM}; do
+@@ -211,7 +235,7 @@
+   done
+ 
+   initrd_real=
+-  for i in "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
++  for i in "${machine_id}/${version}/initrd" "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
+ 	   "initrd-${version}" "initramfs-${version}.img" \
+ 	   "initrd.img-${alt_version}" "initrd-${alt_version}.img" \
+ 	   "initrd-${alt_version}" "initramfs-${alt_version}.img" \
+@@ -266,20 +290,28 @@
+     "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
+ 
+     submenu_indentation="$grub_tab"
+-    
++
+     if [ -z "$boot_device_id" ]; then
+ 	boot_device_id="$(grub_get_device_id "${GRUB_DEVICE}")"
+     fi
++
++    ## (crazy) this is bc the way translations are working
++    # match Live theme , requested from @bero
++    atext_c=">"
++    atext_="$(gettext_printf "Advanced options for %s" "${OS}" | grub_quote)"
++    atext="${atext_} ${atext_c}"
+     # TRANSLATORS: %s is replaced with an OS name
+-    echo "submenu '$(gettext_printf "Advanced options for %s" "${OS}" | grub_quote)' \$menuentry_id_option 'gnulinux-advanced-$boot_device_id' {"
++    echo "submenu '$atext' \$menuentry_id_option 'gnulinux-advanced-$boot_device_id' {"
+     is_top_level=false
+   fi
+ 
+   linux_entry "${OS}" "${version}" advanced \
+               "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
++  linux_entry "${OS}" "${version}" console \
++		"${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} plymouth.enable=0 systemd.unit=multi-user.target"
+   if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
+     linux_entry "${OS}" "${version}" recovery \
+-                "single ${GRUB_CMDLINE_LINUX}"
++                "single ${GRUB_CMDLINE_LINUX_RECOVERY}"
+   fi
+ 
+   list=`echo $list | tr ' ' '\n' | fgrep -vx "$linux" | tr '\n' ' '`
+diff -Naur grub-2.02-20180928/util/grub-mkconfig.in grub-2.02-20180928-p/util/grub-mkconfig.in
+--- grub-2.02-20180928/util/grub-mkconfig.in	2018-09-27 14:56:45.000000000 +0200
++++ grub-2.02-20180928-p/util/grub-mkconfig.in	2019-02-14 14:56:58.109276468 +0100
+@@ -237,6 +237,7 @@
+   GRUB_SAVEDEFAULT \
+   GRUB_ENABLE_CRYPTODISK \
+   GRUB_BADRAM \
++  GRUB_CMDLINE_LINUX_RECOVERY \
+   GRUB_OS_PROBER_SKIP_LIST \
+   GRUB_DISABLE_SUBMENU
+ 
