@@ -88,7 +88,7 @@ Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
 Patch200:	grub2-setup-try-fs-embed-if-mbr-gap-too-small.patch
 
 # Patches from Unity
-#Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
+Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 
 BuildRequires:	autogen
 BuildRequires:	bison
@@ -191,12 +191,8 @@ Documentation for GRUB.
 
 #-----------------------------------------------------------------------
 
-%define _disable_ld_no_undefined 1
-%define _disable_lto 1
-%global optflags %{nil}
-%global ldflags %{nil}
-
 %ifarch %{arm} %{armx}
+%global optflags %{optflags} -fuse-ld=bfd
 %global ldflags %{ldflags} -fuse-ld=bfd
 %endif
 
@@ -241,7 +237,7 @@ export CONFIGURE_TOP="$PWD"
 mkdir -p %{platform}
 pushd %{platform}
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
-	CFLAGS="-O0 -fuse-ld=bfd" \
+	CFLAGS="-O2 -fuse-ld=bfd" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=%{platform} \
 %ifarch %{x86_64}
@@ -264,8 +260,12 @@ popd
 %ifarch %{efi}
 mkdir -p efi
 pushd efi
+%ifarch %{arm} %{armx}
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
-	CFLAGS="-O0 -fuse-ld=bfd" \
+%else
+%configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
+%endif
+	CFLAGS="-O2 -fuse-ld=bfd" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=efi \
 	--program-transform-name=s,grub,%{name}-efi, \
