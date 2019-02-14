@@ -20,8 +20,12 @@
 
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
+## WARNING! before updating snapshots grep local for
+## 'boot/grub' in the source , including Makefiles*
+## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
+## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.02
-Release:	24
+Release:	25
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/

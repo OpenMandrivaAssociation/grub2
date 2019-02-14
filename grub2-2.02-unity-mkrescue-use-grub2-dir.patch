@@ -1,6 +1,18 @@
-diff -Naur grub/util/grub-install.c grub_new/util/grub-install.c
---- grub/util/grub-install.c	2018-04-18 16:54:49.311544732 -0700
-+++ grub_new/util/grub-install.c	2018-04-18 16:51:27.856350416 -0700
+diff -Naur grub-2.02-20180928/Makefile.am grub-2.02-20180928-p/Makefile.am
+--- grub-2.02-20180928/Makefile.am	2018-09-27 14:56:45.000000000 +0200
++++ grub-2.02-20180928-p/Makefile.am	2019-02-14 17:40:28.451060963 +0100
+@@ -424,7 +424,7 @@
+ if COND_i386_coreboot
+ default_payload.elf: grub-mkstandalone grub-mkimage FORCE
+ 	test -f $@ && rm $@ || true
+-	pkgdatadir=. ./grub-mkstandalone --grub-mkimage=./grub-mkimage -O i386-coreboot -o $@ --modules='ahci pata ehci uhci ohci usb_keyboard usbms part_msdos ext2 fat at_keyboard part_gpt usbserial_usbdebug cbfs' --install-modules='ls linux search configfile normal cbtime cbls memrw iorw minicmd lsmmap lspci halt reboot hexdump pcidump regexp setpci lsacpi chain test serial multiboot cbmemc linux16 gzio echo help syslinuxcfg xnu $(shell cat grub-core/fs.lst) password_pbkdf2 $(EXTRA_PAYLOAD_MODULES)' --fonts= --themes= --locales= -d grub-core/ /boot/grub/grub.cfg=$(srcdir)/coreboot.cfg
++	pkgdatadir=. ./grub-mkstandalone --grub-mkimage=./grub-mkimage -O i386-coreboot -o $@ --modules='ahci pata ehci uhci ohci usb_keyboard usbms part_msdos ext2 fat at_keyboard part_gpt usbserial_usbdebug cbfs' --install-modules='ls linux search configfile normal cbtime cbls memrw iorw minicmd lsmmap lspci halt reboot hexdump pcidump regexp setpci lsacpi chain test serial multiboot cbmemc linux16 gzio echo help syslinuxcfg xnu $(shell cat grub-core/fs.lst) password_pbkdf2 $(EXTRA_PAYLOAD_MODULES)' --fonts= --themes= --locales= -d grub-core/ /boot/grub2/grub.cfg=$(srcdir)/coreboot.cfg
+ endif
+ 
+ endif
+diff -Naur grub-2.02-20180928/util/grub-install.c grub-2.02-20180928-p/util/grub-install.c
+--- grub-2.02-20180928/util/grub-install.c	2018-09-27 14:56:45.000000000 +0200
++++ grub-2.02-20180928-p/util/grub-install.c	2019-02-14 17:34:35.694403965 +0100
 @@ -1611,7 +1611,7 @@
      case GRUB_INSTALL_PLATFORM_I386_IEEE1275:
      case GRUB_INSTALL_PLATFORM_POWERPC_IEEE1275:
@@ -19,9 +31,38 @@ diff -Naur grub/util/grub-install.c grub_new/util/grub-install.c
        break;
  
      case GRUB_INSTALL_PLATFORM_I386_EFI:
-diff -Naur grub/util/grub-mkrescue.c grub_new/util/grub-mkrescue.c
---- grub/util/grub-mkrescue.c	2018-04-18 16:54:49.312544708 -0700
-+++ grub_new/util/grub-mkrescue.c	2018-04-18 16:43:33.981654629 -0700
+diff -Naur grub-2.02-20180928/util/grub-mkimage.c grub-2.02-20180928-p/util/grub-mkimage.c
+--- grub-2.02-20180928/util/grub-mkimage.c	2018-09-27 14:56:45.000000000 +0200
++++ grub-2.02-20180928-p/util/grub-mkimage.c	2019-02-14 17:41:39.220393993 +0100
+@@ -58,7 +58,6 @@
+ 
+ #include "progname.h"
+ 
+-
+ 
+ static struct argp_option options[] = {
+   {"directory",  'd', N_("DIR"), 0,
+@@ -69,7 +68,7 @@
+    /* TRANSLATORS: "memdisk" here isn't an identifier, it can be translated.
+     "embed" is a verb (command description).  "*/
+    N_("embed FILE as a memdisk image\n"
+-      "Implies `-p (memdisk)/boot/grub' and overrides any prefix supplied previously,"
++      "Implies `-p (memdisk)/boot/grub2' and overrides any prefix supplied previously,"
+       " but the prefix itself can be overridden by later options"), 0},
+   {"dtb",  'D', N_("FILE"), 0, N_("embed FILE as a device tree (DTB)\n"), 0},
+    /* TRANSLATORS: "embed" is a verb (command description).  "*/
+@@ -175,7 +174,7 @@
+       if (arguments->prefix)
+ 	free (arguments->prefix);
+ 
+-      arguments->prefix = xstrdup ("(memdisk)/boot/grub");
++      arguments->prefix = xstrdup ("(memdisk)/boot/grub2");
+       break;
+ 
+     case 'D':
+diff -Naur grub-2.02-20180928/util/grub-mkrescue.c grub-2.02-20180928-p/util/grub-mkrescue.c
+--- grub-2.02-20180928/util/grub-mkrescue.c	2018-09-27 14:56:45.000000000 +0200
++++ grub-2.02-20180928-p/util/grub-mkrescue.c	2019-02-14 17:34:35.695403969 +0100
 @@ -261,14 +261,14 @@
  
    load_cfg_f = grub_util_fopen (load_cfg, "wb");
@@ -125,9 +166,9 @@ diff -Naur grub/util/grub-mkrescue.c grub_new/util/grub-mkrescue.c
      }
  
    make_image_fwdisk (GRUB_INSTALL_PLATFORM_MIPSEL_ARC, "mipsel-arc", "arc.exe");
-diff -Naur grub/util/grub-mkstandalone.c grub_new/util/grub-mkstandalone.c
---- grub/util/grub-mkstandalone.c	2018-04-18 16:54:49.312544708 -0700
-+++ grub_new/util/grub-mkstandalone.c	2018-04-18 16:52:19.223125069 -0700
+diff -Naur grub-2.02-20180928/util/grub-mkstandalone.c grub-2.02-20180928-p/util/grub-mkstandalone.c
+--- grub-2.02-20180928/util/grub-mkstandalone.c	2018-09-27 14:56:45.000000000 +0200
++++ grub-2.02-20180928-p/util/grub-mkstandalone.c	2019-02-14 17:34:35.695403969 +0100
 @@ -112,7 +112,7 @@
  
  struct argp argp = {
