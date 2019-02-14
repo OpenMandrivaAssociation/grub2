@@ -333,7 +333,7 @@ popd
 # (crazy) fixme? why so?
 # Script that makes part of grub.cfg persist across updates
 install -m755 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/grub.d/90_persistent
-install -m755 %{SOURCE16} -D %{buildroot}%{_sysconfdir}/grub.d/30-uefi_firmware
+install -m755 %{SOURCE16} -D %{buildroot}%{_sysconfdir}/grub.d/30_uefi_firmware
 
 # Ghost config file
 install -d %{buildroot}/boot/%{name}
@@ -465,6 +465,7 @@ if [ $1 = 0 ]; then
 fi
 
 #-----------------------------------------------------------------------
+
 %files  -f grub.lang
 %{libdir32}/grub/*-%{platform}
 %ifnarch %{aarch64}
@@ -498,6 +499,11 @@ fi
 # Actually, this is replaced by update-grub from scriptlets,
 # but it takes care of modified persistent part
 %config(noreplace) /boot/%{name}/grub.cfg
+%ifarch %{efi}
+%attr(0755,root,root) %dir /boot/efi/EFI/%{efidir}
+## (crazy) not needed remove after Lx4
+%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
+%endif
 
 %files extra
 %{_bindir}/%{name}-fstest
@@ -513,9 +519,6 @@ fi
 %{_mandir}/man8/%{name}-*.8*
 
 %ifarch %{efi}
-%attr(0755,root,root) %dir /boot/efi/EFI/%{efidir}
-## (crazy) not needed remove after Lx4
-%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
 %files efi
 # Files in this package are only required for the creation of iso's
 # The install process creates all the files required to boot with grub via EFI
