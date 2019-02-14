@@ -126,6 +126,8 @@ BuildRequires:	pesign
 BuildRequires:	talpo
 %endif
 Provides:	bootloader
+# (crazy) without gettext() function of grub2 is fakeed with printf ..
+Requires:       gettext-base
 Suggests:	xorriso
 Suggests:	os-prober
 Suggests:	distro-theme-common
@@ -158,6 +160,8 @@ Group:		System/Kernel and hardware
 # (tpg) this is needed to sign our EFI image
 #BuildRequires:	pesign
 Requires:	efibootmgr
+# (crazy) without gettext() function of grub2 is fakeed with printf ..
+Requires:       gettext-base
 Conflicts:	%{name} < 2.02-8
 
 %description efi
