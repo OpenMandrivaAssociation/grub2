@@ -50,6 +50,7 @@ Source13:	mandriva-grub2-theme-test.sh
 Source14:	linguas.tar.xz
 # Used to generate source 14
 Source15:	linguas.sh
+Source16:	30-uefi_firmware
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
 Patch2:		grub2-custom-color.patch
@@ -325,8 +326,10 @@ popd
 %if %{platform}
 %make_install -C %{platform}
 
+# (crazy) fixme? why so?
 # Script that makes part of grub.cfg persist across updates
 install -m755 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/grub.d/90_persistent
+install -m755 %{SOURCE16} -D %{buildroot}%{_sysconfdir}/grub.d/30-uefi_firmware
 
 # Ghost config file
 install -d %{buildroot}/boot/%{name}
