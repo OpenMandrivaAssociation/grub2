@@ -1,16 +1,7 @@
-From 4bd4022c48a2086b78725859f4c6f61aac5660c6 Mon Sep 17 00:00:00 2001
-From: William Jon McCann <william.jon.mccann@gmail.com>
-Date: Wed, 15 May 2013 13:30:20 -0400
-Subject: [PATCH 468/482] Don't write messages to the screen
-
-Writing messages to the screen before the menus or boot splash
-happens so quickly it looks like something is wrong and isn't
-very appealing.
----
-diff -Naur grub-2.00/grub-core/boot/i386/pc/boot.S grub-2.00.tpg/grub-core/boot/i386/pc/boot.S
---- grub-2.00/grub-core/boot/i386/pc/boot.S	2011-10-19 18:46:09.000000000 +0000
-+++ grub-2.00.tpg/grub-core/boot/i386/pc/boot.S	2013-07-19 15:18:41.383442225 +0000
-@@ -150,9 +150,6 @@
+diff -Naur grub-2.02-20180928/grub-core/boot/i386/pc/boot.S grub-2.02-20180928-p/grub-core/boot/i386/pc/boot.S
+--- grub-2.02-20180928/grub-core/boot/i386/pc/boot.S	2018-09-27 14:56:45.000000000 +0200
++++ grub-2.02-20180928-p/grub-core/boot/i386/pc/boot.S	2019-02-14 01:40:39.323573603 +0100
+@@ -249,9 +249,6 @@
  	/* save drive reference first thing! */
  	pushw	%dx
  
@@ -20,9 +11,9 @@ diff -Naur grub-2.00/grub-core/boot/i386/pc/boot.S grub-2.00.tpg/grub-core/boot/
  	/* set %si to the disk address packet */
  	movw	$disk_address_packet, %si
  
-diff -Naur grub-2.00/grub-core/boot/i386/pc/diskboot.S grub-2.00.tpg/grub-core/boot/i386/pc/diskboot.S
---- grub-2.00/grub-core/boot/i386/pc/diskboot.S	2012-06-23 09:10:37.000000000 +0000
-+++ grub-2.00.tpg/grub-core/boot/i386/pc/diskboot.S	2013-07-19 15:19:15.117361968 +0000
+diff -Naur grub-2.02-20180928/grub-core/boot/i386/pc/diskboot.S grub-2.02-20180928-p/grub-core/boot/i386/pc/diskboot.S
+--- grub-2.02-20180928/grub-core/boot/i386/pc/diskboot.S	2018-09-27 14:56:45.000000000 +0200
++++ grub-2.02-20180928-p/grub-core/boot/i386/pc/diskboot.S	2019-02-14 01:40:39.323573603 +0100
 @@ -50,11 +50,6 @@
  	/* save drive reference first thing! */
  	pushw	%dx
@@ -35,25 +26,33 @@ diff -Naur grub-2.00/grub-core/boot/i386/pc/diskboot.S grub-2.00.tpg/grub-core/b
  	/* this sets up for the first run through "bootloop" */
  	movw	$LOCAL(firstlist), %di
  
-diff -Naur grub-2.00/grub-core/gettext/gettext.c grub-2.00.tpg/grub-core/gettext/gettext.c
---- grub-2.00/grub-core/gettext/gettext.c	2012-06-22 15:26:38.000000000 +0000
-+++ grub-2.00.tpg/grub-core/gettext/gettext.c	2013-07-19 15:21:35.138497733 +0000
-@@ -422,14 +422,8 @@
-   grub_err_t err;
+diff -Naur grub-2.02-20180928/grub-core/gettext/gettext.c grub-2.02-20180928-p/grub-core/gettext/gettext.c
+--- grub-2.02-20180928/grub-core/gettext/gettext.c	2018-09-27 14:56:45.000000000 +0200
++++ grub-2.02-20180928-p/grub-core/gettext/gettext.c	2019-02-14 01:40:39.323573603 +0100
+@@ -434,16 +434,12 @@
+ grub_gettext_env_write_lang (struct grub_env_var *var
+ 			     __attribute__ ((unused)), const char *val)
+ {
+-  grub_err_t err;
++  grub_err_t __attribute__((__unused__)) err;
    err = grub_gettext_init_ext (&main_context, val, grub_env_get ("locale_dir"),
  			       grub_env_get ("prefix"));
 -  if (err)
 -    grub_print_error ();
--
+ 
    err = grub_gettext_init_ext (&secondary_context, val,
  			       grub_env_get ("secondary_locale_dir"), 0);
 -  if (err)
 -    grub_print_error ();
--
+ 
    return grub_strdup (val);
  }
- 
-@@ -440,8 +434,6 @@
+@@ -451,23 +447,19 @@
+ void
+ grub_gettext_reread_prefix (const char *val)
+ {
+-  grub_err_t err;
++  grub_err_t __attribute__((__unused__)) err;
    err = grub_gettext_init_ext (&main_context, grub_env_get ("lang"), 
  			       grub_env_get ("locale_dir"),
  			       val);
@@ -62,8 +61,11 @@ diff -Naur grub-2.00/grub-core/gettext/gettext.c grub-2.00.tpg/grub-core/gettext
  }
  
  static char *
-@@ -451,8 +443,6 @@
-   grub_err_t err;
+ read_main (struct grub_env_var *var
+ 	   __attribute__ ((unused)), const char *val)
+ {
+-  grub_err_t err;
++  grub_err_t __attribute__((__unused__)) err;
    err = grub_gettext_init_ext (&main_context, grub_env_get ("lang"), val,
  			       grub_env_get ("prefix"));
 -  if (err)
@@ -71,18 +73,28 @@ diff -Naur grub-2.00/grub-core/gettext/gettext.c grub-2.00.tpg/grub-core/gettext
    return grub_strdup (val);
  }
  
-@@ -463,10 +453,6 @@
-   grub_err_t err;
+@@ -475,12 +467,9 @@
+ read_secondary (struct grub_env_var *var
+ 		__attribute__ ((unused)), const char *val)
+ {
+-  grub_err_t err;
++  grub_err_t __attribute__((__unused__)) err;
    err = grub_gettext_init_ext (&secondary_context, grub_env_get ("lang"), val,
  			       0);
 -  if (err)
 -    grub_print_error ();
 -
--  return grub_strdup (val);
+   return grub_strdup (val);
  }
  
- static grub_err_t
-@@ -491,12 +477,8 @@
+@@ -500,18 +489,14 @@
+ GRUB_MOD_INIT (gettext)
+ {
+   const char *lang;
+-  grub_err_t err;
++  grub_err_t __attribute__((__unused__)) err;
+ 
+   lang = grub_env_get ("lang");
  
    err = grub_gettext_init_ext (&main_context, lang, grub_env_get ("locale_dir"),
  			       grub_env_get ("prefix"));
@@ -95,11 +107,11 @@ diff -Naur grub-2.00/grub-core/gettext/gettext.c grub-2.00.tpg/grub-core/gettext
  
    grub_register_variable_hook ("locale_dir", NULL, read_main);
    grub_register_variable_hook ("secondary_locale_dir", NULL, read_secondary);
-diff -Naur grub-2.00/grub-core/kern/main.c grub-2.00.tpg/grub-core/kern/main.c
---- grub-2.00/grub-core/kern/main.c	2012-06-25 20:33:41.000000000 +0000
-+++ grub-2.00.tpg/grub-core/kern/main.c	2013-07-19 15:22:44.510629986 +0000
+diff -Naur grub-2.02-20180928/grub-core/kern/main.c grub-2.02-20180928-p/grub-core/kern/main.c
+--- grub-2.02-20180928/grub-core/kern/main.c	2018-09-27 14:56:45.000000000 +0200
++++ grub-2.02-20180928-p/grub-core/kern/main.c	2019-02-14 01:40:39.323573603 +0100
 @@ -269,11 +269,6 @@
-
+ 
    grub_boot_time ("After machine init.");
  
 -  /* Hello.  */
@@ -108,5 +120,5 @@ diff -Naur grub-2.00/grub-core/kern/main.c grub-2.00.tpg/grub-core/kern/main.c
 -  grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
 -
    grub_load_config ();
-
+ 
    grub_boot_time ("Before loading embedded modules.");
