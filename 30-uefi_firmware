@@ -54,7 +54,5 @@ EOF
 	else
 		gettext_printf "VirtualBox detected, not adding uefi-firmware menu\n" >&2
 	fi
-else
-	gettext_printf "OsIndications GUID missing, not adding uefi-firmware menu\n" >&2
 fi
 
