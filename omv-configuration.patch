@@ -102,7 +102,7 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
    alt_version=`echo $version | sed -e "s,\.old$,,g"`
    linux_root_device_thisversion="${LINUX_ROOT_DEVICE}"
 -
-+  [[ -s /etc/machine-id ]] && machine_id=`cat /etc/machine-id`
++  #[[ -s /etc/machine-id ]] && machine_id=`cat /etc/machine-id`
    initrd_early=
    for i in ${GRUB_EARLY_INITRD_LINUX_STOCK} \
  	   ${GRUB_EARLY_INITRD_LINUX_CUSTOM}; do
@@ -111,7 +111,7 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
  
    initrd_real=
 -  for i in "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
-+  for i in "${machine_id}/${version}/initrd" "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
++  for i in  "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
  	   "initrd-${version}" "initramfs-${version}.img" \
  	   "initrd.img-${alt_version}" "initrd-${alt_version}.img" \
  	   "initrd-${alt_version}" "initramfs-${alt_version}.img" \
