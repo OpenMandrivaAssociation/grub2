@@ -1,6 +1,6 @@
 diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/grub.d/10_linux.in
 --- grub-2.02-20180928/util/grub.d/10_linux.in	2018-09-27 14:56:45.000000000 +0200
-+++ grub-2.02-20180928-p/util/grub.d/10_linux.in	2019-02-14 21:55:29.832213786 +0100
++++ grub-2.02-20180928-p/util/grub.d/10_linux.in	2019-02-14 15:30:56.189256816 +0100
 @@ -29,9 +29,15 @@
  CLASS="--class gnu-linux --class gnu --class os"
  
@@ -76,28 +76,7 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
    if [ x$type != xrecovery ] ; then
        save_default_entry | grub_add_tab
    fi
-@@ -138,20 +162,16 @@
-     fi
-     printf '%s\n' "${prepare_boot_cache}" | sed "s/^/$submenu_indentation/"
-   fi
--  message="$(gettext_printf "Loading Linux %s ..." ${version})"
-   sed "s/^/$submenu_indentation/" << EOF
--	echo	'$(echo "$message" | grub_quote)'
- 	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args}
- EOF
-   if test -n "${initrd}" ; then
-     # TRANSLATORS: ramdisk isn't identifier. Should be translated.
--    message="$(gettext_printf "Loading initial ramdisk ...")"
-     initrd_path=
-     for i in ${initrd}; do
-       initrd_path="${initrd_path} ${rel_dirname}/${i}"
-     done
-     sed "s/^/$submenu_indentation/" << EOF
--	echo	'$(echo "$message" | grub_quote)'
- 	initrd	$(echo $initrd_path)
- EOF
-   fi
-@@ -201,7 +221,7 @@
+@@ -201,7 +225,7 @@
    version=`echo $basename | sed -e "s,^[^0-9]*-,,g"`
    alt_version=`echo $version | sed -e "s,\.old$,,g"`
    linux_root_device_thisversion="${LINUX_ROOT_DEVICE}"
@@ -106,7 +85,7 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
    initrd_early=
    for i in ${GRUB_EARLY_INITRD_LINUX_STOCK} \
  	   ${GRUB_EARLY_INITRD_LINUX_CUSTOM}; do
-@@ -211,7 +231,7 @@
+@@ -211,7 +235,7 @@
    done
  
    initrd_real=
@@ -115,7 +94,7 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
  	   "initrd-${version}" "initramfs-${version}.img" \
  	   "initrd.img-${alt_version}" "initrd-${alt_version}.img" \
  	   "initrd-${alt_version}" "initramfs-${alt_version}.img" \
-@@ -266,20 +286,28 @@
+@@ -266,20 +290,28 @@
      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
  
      submenu_indentation="$grub_tab"
@@ -149,7 +128,7 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
    list=`echo $list | tr ' ' '\n' | fgrep -vx "$linux" | tr '\n' ' '`
 diff -Naur grub-2.02-20180928/util/grub-mkconfig.in grub-2.02-20180928-p/util/grub-mkconfig.in
 --- grub-2.02-20180928/util/grub-mkconfig.in	2018-09-27 14:56:45.000000000 +0200
-+++ grub-2.02-20180928-p/util/grub-mkconfig.in	2019-02-14 21:54:02.640756299 +0100
++++ grub-2.02-20180928-p/util/grub-mkconfig.in	2019-02-14 14:56:58.109276468 +0100
 @@ -237,6 +237,7 @@
    GRUB_SAVEDEFAULT \
    GRUB_ENABLE_CRYPTODISK \
