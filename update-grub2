@@ -1,9 +1,37 @@
-#!/bin/sh
+#!/bin/bash
+
 
 if [[ $EUID != 0 ]]; then
-	echo "$0: Need root to run"
-	exit 1
+        echo "$0: Need root to run"
+        exit 1
 fi
+
+## (crazy) due to bugs in our grub shapshot that is broken .
+## however is better idea anyway to do it on each update.
+
+prefix="/usr"
+exec_prefix="/usr"
+datarootdir="/usr/share"
+grub2dir="/boot/grub2"
+
+if [ ! -d ${grub2dir}/locale ]; then
+        mkdir -p ${grub2dir}/locale
+fi
+
+printf "Updating ${grub2dir}/locale..\n" >&2
+
+grubloc_list="$(ls ${datarootdir}/locale/*/*/grub.mo)"
+
+for grubloc in ${grubloc_list[@]}
+do
+
+        ## weird stuff from grub2 script on update
+        if [ -e "$grubloc" ]; then
+                ## eg: /usr/share/locale/ast/LC_MESSAGES/grub.mo -> ast
+                grubloc_name="$(echo "$grubloc" | sed 's/.*locale\/\(.*\)\/L.*/\1/')"
+                /bin/cp -f -u "$grubloc" "${grub2dir}/locale/${grubloc_name}.mo"
+        fi
+done
 
 /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg
 
