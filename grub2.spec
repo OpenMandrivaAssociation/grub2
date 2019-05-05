@@ -235,7 +235,7 @@ export CONFIGURE_TOP="$PWD"
 #            if built with clang
 %if "%{platform}" != ""
 mkdir -p %{platform}
-pushd %{platform}
+cd %{platform}
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
 	CFLAGS="-O2 -fuse-ld=bfd" \
 	TARGET_LDFLAGS="-static" \
@@ -254,12 +254,12 @@ pushd %{platform}
 	--enable-grub-emu-sdl
 
 %make_build -j1 all
-popd
+cd -
 %endif
 
 %ifarch %{efi}
 mkdir -p efi
-pushd efi
+cd efi
 %ifarch %{arm} %{armx}
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
 %else
@@ -300,7 +300,7 @@ pushd efi
 
 # sign our EFI image
 #%%pesign -s -i%%{buildroot}/boot/efi/EFI/%{efidir}/grub.efi -o %{buildroot}/boot/efi/EFI/%{efidir}/OMgrub.efi
-popd
+cd -
 %endif
 
 
