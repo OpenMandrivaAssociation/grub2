@@ -13,7 +13,7 @@
 %endif
 
 %define debug_package %{nil}
-%define snapshot 20180928
+%define snapshot %{nil}
 
 %global efi %{ix86} %{x86_64} aarch64
 %define efidir openmandriva
@@ -24,8 +24,8 @@ Name:		grub2
 ## 'boot/grub' in the source , including Makefiles*
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
-Version:	2.02
-Release:	30
+Version:	2.04
+Release:	1
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
