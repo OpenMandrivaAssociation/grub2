@@ -8,7 +8,7 @@
 %define platform uboot
 %endif
 
-%ifarch aarch64
+%ifarch aarch64 riscv64
 %define platform efi
 %endif
 
