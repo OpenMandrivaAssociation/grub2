@@ -28,7 +28,7 @@ diff -Naur grub-2.04/configure.ac grub-2.04.tpg/configure.ac
  if test x"$grub_mount_excuse" = x ; then
 -  AC_CHECK_LIB([fuse], [fuse_main_real], [],
 -               [grub_mount_excuse="need FUSE library"])
-+  AC_CHECK_LIB([fuse3/fuse3], [fuse_main_real], [],
++  AC_CHECK_LIB([fuse3], [fuse_main_real], [],
 +               [grub_mount_excuse="need FUSE3 library"])
  fi
  
