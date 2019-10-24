@@ -210,6 +210,7 @@ sed -i -e 's/-Werror//g' grub-core/Makefile.am
 rm -rf grub-extras/915resolution
 rm -rf grub-extras/disabled
 rm -rf grub-extras/ntldr-img
+rm -rf grub-extras/lua
 
 export GRUB_CONTRIB=./grub-extras
 sed -i -e 's,-I m4,-I m4 --dont-fix,g' autogen.sh
@@ -279,8 +280,8 @@ cd efi
 
 %define grub_modules_default all_video boot btrfs cat chain configfile cryptodisk echo efifwsetup efinet ext2 f2fs fat font \
     gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background \
-    gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi lua luks lvm mdraid09 mdraid1x minicmd normal \
-    part_apple part_gpt part_msdos password_pbkdf2 png reboot regexp search search_fs_file search_fs_uuid search_label \
+    gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal \
+    part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label \
     serial sleep squash4 syslinuxcfg test tftp video verify xfs
 
 %ifarch aarch64
