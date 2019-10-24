@@ -76,6 +76,7 @@ Patch15:	grub-2.02-20180620-disable-docs.patch
 # Without this, build fails on aarch64 w/ unresolved symbol abort
 # while running grub-mkimage
 Patch16:	grub-2.02-define-abort.patch
+Patch17:	grub-2.04-grub-extras-lua-fix.patch
 
 # (crazy) these are 2 BAD patches , FIXME after Lx4
 # Patch7 prepares remove for that ( partially )

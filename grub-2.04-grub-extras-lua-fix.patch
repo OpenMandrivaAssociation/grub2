@@ -1,0 +1,33 @@
+diff -Naur grub-2.04/grub-extras/lua/grub_lib.c grub-2.04.tpg/grub-extras/lua/grub_lib.c
+--- grub-2.04/grub-extras/lua/grub_lib.c	2019-05-04 22:05:56.000000000 +0000
++++ grub-2.04.tpg/grub-extras/lua/grub_lib.c	2019-10-24 21:21:37.371838656 +0000
+@@ -328,7 +328,7 @@
+   const char *name;
+ 
+   name = luaL_checkstring (state, 1);
+-  file = grub_file_open (name);
++  file = grub_file_open (name, 0);
+   save_errno (state);
+ 
+   if (! file)
+@@ -465,7 +465,7 @@
+ 
+   result = 0;
+   name = luaL_checkstring (state, 1);
+-  file = grub_file_open (name);
++  file = grub_file_open (name, 0);
+   if (file)
+     {
+       result++;
+diff -Naur grub-2.04/grub-extras/lua/lauxlib.c grub-2.04.tpg/grub-extras/lua/lauxlib.c
+--- grub-2.04/grub-extras/lua/lauxlib.c	2019-05-04 22:05:56.000000000 +0000
++++ grub-2.04.tpg/grub-extras/lua/lauxlib.c	2019-10-24 21:21:19.904978383 +0000
+@@ -591,7 +591,7 @@
+   }
+   else {
+     lua_pushfstring(L, "@%s", filename);
+-    lf.f = grub_file_open(filename);
++    lf.f = grub_file_open(filename, 0);
+     if (lf.f == NULL) return errfile(L, "open", fnameindex);
+   }
+ 
