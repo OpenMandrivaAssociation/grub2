@@ -192,9 +192,9 @@ Documentation for GRUB.
 
 %prep
 %if "%{snapshot}" == ""
-%setup -qn grub-%{version} -a12 -a14
+%setup -qn grub-%{version} -a12
 %else
-%setup -qn grub-%{version}-%{snapshot} -a12 -a14
+%setup -qn grub-%{version}-%{snapshot} -a12
 %endif
 %autopatch -p1
 
