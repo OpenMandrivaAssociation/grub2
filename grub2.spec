@@ -248,7 +248,8 @@ cd %{platform}
 	--enable-device-mapper \
 	--enable-grub-mkfont \
 	--enable-device-mapper \
-	--enable-grub-emu-sdl
+	--enable-grub-emu-sdl \
+	--without-included-regex
 
 %make_build -j1 all
 cd -
@@ -273,16 +274,13 @@ cd efi
 	--disable-werror \
 	--enable-grub-mkfont \
 	--enable-device-mapper \
-	--enable-grub-emu-sdl
+	--enable-grub-emu-sdl \
+	--without-included-regex
 
 %make_build ascii.h widthspec.h
 %make_build -C grub-core
 
-%define grub_modules_default all_video boot btrfs cat chain configfile cryptodisk echo efifwsetup efinet ext2 f2fs fat font \
-    gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background \
-    gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal \
-    part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label \
-    serial sleep squash4 syslinuxcfg test tftp video verify xfs
+%define grub_modules_default all_video boot btrfs cat chain configfile cryptodisk echo efifwsetup efinet ext2 f2fs fat font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep squash4 syslinuxcfg test tftp video verify xfs
 
 %ifarch aarch64
 %define grubefiarch arm64-efi
