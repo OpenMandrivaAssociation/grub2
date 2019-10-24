@@ -42,16 +42,15 @@ Source2:	grub.default
 Source4:	grub_guide.tar.gz
 Source5:	DroidSansMonoLicense.txt
 Source6:	DroidSansMono.ttf
-Source8:	grub2-po-update.tar.gz
 Source9:	update-grub2
 Source11:	grub2.rpmlintrc
-Source12:	grub-lua-rev30.tar.xz
+# (tpg) source
+# rm -rf grub-extras && git clone https://git.savannah.gnu.org/git/grub-extras.git && cd grub-extras
+# git archive --prefix=grub-extras/ --format=tar HEAD | xz > ../grub-extras-$(date +%Y%m%d).tar.xz
+Source12:	grub-extras-20191024.tar.xz
 # documentation and simple test script for testing grub2 themes
 Source13:	mandriva-grub2-theme-test.sh
-Source14:	linguas.tar.xz
-# Used to generate source 14
-Source15:	linguas.sh
-Source16:	30-uefi_firmware
+Source14:	30-uefi_firmware
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
 Patch2:		grub2-custom-color.patch
@@ -202,13 +201,17 @@ Documentation for GRUB.
 sed -i -e "s|^FONT_SOURCE=.*|FONT_SOURCE=%{SOURCE6}|g" configure configure.ac
 sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure.ac
 sed -i -e 's/-Werror//g' grub-core/Makefile.am
-mkdir grub-extras
-mv lua grub-extras
+
+# (tpg) remove not needed extra modules
+rm -rf grub-extras/915resolution
+rm -rf grub-extras/disabled
+rm -rf grub-extras/ntldr-img
+
 export GRUB_CONTRIB=./grub-extras
 sed -i -e 's,-I m4,-I m4 --dont-fix,g' autogen.sh
 
-tar -xf %{SOURCE8}
-cd po-update; sh ./update.sh; cd -
+# (tpg) pull latest translations
+./linguas.sh
 
 #-----------------------------------------------------------------------
 %build
@@ -309,7 +312,7 @@ cd -
 # (crazy) fixme? why so?
 # Script that makes part of grub.cfg persist across updates
 install -m755 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/grub.d/90_persistent
-install -m755 %{SOURCE16} -D %{buildroot}%{_sysconfdir}/grub.d/30_uefi_firmware
+install -m755 %{SOURCE14} -D %{buildroot}%{_sysconfdir}/grub.d/30_uefi_firmware
 
 # Ghost config file
 install -d %{buildroot}/boot/%{name}
