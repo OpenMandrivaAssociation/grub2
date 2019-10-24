@@ -108,6 +108,9 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(liblzma)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(ncursesw)
+%ifarch %{arm} %{armx}
+BuildRequires:	gcc
+%endif
 Provides:	bootloader
 # (crazy) without gettext() function of grub2 is fakeed with printf ..
 Requires:       gettext-base
@@ -224,12 +227,10 @@ export CONFIGURE_TOP="$PWD"
 # https://sourceware.org/bugzilla/show_bug.cgi?id=14187
 ./autogen.sh
 
-#(proyvind): non-UEFI boot will fail with 'alloc magic broken' on x86_64
-#            if built with clang
 %if "%{platform}" != ""
 mkdir -p %{platform}
 cd %{platform}
-%configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
+%configure CC=%{__cc} BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
 	CFLAGS="-Os -fuse-ld=bfd" \
 	LDFLAGS="" \
 	TARGET_LDFLAGS="-static" \
