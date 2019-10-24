@@ -1,12 +1,15 @@
---- grub-2.00/autogen.sh.bero	2013-05-15 17:50:19.615056873 +0200
-+++ grub-2.00/autogen.sh	2013-05-15 17:50:33.350885151 +0200
-@@ -67,5 +67,8 @@ echo "Saving timestamps..."
- echo timestamp > stamp-h.in
+diff -Naur grub-2.04/autogen.sh grub-2.04.tpg/autogen.sh
+--- grub-2.04/autogen.sh	2019-04-23 08:54:47.000000000 +0000
++++ grub-2.04.tpg/autogen.sh	2019-07-31 12:27:37.806744262 +0000
+@@ -96,7 +96,10 @@
+   # gnulib.git.
+   echo "Running autoreconf..."
+   cp -a INSTALL INSTALL.grub
+-  autoreconf -vif
++  autoheader
++  aclocal -I m4 --dont-fix
++  automake -a
++  autoconf
+   mv INSTALL.grub INSTALL
+ fi
  
- echo "Running autoreconf..."
--autoreconf -vi
-+autoheader
-+aclocal -I m4 --dont-fix
-+automake -a
-+autoconf
- exit 0

@@ -71,7 +71,7 @@ Patch9:		grub2-2.00-class-via-os-prober.patch
 Patch10:	grub-2.00-autoreconf-sucks.patch
 Patch11:	0468-Don-t-write-messages-to-the-screen.patch
 Patch12:	grub-2.02-beta2-custom-vendor-config.patch
-Patch13:	0001-Revert-Make-grub-install-check-for-errors-from-efibo.patch
+#Patch13:	0001-Revert-Make-grub-install-check-for-errors-from-efibo.patch
 Patch14:	fix-microcode-os-prober-initrd-line-parsing.patch
 Patch15:	grub-2.02-20180620-disable-docs.patch
 # Without this, build fails on aarch64 w/ unresolved symbol abort
@@ -85,7 +85,6 @@ Patch100:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
 Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
 
 # Patches from SuSe
-Patch200:	grub2-setup-try-fs-embed-if-mbr-gap-too-small.patch
 
 # Patches from Unity
 Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
@@ -110,10 +109,6 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(liblzma)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(ncursesw)
-%ifarch %{efi}
-BuildRequires:	pesign
-%endif
-
 Provides:	bootloader
 # (crazy) without gettext() function of grub2 is fakeed with printf ..
 Requires:       gettext-base
@@ -204,14 +199,9 @@ Documentation for GRUB.
 %endif
 %autopatch -p1
 
-
-perl -pi -e 's/(\@image\{font_char_metrics,,,,)\.(png\})/$1$2/;' \
-	docs/grub-dev.texi
-
-perl -pi -e "s|(^FONT_SOURCE=)|\$1%{SOURCE6}|;" configure configure.ac
-
+sed -i -e "s|^FONT_SOURCE=.*|FONT_SOURCE=%{SOURCE6}|g" configure configure.ac
 sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure.ac
-perl -pi -e 's/-Werror//;' grub-core/Makefile.am
+sed -i -e 's/-Werror//g' grub-core/Makefile.am
 mkdir grub-extras
 mv lua grub-extras
 export GRUB_CONTRIB=./grub-extras
@@ -237,7 +227,8 @@ export CONFIGURE_TOP="$PWD"
 mkdir -p %{platform}
 cd %{platform}
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
-	CFLAGS="-O2 -fuse-ld=bfd" \
+	CFLAGS="-Os -fuse-ld=bfd" \
+	LDFLAGS="" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=%{platform} \
 %ifarch %{x86_64}
@@ -265,7 +256,8 @@ cd efi
 %else
 %configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
 %endif
-	CFLAGS="-O2 -fuse-ld=bfd" \
+	CFLAGS="-Os -fuse-ld=bfd" \
+	LDFLAGS="" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=efi \
 	--program-transform-name=s,grub,%{name}-efi, \
@@ -280,7 +272,7 @@ cd efi
 %make_build ascii.h widthspec.h
 %make_build -C grub-core
 
-%define grub_modules_default all_video boot cat chain configfile echo efifwsetup efinet ext2 f2fs fat font gfxmenu gfxterm gfxterm_background gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi lua lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep sleep squash4 syslinuxcfg test tftp video xfs btrfs
+%define grub_modules_default all_video boot cat chain configfile echo efifwsetup efinet ext2 f2fs fat font gfxmenu gfxterm gfxterm_background gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi lua lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep sleep squash4 syslinuxcfg test tftp video xfs btrfs verify cryptodisk gcry_rijndael gcry_rsa gcry_serpent luks
 
 %ifarch aarch64
 %define grubefiarch arm64-efi
