@@ -232,7 +232,7 @@ export CONFIGURE_TOP="$PWD"
 %if "%{platform}" != ""
 mkdir -p %{platform}
 cd %{platform}
-%configure CC=%{__cc} BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
+%configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
 	CFLAGS="-Os -fuse-ld=bfd" \
 	LDFLAGS="" \
 	TARGET_LDFLAGS="-static" \
