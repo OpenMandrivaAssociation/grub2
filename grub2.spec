@@ -232,6 +232,7 @@ export CONFIGURE_TOP="$PWD"
 %if "%{platform}" != ""
 mkdir -p %{platform}
 cd %{platform}
+# Clang causes openmandriva theme to disappear. Only black theme on non UEFI/EFI platform. Switch back to gcc (angry)
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
 	CFLAGS="-Os -fuse-ld=bfd" \
 	LDFLAGS="" \
