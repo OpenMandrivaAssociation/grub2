@@ -25,7 +25,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.04
-Release:	1
+Release:	2
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -232,7 +232,8 @@ export CONFIGURE_TOP="$PWD"
 %if "%{platform}" != ""
 mkdir -p %{platform}
 cd %{platform}
-%configure CC=%{__cc} BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
+# Clang causes openmandriva theme to disappear. Only black theme on non UEFI/EFI platform. Switch back to gcc (angry)
+%configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
 	CFLAGS="-Os -fuse-ld=bfd" \
 	LDFLAGS="" \
 	TARGET_LDFLAGS="-static" \
