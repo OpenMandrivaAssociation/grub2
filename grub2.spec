@@ -25,7 +25,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.04
-Release:	2
+Release:	3
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -77,6 +77,8 @@ Patch15:	grub-2.02-20180620-disable-docs.patch
 # while running grub-mkimage
 Patch16:	grub-2.02-define-abort.patch
 Patch17:	grub-2.04-grub-extras-lua-fix.patch
+# Show clang kernels after gcc kernels
+Patch18:	grub2-clang-kernels-last.patch
 
 # (crazy) these are 2 BAD patches , FIXME after Lx4
 # Patch7 prepares remove for that ( partially )
