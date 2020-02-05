@@ -22,8 +22,8 @@ index f0f7268..3e599af 100755
  
  is_top_level=true
 +
-+listc=`echo $list | tr ' ' '\n' | grep clang`
-+list=`echo $list | tr ' ' '\n' | grep -v clang`
++listc=`echo $list | tr ' ' '\n' | grep clang | tr -d ' '`
++list=`echo $list | tr ' ' '\n' | grep -v clang | tr -d ' '`
 +
  while [ "x$list" != "x" ] ; do
    linux=`version_find_latest $list`
