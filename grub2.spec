@@ -25,7 +25,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.04
-Release:	4
+Release:	5
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -49,7 +49,7 @@ Source11:	grub2.rpmlintrc
 # git archive --prefix=grub-extras/ --format=tar HEAD | xz > ../grub-extras-$(date +%Y%m%d).tar.xz
 Source12:	grub-extras-20191024.tar.xz
 # documentation and simple test script for testing grub2 themes
-Source13:	mandriva-grub2-theme-test.sh
+Source13:	grub2-theme-test.sh
 Source14:	30-uefi_firmware
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
@@ -68,7 +68,7 @@ Patch7:		omv-configuration.patch
 Patch8:		grub-2.00-fix-dejavu-font.patch
 Patch9:		grub2-2.00-class-via-os-prober.patch
 Patch10:	grub-2.00-autoreconf-sucks.patch
-Patch11:	0468-Don-t-write-messages-to-the-screen.patch
+#Patch11:	0468-Don-t-write-messages-to-the-screen.patch
 Patch12:	grub-2.02-beta2-custom-vendor-config.patch
 #Patch13:	0001-Revert-Make-grub-install-check-for-errors-from-efibo.patch
 Patch14:	fix-microcode-os-prober-initrd-line-parsing.patch
@@ -90,6 +90,15 @@ Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
 
 # Patches from Unity
 Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
+
+# Patches from Ubuntu:
+Patch400:	blacklist-1440x900x32.patch
+Patch401:	disable-floppies.patch
+Patch402:	gettext-quiet.patch
+Patch403:	maybe-quiet.patch
+Patch404:	quick-boot.patch
+Patch405:	quick-boot-lvm.patch
+Patch406:	sleep-shift.patch
 
 BuildRequires:	autogen
 BuildRequires:	bison
@@ -116,7 +125,7 @@ BuildRequires:	gcc
 %endif
 Provides:	bootloader
 # (crazy) without gettext() function of grub2 is fakeed with printf ..
-Requires:       gettext-base
+Requires:	gettext-base
 Suggests:	xorriso
 Suggests:	os-prober
 Suggests:	distro-theme-common
@@ -150,7 +159,7 @@ Group:		System/Kernel and hardware
 #BuildRequires:	pesign
 Requires:	efibootmgr
 # (crazy) without gettext() function of grub2 is fakeed with printf ..
-Requires:       gettext-base
+Requires:	gettext-base
 Conflicts:	%{name} < 2.02-8
 
 %description efi
@@ -252,7 +261,9 @@ cd %{platform}
 	--enable-grub-mkfont \
 	--enable-device-mapper \
 	--enable-grub-emu-sdl \
-	--without-included-regex
+	--without-included-regex \
+	--enable-quiet-boot \
+	--enable-quick-boot
 
 %make_build -j1 all
 cd -
@@ -278,7 +289,9 @@ cd efi
 	--enable-grub-mkfont \
 	--enable-device-mapper \
 	--enable-grub-emu-sdl \
-	--without-included-regex
+	--without-included-regex \
+	--enable-quiet-boot \
+	--enable-quick-boot
 
 %make_build ascii.h widthspec.h
 %make_build -C grub-core
@@ -305,7 +318,6 @@ cd efi
 #%%pesign -s -i%%{buildroot}/boot/efi/EFI/%{efidir}/grub.efi -o %{buildroot}/boot/efi/EFI/%{efidir}/OMgrub.efi
 cd -
 %endif
-
 
 #-----------------------------------------------------------------------
 %install
@@ -336,13 +348,13 @@ touch %{buildroot}/boot/efi/EFI/%{efidir}/grub.cfg
 %if "%{platform}" == "efi"
 cd %{buildroot}%{_bindir}
 for i in grub2-efi-*; do
-	GENERICNAME="`echo $i |sed -e 's,-efi,,'`"
+	GENERICNAME="$(echo $i |sed -e 's,-efi,,')"
 	mv $i $GENERICNAME
 done
 cd -
 cd %{buildroot}%{_sbindir}
 for i in grub2-efi-*; do
-	GENERICNAME="`echo $i |sed -e 's,-efi,,'`"
+	GENERICNAME="$(echo $i |sed -e 's,-efi,,')"
 	mv $i $GENERICNAME
 done
 cd -
