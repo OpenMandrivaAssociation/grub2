@@ -51,6 +51,8 @@ Source12:	grub-extras-20191024.tar.xz
 # documentation and simple test script for testing grub2 themes
 Source13:	grub2-theme-test.sh
 Source14:	30-uefi_firmware
+# (tpg) important script to update /boot/grub2/grubenv
+Source15:	%{name}-settings.service
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
 Patch2:		grub2-custom-color.patch
@@ -120,6 +122,7 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(liblzma)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(ncursesw)
+BuildRequires:	systemd-macros
 %ifarch %{arm} %{armx}
 BuildRequires:	gcc
 %endif
@@ -384,6 +387,11 @@ find %{buildroot}%{libdir32}/grub/%{_arch}-efi/ -name "*.module" -delete || :
 rm -f %{buildroot}%{_sbindir}/%{name}-sparc64-setup
 rm -f %{buildroot}%{_sbindir}/%{name}-ofpathname
 
+# (tpg) quite important for hiding grub on boot if no other systems around
+install -D %{buildroot}%{_unitdir}/multi-user.target.wants
+install -m644 %{SOURCE15} %{buildroot}%{_unitdir}/%{name}-settings.service
+ln -sf %{_unitdir}/%{grub2}-settings.service %{buildroot}%{_unitdir}/multi-user.target.wants/%{name}-settings.service
+
 %find_lang grub
 
 %post
@@ -463,6 +471,8 @@ fi
 #-----------------------------------------------------------------------
 
 %files  -f grub.lang
+%{_unitdir}/multi-user.target.wants/%{name}-settings.service
+%{_unitdir}/%{name}-settings.service
 %{libdir32}/grub/*-%{platform}
 %ifnarch %{aarch64}
 #Files here are needed for install. Moved from efi package
