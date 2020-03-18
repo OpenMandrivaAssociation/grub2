@@ -157,7 +157,7 @@ diff -Naur grub-2.04/util/grub.d/00_header.in grub-2.04.tpg/util/grub.d/00_heade
 +EOF
 +
 +  check_writable () {
-+    abstractions="$(grub-probe --target=abstraction "${grubdir}")"
++    abstractions="$(grub2-probe --target=abstraction "${grubdir}")"
 +    for abstraction in $abstractions; do
 +      case "$abstraction" in
 +        diskfilter | lvm)
@@ -169,7 +169,7 @@ diff -Naur grub-2.04/util/grub.d/00_header.in grub-2.04.tpg/util/grub.d/00_heade
 +      esac
 +    done
 +
-+    FS="$(grub-probe --target=fs "${grubdir}")"
++    FS="$(grub2-probe --target=fs "${grubdir}")"
 +    case "$FS" in
 +      btrfs | cpiofs | newc | odc | romfs | squash4 | tarfs | zfs)
 +	cat <<EOF

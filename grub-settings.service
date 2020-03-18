@@ -1,9 +1,0 @@
-[Unit]
-Description=Update Grub environment settings
-
-[Service]
-Type=oneshot
-ExecStart=sh -c 'grub-editenv /boot/grub/grubenv unset recordfail'
-
-[Install]
-WantedBy=multi-user.target
