@@ -381,7 +381,7 @@ cp -f %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_local
 # (tpg) remove *.modules and other gdb related files and leave *.mod 
 # Allow stuff to fail because some modules may not have been built
 # (e.g. no EFI)
-find %{buildroot}%{libdir32}/grub/*-%{platform} %{buildroot}%{libdir32}/grub/%{_arch}-efi/ -type -f \( -name "*.module" -o -name kernel.exec -o -name gdb_grub -o -name gmodule.pl \) -delete || :
+find %{buildroot}%{libdir32}/grub/*-%{platform} %{buildroot}%{libdir32}/grub/%{_arch}-efi/ -type -f \( -name "*.module" -o -name kernel.exec -o -name gdb_grub -o -name gmodule.pl -o -name "*.image" \) -delete || :
 
 rm -f %{buildroot}%{_sbindir}/%{name}-sparc64-setup
 rm -f %{buildroot}%{_sbindir}/%{name}-ofpathname
