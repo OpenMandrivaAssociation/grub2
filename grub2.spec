@@ -381,7 +381,7 @@ cp -f %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_local
 # (tpg) remove *.modules and other gdb related files and leave *.mod 
 # Allow stuff to fail because some modules may not have been built
 # (e.g. no EFI)
-find %{buildroot}%{libdir32}/grub/*-%{platform} %{buildroot}%{libdir32}/grub/%{_arch}-efi/ -type -f \( -name "*.module" -o -name kernel.exec -o -name gdb_grub -o -name gmodule.pl -o -name "*.image" \) -delete || :
+find %{buildroot}%{libdir32}/grub/*-%{platform} %{buildroot}%{libdir32}/grub/%{_arch}-efi/ -type f \( -name "*.module" -o -name kernel.exec -o -name gdb_grub -o -name gmodule.pl -o -name "*.image" \) -delete || :
 
 rm -f %{buildroot}%{_sbindir}/%{name}-sparc64-setup
 rm -f %{buildroot}%{_sbindir}/%{name}-ofpathname
@@ -449,7 +449,6 @@ if [ -e %{_sysconfdir}/default/grub ]; then
     %{_sbindir}/update-grub2
 fi
 
-
 %transfiletriggerin -p <lua> -- /boot/ /boot/grub2/themes/
 os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 
@@ -469,7 +468,7 @@ fi
 
 #-----------------------------------------------------------------------
 
-%files  -f grub.lang
+%files -f grub.lang
 %{_unitdir}/multi-user.target.wants/%{name}-settings.service
 %{_unitdir}/%{name}-settings.service
 %{libdir32}/grub/*-%{platform}
