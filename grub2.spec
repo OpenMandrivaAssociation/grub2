@@ -387,7 +387,7 @@ rm -f %{buildroot}%{_sbindir}/%{name}-sparc64-setup
 rm -f %{buildroot}%{_sbindir}/%{name}-ofpathname
 
 # (tpg) quite important for hiding grub on boot if no other systems around
-install -D %{buildroot}%{_unitdir}/multi-user.target.wants
+mkdir -p %{buildroot}%{_unitdir}/multi-user.target.wants
 install -m644 %{SOURCE15} %{buildroot}%{_unitdir}/%{name}-settings.service
 ln -sf %{_unitdir}/%{grub2}-settings.service %{buildroot}%{_unitdir}/multi-user.target.wants/%{name}-settings.service
 
