@@ -254,7 +254,8 @@ cd %{platform}
 	--enable-grub-emu-sdl \
 	--without-included-regex
 
-%make_build -j1 all
+%make_build ascii.h widthspec.h
+%make_build all
 cd -
 %endif
 
