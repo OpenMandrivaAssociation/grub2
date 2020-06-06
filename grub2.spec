@@ -25,7 +25,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.04
-Release:	4
+Release:	5
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -131,6 +131,7 @@ Suggests:	%{name}-extra = %{EVRD}
 %ifarch %{efi}
 Requires:	%{name}-efi = %{EVRD}
 %endif
+Requires:	efi-filesystem
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
@@ -485,7 +486,6 @@ fi
 # but it takes care of modified persistent part
 %config(noreplace) /boot/%{name}/grub.cfg
 %ifarch %{efi}
-%attr(0755,root,root) %dir /boot/efi/EFI/%{efidir}
 ## (crazy) not needed remove after Lx4
 %attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
 %endif
