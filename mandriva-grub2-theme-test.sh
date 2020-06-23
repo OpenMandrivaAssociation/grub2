@@ -7,14 +7,14 @@
 #   qemu by just running "rpm -e grub2; urpmi grub2" to have it
 #   properly configured.
 
-root=`mktemp -d "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"` || exit 1
+root=$(mktemp -d "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX") || exit 1
 mkdir -p $root/boot/grub
 sudo cp -fa /boot/grub2/* $root/boot/grub
 
 # make it easy to do some customization tests
 if [ ! -f grub.cfg ]; then
     sudo cp /boot/grub2/grub.cfg .
-    sudo chown `whoami`:`groups | sed -e 's| .*||'` grub.cfg
+    sudo chown $(whoami):$(groups | sed -e 's| .*||') grub.cfg
 fi
 perl -pi -e 's|(\s+set gfxpayload=keep)|#$1|;' \
 	 -e "s|(set root=).*|\$1'(cd)'|;" \
@@ -31,13 +31,13 @@ sudo cp -f /usr/share/grub/*.pf2 $root/usr/share/grub
 if [ ! -f theme.txt ]; then
     if [ -f /boot/grub2/themes/mandriva/theme.txt ]; then
 	sudo cp /boot/grub2/themes/mandriva/theme.txt .
-	sudo chown `whoami`:`groups | sed -e 's| .*||'` theme.txt
+	sudo chown $(whoami):$(groups | sed -e 's| .*||') theme.txt
     else
-	cp `dirname $0`/theme.txt .
+	cp $(dirname $0)/theme.txt .
     fi
 fi
 sudo cp theme.txt $root/boot/grub/themes/mandriva
 
 sudo grub2-mkrescue -o grub.image $root
-sudo chown `whoami`:`groups | sed -e 's| .*||'` theme.txt
+sudo chown $(whoami):$(groups | sed -e 's| .*||') theme.txt
 qemu-system-i386 -cdrom grub.image

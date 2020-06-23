@@ -23,7 +23,7 @@
 
 transform="s&^&&;s,grub,grub2,"
 ME=$(echo $0 |sed 's,/,\\/,g')
-GRUBCFG=/boot/`echo grub | sed ${transform}`/grub.cfg
+GRUBCFG=/boot/$(echo grub | sed ${transform})/grub.cfg
 
 # Exit gracefully if there's no configuration file yet
 [ -f ${GRUBCFG} ] || exit 0

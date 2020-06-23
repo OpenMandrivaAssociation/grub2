@@ -15,9 +15,6 @@
 %define debug_package %{nil}
 %define snapshot %{nil}
 
-%global efi %{ix86} %{x86_64} aarch64
-%define efidir openmandriva
-
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
 ## WARNING! before updating snapshots grep local for
@@ -85,12 +82,15 @@ Patch18:	grub2-clang-kernels-last.patch
 # Patches from Mageia
 Patch100:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
 Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
+Patch102:	grub2-2.04-fix-grub-install-locale-copy.patch
+Patch103:	0221-fix-build-with-rpm-4.16.patch
 
 # Patches from SuSe
 
 # Patches from Unity
 Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 
+BuildRequires:	efi-srpm-macros
 BuildRequires:	autogen
 BuildRequires:	bison
 BuildRequires:	flex
@@ -116,8 +116,7 @@ BuildRequires:	gcc
 %endif
 Provides:	bootloader
 # (crazy) without gettext() function of grub2 is fakeed with printf ..
-Requires:       gettext-base
-Suggests:	xorriso
+Requires:	gettext-base
 Suggests:	os-prober
 Suggests:	distro-theme-common
 Suggests:	distro-theme-OpenMandriva-grub2
@@ -126,10 +125,11 @@ Suggests:	microcode-intel
 %endif
 Conflicts:	grub2-tools < 2.02-1.beta2.6
 %rename		grub2-tools
-Suggests:	%{name}-doc = %{EVRD}
-Suggests:	%{name}-extra = %{EVRD}
+Suggests:	%{name}-doc >= %{EVRD}
+Suggests:	%{name}-extra >= %{EVRD}
 %ifarch %{efi}
-Requires:	%{name}-efi = %{EVRD}
+# (tpg) this is needed for grub2-install
+Requires:	efibootmgr
 %endif
 Requires:	efi-filesystem
 
@@ -149,9 +149,9 @@ Summary:	GRUB for EFI systems
 Group:		System/Kernel and hardware
 # (tpg) this is needed to sign our EFI image
 #BuildRequires:	pesign
-Requires:	efibootmgr
+Requires:	%{name} >= %{EVRD}
 # (crazy) without gettext() function of grub2 is fakeed with printf ..
-Requires:       gettext-base
+Requires:	gettext-base
 Conflicts:	%{name} < 2.02-8
 
 %description efi
@@ -166,9 +166,11 @@ for EFI systems.
 %package extra
 Summary:	Extra tools for GRUB
 Group:		System/Kernel and hardware
-Requires:	%{name} = %{EVRD}
+Requires:	%{name} >= %{EVRD}
 Conflicts:	%{name} < 2.02-8
 Requires:	console-setup
+Suggests:	xorriso
+Suggests:	mtools
 
 %description extra
 Extra tools and files for GRUB.
@@ -176,7 +178,7 @@ Extra tools and files for GRUB.
 %package starfield-theme
 Summary:	An example theme for GRUB
 Group:		System/Kernel and hardware
-Requires:	%{name} = %{EVRD}
+Requires:	%{name} >= %{EVRD}
 
 %description starfield-theme
 Example 'starfield' theme for GRUB.
@@ -184,7 +186,7 @@ Example 'starfield' theme for GRUB.
 %package doc
 Summary:	Documentation for GRUB
 Group:		System/Kernel and hardware
-Requires:	%{name} = %{EVRD}
+Requires:	%{name} >= %{EVRD}
 Conflicts:	%{name} < 2.02-8
 
 %description doc
@@ -220,6 +222,17 @@ sed -i -e 's,-I m4,-I m4 --dont-fix,g' autogen.sh
 
 # (tpg) pull latest translations
 ./linguas.sh
+
+# Workaround for https://savannah.gnu.org/bugs/?57298.
+# A number of strings were unintentionally excluded from the translation catalogue in the
+# 2.04 release. Fortunately the omitted strings are just commented out in the .po files, so
+# we can easily restore them. This workaround should be removed if/when upstream fix the bug.
+cd po
+for po_file in *.po ; do
+    sed -i -e 's/^#~ //' -e 's/^#~|/#|/' $po_file
+    msgfmt -o ${po_file%.po}.gmo $po_file
+done
+cd ..
 
 #-----------------------------------------------------------------------
 %build
@@ -285,7 +298,7 @@ cd efi
 %make_build ascii.h widthspec.h
 %make_build -C grub-core
 
-%define grub_modules_default all_video boot btrfs cat chain configfile cryptodisk echo efifwsetup efinet ext2 f2fs fat font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep squash4 syslinuxcfg test tftp video xfs
+%define grub_modules_default all_video boot btrfs cat chain configfile cryptodisk echo efifwsetup efinet ext2 f2fs fat font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep squash4 syslinuxcfg test tftp video xfs zstd
 
 %ifarch aarch64
 %define grubefiarch arm64-efi
@@ -304,7 +317,7 @@ cd efi
 ../%{platform}/grub-mkimage -v -O %{grubefiarch} -C xz -p /EFI/BOOT -o grub.efi -d grub-core %{grub_modules}
 
 # sign our EFI image
-#%%pesign -s -i%%{buildroot}/boot/efi/EFI/%{efidir}/grub.efi -o %{buildroot}/boot/efi/EFI/%{efidir}/OMgrub.efi
+#%%pesign -s -i%%{buildroot}/%{efi_esp_dir}/grub.efi -o %{buildroot}/%{efi_esp_dir}/OMgrub.efi
 cd -
 %endif
 
@@ -329,22 +342,20 @@ touch %{buildroot}/boot/%{name}/grub.cfg
 %ifarch %{efi}
 %make_install -C efi/grub-core
 
-install -m755 efi/grub.efi -D %{buildroot}/boot/efi/EFI/%{efidir}/grub.efi
-#%%pesign -s -i %%{buildroot}/boot/efi/EFI/%%{efidir}/grub.efi -o %%{buildroot}/boot/efi/EFI/%%{efidir}/grub.efi
-# Ghost config file
-touch %{buildroot}/boot/efi/EFI/%{efidir}/grub.cfg
+install -m755 efi/grub.efi -D %{buildroot}/%{efi_esp_dir}/grub.efi
+#%%pesign -s -i %%{buildroot}/%{efi_esp_dir}/grub.efi -o %%{buildroot}/%{efi_esp_dir}/grub.efi
 %endif
 
 %if "%{platform}" == "efi"
 cd %{buildroot}%{_bindir}
 for i in grub2-efi-*; do
-	GENERICNAME="`echo $i |sed -e 's,-efi,,'`"
+	GENERICNAME="$(printf "%s\n" $i |sed -e 's,-efi,,')"
 	mv $i $GENERICNAME
 done
 cd -
 cd %{buildroot}%{_sbindir}
 for i in grub2-efi-*; do
-	GENERICNAME="`echo $i |sed -e 's,-efi,,'`"
+	GENERICNAME="$(printf "%s\n" $i |sed -e 's,-efi,,')"
 	mv $i $GENERICNAME
 done
 cd -
@@ -485,10 +496,6 @@ fi
 # Actually, this is replaced by update-grub from scriptlets,
 # but it takes care of modified persistent part
 %config(noreplace) /boot/%{name}/grub.cfg
-%ifarch %{efi}
-## (crazy) not needed remove after Lx4
-%attr(0755,root,root) %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
-%endif
 
 %files extra
 %{_bindir}/%{name}-fstest
@@ -507,7 +514,7 @@ fi
 %files efi
 # Files in this package are only required for the creation of iso's
 # The install process creates all the files required to boot with grub via EFI
-%attr(0755,root,root) /boot/efi/EFI/%{efidir}/grub.efi
+%attr(0755,root,root) %{efi_esp_dir}/grub.efi
 %{_bindir}/%{name}-render-label
 %{_sbindir}/%{name}-macbless
 %endif

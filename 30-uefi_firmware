@@ -32,16 +32,13 @@ OsIndications="$efi_vars_dir/OsIndicationsSupported-$EFI_GLOBAL_VARIABLE"
 
 if [ -e "$OsIndications" ]; then
 
-	LABEL="System setup"
-
-	gettext_printf "Adding boot menu entry for EFI firmware configuration\n" >&2
-
-	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
+    LABEL="System setup"
+    gettext_printf "Adding boot menu entry for EFI firmware configuration\n" >&2
+    onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
 
 cat << EOF
 menuentry '$LABEL' \$menuentry_id_option 'uefi-firmware' {
-        fwsetup
+	fwsetup
 }
 EOF
 fi
-
