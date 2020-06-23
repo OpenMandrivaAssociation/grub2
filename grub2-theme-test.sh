@@ -29,15 +29,15 @@ sudo cp -f /usr/share/grub/*.pf2 $root/usr/share/grub
 
 # make it easy to do some customization tests
 if [ ! -f theme.txt ]; then
-    if [ -f /boot/grub2/themes/mandriva/theme.txt ]; then
-	sudo cp /boot/grub2/themes/mandriva/theme.txt .
+    if [ -f /boot/grub2/themes/OpenMandriva/theme.txt ]; then
+	sudo cp /boot/grub2/themes/OpenMandriva/theme.txt .
 	sudo chown $(whoami):$(groups | sed -e 's| .*||') theme.txt
     else
 	cp $(dirname $0)/theme.txt .
     fi
 fi
-sudo cp theme.txt $root/boot/grub/themes/mandriva
+sudo cp theme.txt $root/boot/grub/themes/OpenMandriva
 
 sudo grub2-mkrescue -o grub.image $root
 sudo chown $(whoami):$(groups | sed -e 's| .*||') theme.txt
-qemu-system-i386 -cdrom grub.image
+qemu-system-x86_64 -cdrom grub.image

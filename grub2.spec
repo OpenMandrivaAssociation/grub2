@@ -46,7 +46,7 @@ Source11:	grub2.rpmlintrc
 # git archive --prefix=grub-extras/ --format=tar HEAD | xz > ../grub-extras-$(date +%Y%m%d).tar.xz
 Source12:	grub-extras-20191024.tar.xz
 # documentation and simple test script for testing grub2 themes
-Source13:	mandriva-grub2-theme-test.sh
+Source13:	grub2-theme-test.sh
 Source14:	30-uefi_firmware
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
