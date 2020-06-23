@@ -83,7 +83,6 @@ Patch18:	grub2-clang-kernels-last.patch
 Patch100:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
 Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
 Patch102:	grub2-2.04-fix-grub-install-locale-copy.patch
-Patch103:	0221-fix-build-with-rpm-4.16.patch
 
 # Patches from SuSe
 
@@ -254,6 +253,7 @@ cd %{platform}
 	LDFLAGS="" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=%{platform} \
+	--enable-nls \
 %ifarch %{x86_64}
 	--enable-efiemu \
 %endif
@@ -285,6 +285,7 @@ cd efi
 	LDFLAGS="" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=efi \
+	--enable-nls \
 	--program-transform-name=s,grub,%{name}-efi, \
 	--libdir=%{libdir32} \
 	--libexecdir=%{libdir32} \
