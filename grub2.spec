@@ -325,7 +325,7 @@ cd -
 #-----------------------------------------------------------------------
 %install
 ######legacy
-%if "%{platform}" ! = ""
+%if "%{platform}" != ""
 %make_install -C %{platform}
 
 # (crazy) fixme? why so?
