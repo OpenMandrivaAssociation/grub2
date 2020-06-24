@@ -22,7 +22,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.04
-Release:	5
+Release:	6
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -46,7 +46,7 @@ Source11:	grub2.rpmlintrc
 # git archive --prefix=grub-extras/ --format=tar HEAD | xz > ../grub-extras-$(date +%Y%m%d).tar.xz
 Source12:	grub-extras-20191024.tar.xz
 # documentation and simple test script for testing grub2 themes
-Source13:	mandriva-grub2-theme-test.sh
+Source13:	grub2-theme-test.sh
 Source14:	30-uefi_firmware
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
@@ -65,25 +65,47 @@ Patch7:		omv-configuration.patch
 Patch8:		grub-2.00-fix-dejavu-font.patch
 Patch9:		grub2-2.00-class-via-os-prober.patch
 Patch10:	grub-2.00-autoreconf-sucks.patch
-Patch11:	0468-Don-t-write-messages-to-the-screen.patch
-Patch12:	grub-2.02-beta2-custom-vendor-config.patch
-#Patch13:	0001-Revert-Make-grub-install-check-for-errors-from-efibo.patch
-Patch14:	fix-microcode-os-prober-initrd-line-parsing.patch
-Patch15:	grub-2.02-20180620-disable-docs.patch
+Patch11:	grub-2.02-beta2-custom-vendor-config.patch
+Patch12:	fix-microcode-os-prober-initrd-line-parsing.patch
+Patch13:	grub-2.02-20180620-disable-docs.patch
 # Without this, build fails on aarch64 w/ unresolved symbol abort
 # while running grub-mkimage
-Patch16:	grub-2.02-define-abort.patch
-Patch17:	grub-2.04-grub-extras-lua-fix.patch
+%ifarch aarch64
+Patch14:	grub-2.02-define-abort.patch
+%endif
+Patch15:	grub-2.04-grub-extras-lua-fix.patch
 # Show clang kernels after gcc kernels
-Patch18:	grub2-clang-kernels-last.patch
+Patch16:	grub2-clang-kernels-last.patch
 
-# (crazy) these are 2 BAD patches , FIXME after Lx4
-# Patch7 prepares remove for that ( partially )
-# Patches from Mageia
-Patch100:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
-Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
-Patch102:	grub2-2.04-fix-grub-install-locale-copy.patch
-Patch103:	0221-fix-build-with-rpm-4.16.patch
+# Fedora patches
+Patch100:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0021-Add-support-for-UEFI-operating-systems-returned-by-o.patch
+Patch101:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0029-Don-t-write-messages-to-the-screen.patch
+Patch102:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0030-Don-t-print-GNU-GRUB-header.patch
+Patch103:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0031-Don-t-add-to-highlighted-row.patch
+Patch104:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0033-Fix-border-spacing-now-that-we-aren-t-displaying-it.patch
+Patch105:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0034-Use-the-correct-indentation-for-the-term-help-text.patch
+Patch106:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0035-Indent-menu-entries.patch
+Patch107:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0036-Fix-margins.patch
+Patch108:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0037-Use-2-instead-of-1-for-our-right-hand-margin-so-line.patch
+Patch109:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0038-Enable-pager-by-default.-985860.patch
+Patch110:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0042-Use-the-standard-margin-for-the-timeout-string.patch
+Patch111:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0044-Don-t-munge-raw-spaces-when-we-re-doing-our-cmdline-.patch
+Patch112:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0046-Don-t-emit-Booting-.-message.patch
+Patch113:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0050-Fix-convert-function-to-support-NVMe-devices.patch
+Patch114:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0053-Generate-OS-and-CLASS-in-10_linux-from-etc-os-releas.patch
+Patch115:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0059-Make-grub2-mkconfig-construct-titles-that-look-like-.patch
+Patch116:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0101-normal-don-t-draw-our-startup-message-if-debug-is-se.patch
+Patch117:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0123-EFI-console-Do-not-set-text-mode-until-we-actually-n.patch
+Patch118:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0129-Add-auto-hide-menu-support.patch
+Patch119:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0131-Add-grub-set-bootflag-utility.patch
+Patch120:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0132-docs-Add-grub-boot-indeterminate.service-example.patch
+Patch121:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0170-grub.d-Split-out-boot-success-reset-from-menu-auto-h.patch
+Patch122:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0184-10_linux.in-Also-use-GRUB_CMDLINE_LINUX_DEFAULT-to-s.patch
+Patch123:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0189-grub.d-Fix-boot_indeterminate-getting-set-on-boot_su.patch
+Patch124:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0132-docs-Add-grub-boot-indeterminate.service-example.patch
+
+# Upstream patches
+Patch200:	grub2-2.04-fix-grub-install-locale-copy.patch
 
 # Patches from SuSe
 
