@@ -78,31 +78,31 @@ Patch15:	grub-2.04-grub-extras-lua-fix.patch
 Patch16:	grub2-clang-kernels-last.patch
 
 # Fedora patches
-Patch100:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0021-Add-support-for-UEFI-operating-systems-returned-by-o.patch
-Patch101:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0029-Don-t-write-messages-to-the-screen.patch
-Patch102:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0030-Don-t-print-GNU-GRUB-header.patch
-Patch103:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0031-Don-t-add-to-highlighted-row.patch
-Patch104:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0033-Fix-border-spacing-now-that-we-aren-t-displaying-it.patch
-Patch105:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0034-Use-the-correct-indentation-for-the-term-help-text.patch
-Patch106:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0035-Indent-menu-entries.patch
-Patch107:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0036-Fix-margins.patch
-Patch108:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0037-Use-2-instead-of-1-for-our-right-hand-margin-so-line.patch
-Patch109:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0038-Enable-pager-by-default.-985860.patch
-Patch110:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0042-Use-the-standard-margin-for-the-timeout-string.patch
-Patch111:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0044-Don-t-munge-raw-spaces-when-we-re-doing-our-cmdline-.patch
-Patch112:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0046-Don-t-emit-Booting-.-message.patch
-Patch113:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0050-Fix-convert-function-to-support-NVMe-devices.patch
-Patch114:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0053-Generate-OS-and-CLASS-in-10_linux-from-etc-os-releas.patch
-Patch115:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0059-Make-grub2-mkconfig-construct-titles-that-look-like-.patch
-Patch116:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0101-normal-don-t-draw-our-startup-message-if-debug-is-se.patch
-Patch117:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0123-EFI-console-Do-not-set-text-mode-until-we-actually-n.patch
-Patch118:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0129-Add-auto-hide-menu-support.patch
-Patch119:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0131-Add-grub-set-bootflag-utility.patch
-Patch120:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0132-docs-Add-grub-boot-indeterminate.service-example.patch
-Patch121:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0170-grub.d-Split-out-boot-success-reset-from-menu-auto-h.patch
-Patch122:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0184-10_linux.in-Also-use-GRUB_CMDLINE_LINUX_DEFAULT-to-s.patch
-Patch123:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0189-grub.d-Fix-boot_indeterminate-getting-set-on-boot_su.patch
-Patch124:	https://src.fedoraproject.org/rpms/grub2/blob/master/f/0132-docs-Add-grub-boot-indeterminate.service-example.patch
+Patch100:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0021-Add-support-for-UEFI-operating-systems-returned-by-o.patch
+Patch101:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0029-Don-t-write-messages-to-the-screen.patch
+Patch102:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0030-Don-t-print-GNU-GRUB-header.patch
+Patch103:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0031-Don-t-add-to-highlighted-row.patch
+Patch104:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0033-Fix-border-spacing-now-that-we-aren-t-displaying-it.patch
+Patch105:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0034-Use-the-correct-indentation-for-the-term-help-text.patch
+Patch106:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0035-Indent-menu-entries.patch
+Patch107:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0036-Fix-margins.patch
+Patch108:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0037-Use-2-instead-of-1-for-our-right-hand-margin-so-line.patch
+Patch109:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0038-Enable-pager-by-default.-985860.patch
+Patch110:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0042-Use-the-standard-margin-for-the-timeout-string.patch
+Patch111:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0044-Don-t-munge-raw-spaces-when-we-re-doing-our-cmdline-.patch
+Patch112:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0046-Don-t-emit-Booting-.-message.patch
+Patch113:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0050-Fix-convert-function-to-support-NVMe-devices.patch
+Patch114:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0053-Generate-OS-and-CLASS-in-10_linux-from-etc-os-releas.patch
+Patch115:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0059-Make-grub2-mkconfig-construct-titles-that-look-like-.patch
+Patch116:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0101-normal-don-t-draw-our-startup-message-if-debug-is-se.patch
+Patch117:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0123-EFI-console-Do-not-set-text-mode-until-we-actually-n.patch
+Patch118:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0129-Add-auto-hide-menu-support.patch
+Patch119:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0131-Add-grub-set-bootflag-utility.patch
+Patch120:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0132-docs-Add-grub-boot-indeterminate.service-example.patch
+Patch121:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0170-grub.d-Split-out-boot-success-reset-from-menu-auto-h.patch
+Patch122:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0184-10_linux.in-Also-use-GRUB_CMDLINE_LINUX_DEFAULT-to-s.patch
+Patch123:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0189-grub.d-Fix-boot_indeterminate-getting-set-on-boot_su.patch
+Patch124:	https://src.fedoraproject.org/rpms/grub2/raw/master/f/0132-docs-Add-grub-boot-indeterminate.service-example.patch
 
 # Upstream patches
 Patch200:	grub2-2.04-fix-grub-install-locale-copy.patch

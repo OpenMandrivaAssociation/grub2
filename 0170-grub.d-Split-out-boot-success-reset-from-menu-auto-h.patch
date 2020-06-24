@@ -1,461 +1,5 @@
-
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Tree - rpms/grub2 - src.fedoraproject.org</title>
-        <link rel="shortcut icon" type="image/vnd.microsoft.icon"
-        href="/theme/static/favicon.ico?version=5.10.0"/>
-    <link href="/theme/static/fedora-bootstrap-1.3.0/fedora-bootstrap.min.css?version=5.10.0"
-        type="text/css" rel="stylesheet" />
-    <link href="/theme/static/fonts/fonts.css?version=5.10.0"
-        rel="stylesheet" type="text/css" />
-    <link href="/theme/static/fonts/hack_fonts/css/hack-extended.min.css?version=5.10.0"
-        type="text/css" rel="stylesheet" />
-    <link href="/theme/static/theme.css?version=5.10.0"
-        type="text/css" rel="stylesheet" />
-
-    <link type="text/css" rel="stylesheet" nonce="rsFqlyYx3umHYhZnKNnrMv09g" href="/static/vendor/font-awesome/font-awesome.css?version=5.10.0"/>
-    <link type="text/css" rel="stylesheet" nonce="rsFqlyYx3umHYhZnKNnrMv09g" href="/static/pagure.css?version=5.10.0"/>
-<link nonce="rsFqlyYx3umHYhZnKNnrMv09g" rel="stylesheet" href="/static/vendor/highlight.js/styles/github.css?version=5.10.0"/>
-<link nonce="rsFqlyYx3umHYhZnKNnrMv09g" rel="stylesheet" href="/static/vendor/highlightjs-line-numbers/highlightjs-line-numbers.min.css?version=5.10.0"/>
-<style nonce="rsFqlyYx3umHYhZnKNnrMv09g">
-  .hljs {
-    background: #fff;
-  }
-</style>
-  </head>
-  <body id="home">
-    
-    <!-- start masthead -->
-    <nav class="navbar navbar-light masthead p-0 navbar-expand">
-      <div class="container">
-        <a href="/" class="navbar-brand">
-        <img height=40px src="/theme/static/pagure-logo.png?version=5.10.0"
-             alt="pagure Logo" id="pagureLogo"/>
-        </a>
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="btn btn-primary" href="/login/?next=https://src.fedoraproject.org/rpms/grub2/blob/master/f/0170-grub.d-Split-out-boot-success-reset-from-menu-auto-h.patch">Log In</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-    <!-- close masthead-->
-
-    <div class="bodycontent">
-
-
-<div class="bg-light border border-bottom pt-3">
-  <div class="container">
-    <div class="row mb-3">
-      <div class="col-6">
-        <div class="row">
-        <div class="col-auto pr-0">
-            <h3>
-<i class="fa fa-archive text-muted"></i></h3>
-        </div>
-        <div class="col-auto pl-2">
-            <h3 class="mb-0">
-<a href="/projects/rpms/%2A">rpms</a>&nbsp;/&nbsp;<a href="/rpms/grub2"><strong>grub2</strong></a>
-            </h3>
-        </div>
-        </div>
-      </div>
-      <div class="col-6 text-right">
-        <div class="btn-group">
-        <div class="btn-group">
-        <a href="#"
-            class="btn btn-sm dropdown-toggle btn-outline-primary"
-            data-toggle="dropdown" id="watch-button">
-          <i class="fa fa-clone fa-fw"></i>
-          <span>Clone</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right">
-          <div class="m-3" id="source-dropdown" class="pointer">
-            <div>
-              <h5><strong>Source Code</strong></h5>
-
-              <div class="form-group">
-                <div class="input-group input-group-sm">
-                  <div class="input-group-prepend"><span class="input-group-text">GIT</span></div>
-                  <input class="form-control bg-white select-on-focus" type="text" value="https://src.fedoraproject.org/rpms/grub2.git" readonly>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-<ul class="nav nav-tabs nav-small border-bottom-0">
-  <li class="nav-item mr-2 text-dark">
-    <a class="nav-link active" href="/rpms/grub2">
-        <i class="fa fa-code fa-fw text-muted"></i>
-        <span class="d-none d-md-inline">Source</span>
-    </a>
-  </li>
-
-    <li class="nav-item mr-2 text-dark">
-        <a class="nav-link" href="https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&classification=Fedora&product=Fedora&product=Fedora EPEL&component=grub2">
-          <i class="fa fa-fw text-muted fa-exclamation-circle"></i>
-          <span class="d-none d-md-inline">Issues&nbsp;</span>
-          <span class="fa fa-external-link"></span>
-        </a>
-    </li>
-
-
-
-    <li class="nav-item mr-2 text-dark">
-      <a class="nav-link" href="/rpms/grub2/stats">
-          <i class="fa fa-line-chart fa-fw text-muted"></i>
-          <span class="d-none d-md-inline">Stats</span>
-      </a>
-    </li>
-
-
-</ul>
-  </div>
-</div>
-
-<div class="container pt-5 repo-body-container">
-  <div class="row">
-    <div class="col-2">
-<nav class="nav nav-tabs nav-sidetabs flex-column">
-  <a class=
-      "nav-link nowrap
-"
-      href="/rpms/grub2">
-      <i class="fa fa-home text-muted fa-fw"></i>&nbsp;<span class="d-none d-md-inline">Overview</span>
-  </a>
-  <a class=
-    "nav-link nowrap
- active"
-    href="/rpms/grub2/tree/master">
-    <i class="fa fa-file-code-o text-muted fa-fw"></i>&nbsp;Files
-  </a>
-  <a class=
-    "nav-link nowrap
-"
-    href="/rpms/grub2/commits/master">
-    <i class="fa fa-list-alt text-muted fa-fw" data-glyph="spreadsheet"></i>&nbsp;Commits
-  </a>
-  <a class=
-    "nav-link nowrap
-"
-    href="/rpms/grub2/branches?branchname=master">
-    <i class="fa fa-random text-muted fa-fw"></i>&nbsp;Branches
-  </a>
-  <a class=
-    "nav-link nowrap
-"
-    href="/rpms/grub2/forks">
-    <i class="fa fa-code-fork text-muted fa-fw"></i>&nbsp;Forks
-  </a>
-  <a class=
-    "nav-link nowrap
-"
-    href="/rpms/grub2/releases">
-    <i class="fa fa-tags text-muted fa-fw"></i>&nbsp;Releases
-  </a>
-
-  <div class="col-xs-2 line-height-1"></div>
-  <h6>Monitoring status:</h6>
-  <div class="btn-group">
-    <button title="Monitoring status" class="btn btn-sm btn-outline-primary disabled"
-        id="monitoring-button">
-      <i id="monitoring-icon" class="fa fa-fw fa-eye"></i>
-      <span id="monitoring-label" class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></span>
-    </button>
-  </div>
-
-
-  <div class="pt-3">
-    <div class="col-xs-2 line-height-1">
-    <h6>Bugzilla Assignee:</h6>
-      <dl>
-        <dt>Fedora: </dt>
-        <dd id="fedora_assignee_txt">
-        pjones
-        </dd>
-        <dt>EPEL: </dt>
-        <dd id="epel_assignee_txt">
-        pjones
-        </dd>
-      </dl>
-    </div>
-  </div>
-
-  <div class="modal fade" id="modal_assignee" tabindex="-1"
-          role="dialog" aria-labelledby="Bugzilla assignee" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Bugzilla Assignee</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            <span class="sr-only">Close</span>
-          </button>
-        </div>
-        <form id="change_assignees">
-          <div class="modal-body">
-            <label for="fedora_assignee">Fedora</label>
-            <input title="Default assignee for Fedora in bugzilla - Empty input resets to default"
-              class="form-control" name="fedora_assignee" id="fedora_assignee" value="pjones"/>
-            <label for="epel_assignee">EPEL</label>
-            <input title="Default assignee for EPEL in bugzilla (if applicable) - Empty input resets to default"
-              class="form-control" name="epel_assignee" id="epel_assignee" value="pjones" />
-            <p class="pt-2">
-              These two fields allow to specify a different default assignee for ticket opened against
-              this package in bugzilla. Note: The EPEL field is
-              always displayed for packages in the 'rpms' namespace regardless of whether it
-              is used in bugzilla or not.            </p>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" title="Update bugzilla overrides" id="reset_assignees">
-               Reset to defaults
-            </button>
-            <button class="btn btn-primary" type="submit" title="Update bugzilla overrides" id="update_assignees">
-               Update
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <script type="text/javascript" nonce="rsFqlyYx3umHYhZnKNnrMv09g">
-    window.addEventListener('load', function() {
-      set_up_monitoring = function(status){
-        var _label = "Disabled"
-        if (status === "monitoring") {
-          _label = "Monitoring";
-          $("#monitoring-icon").attr("class", "fa fa-fw fa-eye")
-        } else if (status === "monitoring-with-scratch") {
-          _label = "Scratch builds"
-          $("#monitoring-icon").attr("class", "fa fa-fw fa-eye")
-        } else {
-          $("#monitoring-icon").attr("class", "fa fa-fw fa-eye-slash")
-        }
-
-        $("#monitoring-label").text(_label);
-        $("#monitoring-label").removeClass("fa fa-circle-o-notch fa-spin fa-1x fa-fw");
-      }
-
-      $.ajax({
-        url: "/_dg/anitya/rpms/grub2",
-        type: 'GET',
-        dataType: 'json',
-        success: function(res) {
-          console.log(res);
-          set_up_monitoring(res.monitoring)
-        }
-      });
-
-
-      $("#reset_assignees").on('click', function(){
-        $('#fedora_assignee').val('');
-        $('#epel_assignee').val('');
-        $("#change_assignees").submit();
-        return false;
-      });
-
-      $("#change_assignees").on('submit',  function(){
-        $('html').css('cursor', 'progress');
-        $('#reset_assignees').attr('disabled', true);
-        $('#update_assignees').attr('disabled', true);
-        $('#update_assignees').text('Updating...');
-        $.ajax({
-          url: "/_dg/bzoverrides/rpms/grub2",
-          type: 'POST',
-          dataType: 'json',
-          data: {
-             'epel_assignee': $('#epel_assignee').val(),
-             'fedora_assignee': $('#fedora_assignee').val()
-          },
-          success: function(res) {
-            $("#fedora_assignee_txt").text(res.fedora_assignee);
-            $("#epel_assignee_txt").text(res.epel_assignee);
-            $('#modal_assignee').modal('hide');
-            $('#reset_assignees').attr('disabled', false);
-            $('#update_assignees').attr('disabled', false);
-            $('#update_assignees').text('Update');
-            $('html').css('cursor', 'default');
-            console.log("Successfully changed the bugzilla assignees");
-            return false;
-          },
-          error: function(res) {
-            var msg = '';
-            if(res.responseJSON.errors){
-              msg = ': ' + res.responseJSON.errors.join(', ');
-            }
-            alert("Unable to update the bugzilla assignee(s)" + msg);
-            $('html').css('cursor', 'default');
-            $('#reset_assignees').attr('disabled', false);
-            $('#update_assignees').attr('disabled', false);
-            $('#update_assignees').text('Update');
-            return false;
-          }
-        })
-        return false;
-      });
-
-
-    });
-  </script>
-
-</nav>    </div>
-    <div class="col-10">
-  <div class="row mb-1">
-    <div class="col-sm-6">
-    <h3>
-      Files
-    </h3>
-    </div>
-
-    <div class="col-sm-6">
-      <div class="float-right">
-          <div class="btn-group">
-            <a href="#" class="btn btn-outline-light border-secondary text-dark btn-sm dropdown-toggle"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="fa fa-random fa-fw"></span> Branch: <span class="font-weight-bold">master</span>
-          </a>
-            <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/el5">
-                      <span class="fa fa-random fa-fw"></span> <span class="">el5</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/el6">
-                      <span class="fa fa-random fa-fw"></span> <span class="">el6</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f10">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f10</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f11">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f11</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f12">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f12</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f13">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f13</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f14">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f14</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f15">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f15</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f16">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f16</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f17">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f17</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f18">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f18</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f19">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f19</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f20">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f20</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f21">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f21</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f22">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f22</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f23">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f23</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f24">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f24</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f25">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f25</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f25-bls">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f25-bls</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f25-bls3">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f25-bls3</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f26">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f26</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f27">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f27</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f28">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f28</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f29">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f29</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f30">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f30</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f31">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f31</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f32">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f32</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/f9">
-                      <span class="fa fa-random fa-fw"></span> <span class="">f9</span>
-                  </a>
-                  <a class="dropdown-item pl-1 active" href="/rpms/grub2/tree/master">
-                      <span class="fa fa-random fa-fw"></span> <span class="font-weight-bold">master</span>
-                  </a>
-                  <a class="dropdown-item pl-1 " href="/rpms/grub2/tree/splitarch4">
-                      <span class="fa fa-random fa-fw"></span> <span class="">splitarch4</span>
-                  </a>
-            </div>
-          </div>
-    </div>
-  </div>
-  </div>
-    <div class="card mb-3">
-      <div class="card-header">
-        <ol class="breadcrumb p-0 bg-transparent mb-0">
-          <li class="breadcrumb-item">
-            <a href="/rpms/grub2/tree/master">
-              <span class="fa fa-random">
-              </span>&nbsp; master
-            </a>
-          </li>
-          <li class="active breadcrumb-item">
-            <span class="fa fa-file" data-glyph="">
-            </span>&nbsp; 0170-grub.d-Split-out-boot-success-reset-from-menu-auto-h.patch
-          </li>
-        </ol>
-      </div>
-
-  <div class="card-body p-0">
-            <div class="bg-light border text-right pr-2">
-                <form class="btn btn-sm" method="POST" name="fork_project"
-                    action="/fork_edit/rpms/grub2/edit/master/f/0170-grub.d-Split-out-boot-success-reset-from-menu-auto-h.patch">
-                    <button class="btn btn-sm btn-secondary fork_project_btn">
-                            Fork and Edit
-                    </button>
-                    
-                </form>
-
-                <a class="btn btn-secondary btn-sm" href="/rpms/grub2/blob/master/f/0170-grub.d-Split-out-boot-success-reset-from-menu-auto-h.patch" title="View as blob">Blob</a>
-
-                <a class="btn btn-secondary btn-sm" href="/rpms/grub2/blame/0170-grub.d-Split-out-boot-success-reset-from-menu-auto-h.patch?identifier=master" title="View git blame">Blame</a>
-
-                <a class="btn btn-secondary btn-sm" href="/rpms/grub2/history/0170-grub.d-Split-out-boot-success-reset-from-menu-auto-h.patch?identifier=master" title="View git log for this file">History</a>
-
-                <a class="btn btn-secondary btn-sm" href="/rpms/grub2/raw/master/f/0170-grub.d-Split-out-boot-success-reset-from-menu-auto-h.patch" title="View as raw">Raw</a>
-            </div>
-
-        <pre class="syntaxhighlightblock"><code class="lang-diff">From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Christian Glombek &lt;lorbus@fedoraproject.org&gt;
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Christian Glombek <lorbus@fedoraproject.org>
 Date: Tue, 2 Apr 2019 16:22:21 +0200
 Subject: [PATCH] grub.d: Split out boot success reset from menu auto hide
  script
@@ -465,13 +9,13 @@ before and after boot success reset script.
 In menu auto hide script, rename last_boot_ok var to menu_hide_ok
 ---
  Makefile.util.def                                  | 14 ++++++++----
- ...allback_counting.in =&gt; 08_fallback_counting.in} | 14 ++++++------
+ ...allback_counting.in => 08_fallback_counting.in} | 14 ++++++------
  util/grub.d/10_reset_boot_success.in               | 25 ++++++++++++++++++++++
- .../{01_menu_auto_hide.in =&gt; 12_menu_auto_hide.in} | 23 +++++---------------
+ .../{01_menu_auto_hide.in => 12_menu_auto_hide.in} | 23 +++++---------------
  4 files changed, 48 insertions(+), 28 deletions(-)
- rename util/grub.d/{01_fallback_counting.in =&gt; 08_fallback_counting.in} (65%)
+ rename util/grub.d/{01_fallback_counting.in => 08_fallback_counting.in} (65%)
  create mode 100644 util/grub.d/10_reset_boot_success.in
- rename util/grub.d/{01_menu_auto_hide.in =&gt; 12_menu_auto_hide.in} (58%)
+ rename util/grub.d/{01_menu_auto_hide.in => 12_menu_auto_hide.in} (58%)
 
 diff --git a/Makefile.util.def b/Makefile.util.def
 index 2019ebd0207..1fa92caad4d 100644
@@ -481,17 +25,17 @@ index 2019ebd0207..1fa92caad4d 100644
  };
  
  script = {
--  name = &#39;01_fallback_counting&#39;;
+-  name = '01_fallback_counting';
 -  common = util/grub.d/01_fallback_counting.in;
-+  name = &#39;08_fallback_counting&#39;;
++  name = '08_fallback_counting';
 +  common = util/grub.d/08_fallback_counting.in;
    installdir = grubconf;
  };
  
  script = {
--  name = &#39;01_menu_auto_hide&#39;;
+-  name = '01_menu_auto_hide';
 -  common = util/grub.d/01_menu_auto_hide.in;
-+  name = &#39;12_menu_auto_hide&#39;;
++  name = '12_menu_auto_hide';
 +  common = util/grub.d/12_menu_auto_hide.in;
    installdir = grubconf;
  };
@@ -501,13 +45,13 @@ index 2019ebd0207..1fa92caad4d 100644
  };
  
 +script = {
-+  name = &#39;10_reset_boot_success&#39;;
++  name = '10_reset_boot_success';
 +  common = util/grub.d/10_reset_boot_success.in;
 +  installdir = grubconf;
 +};
 +
  script = {
-   name = &#39;10_xnu&#39;;
+   name = '10_xnu';
    common = util/grub.d/10_xnu.in;
 diff --git a/util/grub.d/01_fallback_counting.in b/util/grub.d/08_fallback_counting.in
 similarity index 65%
@@ -529,15 +73,15 @@ index be0e770ea82..2e2c3ff7d31 100644
 -# boot_counter and boot_success need to be (re-)set from userspace.
 +# OSTree upgrade and choose the rollback deployment when 0 is reached.
 +# Both boot_counter=X and boot_success=1 need to be set from userspace.
- cat &lt;&lt; EOF
+ cat << EOF
  insmod increment
  # Check if boot_counter exists and boot_success=0 to activate this behaviour.
- if [ -n &#34;\${boot_counter}&#34; -a &#34;\${boot_success}&#34; = &#34;0&#34; ]; then
+ if [ -n "\${boot_counter}" -a "\${boot_success}" = "0" ]; then
 -  # if countdown has ended, choose to boot rollback deployment (default=1 on
 -  # OSTree-based systems)
 +  # if countdown has ended, choose to boot rollback deployment,
 +  # i.e. default=1 on OSTree-based systems.
-   if  [ &#34;\${boot_counter}&#34; = &#34;0&#34; -o &#34;\${boot_counter}&#34; = &#34;-1&#34; ]; then
+   if  [ "\${boot_counter}" = "0" -o "\${boot_counter}" = "-1" ]; then
      set default=1
      set boot_counter=-1
 diff --git a/util/grub.d/10_reset_boot_success.in b/util/grub.d/10_reset_boot_success.in
@@ -553,16 +97,16 @@ index 00000000000..6c88d933dde
 +# and need to be kept in sync.
 +#
 +# The boot_success var needs to be set to 1 from userspace to mark a boot successful.
-+cat &lt;&lt; EOF
++cat << EOF
 +insmod increment
 +# Hiding the menu is ok if last boot was ok or if this is a first boot attempt to boot the entry
-+if [ &#34;\${boot_success}&#34; = &#34;1&#34; -o &#34;\${boot_indeterminate}&#34; = &#34;1&#34; ]; then
++if [ "\${boot_success}" = "1" -o "\${boot_indeterminate}" = "1" ]; then
 +  set menu_hide_ok=1
 +else
 +  set menu_hide_ok=0 
 +fi
 +# Reset boot_indeterminate after a successful boot, increment otherwise
-+if [ &#34;\${boot_success}&#34; = &#34;1&#34; ] ; then
++if [ "\${boot_success}" = "1" ] ; then
 +  set boot_indeterminate=0
 +else
 +  increment boot_indeterminate
@@ -587,164 +131,35 @@ index ad175870a54..6a7c0fa0d43 100644
 +#
  # Disable / skip generating menu-auto-hide config parts on serial terminals
  for x in ${GRUB_TERMINAL_INPUT} ${GRUB_TERMINAL_OUTPUT}; do
-   case &#34;$x&#34; in
+   case "$x" in
 @@ -10,29 +13,13 @@ for x in ${GRUB_TERMINAL_INPUT} ${GRUB_TERMINAL_OUTPUT}; do
  done
  
- cat &lt;&lt; EOF
--if [ &#34;\${boot_success}&#34; = &#34;1&#34; -o &#34;\${boot_indeterminate}&#34; = &#34;1&#34; ]; then
+ cat << EOF
+-if [ "\${boot_success}" = "1" -o "\${boot_indeterminate}" = "1" ]; then
 -  set last_boot_ok=1
 -else
 -  set last_boot_ok=0
 -fi
 -
 -# Reset boot_indeterminate after a successful boot
--if [ &#34;\${boot_success}&#34; = &#34;1&#34; ] ; then
+-if [ "\${boot_success}" = "1" ] ; then
 -  set boot_indeterminate=0
 -# Avoid boot_indeterminate causing the menu to be hidden more then once
--elif [ &#34;\${boot_indeterminate}&#34; = &#34;1&#34; ]; then
+-elif [ "\${boot_indeterminate}" = "1" ]; then
 -  set boot_indeterminate=2
 -fi
 -set boot_success=0
 -save_env boot_success boot_indeterminate
 -
  if [ x\$feature_timeout_style = xy ] ; then
-   if [ &#34;\${menu_show_once}&#34; ]; then
+   if [ "\${menu_show_once}" ]; then
      unset menu_show_once
      save_env menu_show_once
      set timeout_style=menu
      set timeout=60
--  elif [ &#34;\${menu_auto_hide}&#34; -a &#34;\${last_boot_ok}&#34; = &#34;1&#34; ]; then
-+  elif [ &#34;\${menu_auto_hide}&#34; -a &#34;\${menu_hide_ok}&#34; = &#34;1&#34; ]; then
+-  elif [ "\${menu_auto_hide}" -a "\${last_boot_ok}" = "1" ]; then
++  elif [ "\${menu_auto_hide}" -a "\${menu_hide_ok}" = "1" ]; then
      set orig_timeout_style=\${timeout_style}
      set orig_timeout=\${timeout}
-     if [ &#34;\${fastboot}&#34; = &#34;1&#34; ]; then
-</code></pre>
-  </div>
- </div> <!-- end .card-->
-
-</div>
-</div>
-</div>
-    </div>
-
-        <div class="footer pt-4 text-white">
-        <div class="container">
-            <div class="d-flex align-items-center">
-                <div>
-                    <div>Powered by <a href="https://pagure.io/pagure" class="notblue">Pagure</a> 5.10.0</div>
-                    <div>
-                        <a href="https://docs.pagure.org/pagure/usage/index.html" class="notblue">Documentation</a> &bull;
-                        <a href="https://pagure.io/pagure/new_issue" class="notblue">File an Issue</a> &bull;
-                        <a href="/about">About this Instance</a> &bull;
-                        <a href="/ssh_info" class="notblue">SSH Hostkey/Fingerprint</a>
-                    </div>
-                </div>
-                <div class="ml-auto text-right">
-                    <div>&copy; Red Hat, Inc. and others.</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <script type="text/javascript" nonce="rsFqlyYx3umHYhZnKNnrMv09g" src="/static/vendor/jquery/jquery.min.js?version=5.10.0"></script>
-
-    <script src="/static/vendor/bootstrap/bootstrap.bundle.min.js?version=5.10.0"></script>
-
-    <script type="text/javascript" nonce="rsFqlyYx3umHYhZnKNnrMv09g">
-      $('[data-toggle="tooltip"]').tooltip({placement : 'bottom'});
-      $(".cancel_btn").click(function() {
-        history.back();
-      });
-    </script>
-
-<script type="text/javascript"  nonce="rsFqlyYx3umHYhZnKNnrMv09g" src="/static/vendor/lazyload/lazyload.min.js?version=5.10.0"></script>
-
-<script type="text/javascript" nonce="rsFqlyYx3umHYhZnKNnrMv09g">
-window.addEventListener("load", function(event) {
-    lazyload();
-});
-</script>
-
-<script type="text/javascript" nonce="rsFqlyYx3umHYhZnKNnrMv09g">
-$("#giturl-toggle").on('click', function(event){
-  event.stopPropagation();
-  $("#giturl-more").toggle();
-  $("#giturl-toggle").hide();
-})
-
-$(".fork_project_btn").click(function() {
-  $('#fork_project').submit();
-});
-
-$(".select-on-focus").on("focus", function() {
-  $(this).select();
-});
-
-</script>
-
-<script type="text/javascript" nonce="rsFqlyYx3umHYhZnKNnrMv09g" src="/static/vendor/highlight.js/highlight.pack.js?version=5.10.0"></script>
-<script type="text/javascript" nonce="rsFqlyYx3umHYhZnKNnrMv09g" src="/static/vendor/highlightjs-line-numbers/highlightjs-line-numbers.min.js?version=5.10.0"></script>
-<script type="text/javascript" nonce="rsFqlyYx3umHYhZnKNnrMv09g" src="/static/vendor/highlight.js/spec.js?version=5.10.0"></script>
-
-<script type="text/javascript" nonce="rsFqlyYx3umHYhZnKNnrMv09g">
-  $(document).ready(function() {
-  $('.fork_project_btn').click($("[name=fork_project]").submit);
-
-  $('pre.syntaxhighlightblock code').each(function(i, block) {
-    hljs.highlightBlock(block);
-    hljs.lineNumbersBlock(block);
-  });
-
-  var cls = "highlighted-line";
-  var lines = location.hash.substr(2).split('-').map(function (x) { return parseInt(x, 10) });
-  if (! isNaN(lines[0]))
-  {
-    for (var i = lines[lines.length - 1]; i >= lines[0]; i--) {
-      $('#_' + i).parent().parent().addClass(cls);
-    }
-    setTimeout(function(){
-      $("#_" + lines[0]).get(0).scrollIntoView({behavior: "instant", block: "start", inline: "nearest"});
-    }, 50);
-  }
-});
-</script>
-
-<script type="text/javascript" nonce="rsFqlyYx3umHYhZnKNnrMv09g">
-
-  function updateHighlight() {
-    var cls = "highlighted-line";
-    $('.' + cls).removeClass(cls)
-    if (location.hash !== '') {
-      var lines = location.hash.substr(2).split('-').map(function (x) { return parseInt(x, 10) });
-      for (var i = lines[lines.length - 1]; i >= lines[0]; i--) {
-        $('[data-line-number=' + i + ']').closest('tr').addClass(cls);
-      }
-      return lines;
-    }
-    return [];
-  }
-  $(window).on('hashchange', updateHighlight);
-  var selected = [];
-  $("[data-line-number]").click(function (ev) {
-    var line = $(this).attr('data-line-number');
-    if (ev.shiftKey) {
-      selected = selected.slice(-1).concat(line);
-    } else {
-      selected = [line];
-    }
-
-    var hash = '_' + selected[0];
-    if (selected.length === 2) {
-      hash = '_' + Math.min(selected[0], selected[1]) + '-' + Math.max(selected[0], selected[1]);
-    }
-    window.location.hash = hash;
-    return false;
-  });
-
-</script>
-
-
-</body>
-</html>
+     if [ "\${fastboot}" = "1" ]; then
