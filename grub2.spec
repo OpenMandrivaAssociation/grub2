@@ -327,6 +327,7 @@ BuildRequires:	texinfo
 BuildRequires:	texlive-tex.bin
 BuildRequires:	glibc-static-devel
 BuildRequires:	gettext-devel
+BuildRequires:	git-core
 BuildRequires:	lzo-devel
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	pkgconfig(fuse3)
