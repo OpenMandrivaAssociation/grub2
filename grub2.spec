@@ -329,6 +329,7 @@ BuildRequires:	glibc-static-devel
 BuildRequires:	gettext-devel
 BuildRequires:	git-core
 BuildRequires:	lzo-devel
+BuildRequires:	pkgconfig(rpm)
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	pkgconfig(fuse3)
 BuildRequires:	pkgconfig(freetype2)
