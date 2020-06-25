@@ -1,8 +1,8 @@
-diff -Naur grub-2.02-2014-10-8/util/grub-mkconfig.in grub-2.02-2014-10-8.tpg/util/grub-mkconfig.in
---- grub-2.02-2014-10-8/util/grub-mkconfig.in	2015-01-16 06:57:55.000000000 +0000
-+++ grub-2.02-2014-10-8.tpg/util/grub-mkconfig.in	2015-01-16 07:02:27.807924610 +0000
-@@ -148,6 +148,12 @@
-   . ${sysconfdir}/default/grub
+diff -Naur grub-2.04/util/grub-mkconfig.in grub-2.04.tpg/util/grub-mkconfig.in
+--- grub-2.04/util/grub-mkconfig.in	2020-06-25 13:15:14.950642033 +0000
++++ grub-2.04.tpg/util/grub-mkconfig.in	2020-06-25 13:12:05.459655200 +0000
+@@ -176,6 +176,12 @@
+   fi
  fi
  
 +if [ "x${GRUB_DISABLE_VENDOR_CONF}" = "x" ] || [ "x${GRUB_DISABLE_VENDOR_CONF}" = "xfalse" ]; then
@@ -14,11 +14,11 @@ diff -Naur grub-2.02-2014-10-8/util/grub-mkconfig.in grub-2.02-2014-10-8.tpg/uti
  # XXX: should this be deprecated at some point?
  if [ "x${GRUB_TERMINAL}" != "x" ] ; then
    GRUB_TERMINAL_INPUT="${GRUB_TERMINAL}"
-@@ -224,6 +230,7 @@
+@@ -256,6 +262,7 @@
+   GRUB_SAVEDEFAULT \
    GRUB_ENABLE_CRYPTODISK \
    GRUB_BADRAM \
-   GRUB_CMDLINE_LINUX_RECOVERY \
 +  GRUB_DISABLE_VENDOR_CONF \
    GRUB_OS_PROBER_SKIP_LIST \
-   GRUB_DISABLE_SUBMENU
- 
+   GRUB_DISABLE_SUBMENU \
+   GRUB_DEFAULT_DTB \
