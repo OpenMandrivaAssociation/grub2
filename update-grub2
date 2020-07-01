@@ -20,7 +20,7 @@ fi
 
 printf "Updating ${grub2dir}/locale..\n" >&2
 grubloc_list="$(ls ${datarootdir}/locale/*/*/grub.mo)"
-for grubloc in ${grubloc_list[@]} do
+for grubloc in ${grubloc_list[@]}; do
 
 ## weird stuff from grub2 script on update
     if [ -e "$grubloc" ]; then
