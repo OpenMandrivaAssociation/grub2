@@ -1,4 +1,6 @@
 %define libdir32 %{_exec_prefix}/lib
+# (tpg) disable LTO as grub2 is not designed to benefit from it
+%define _disable_lto 1
 
 %ifarch %{ix86} %{x86_64}
 %define platform pc
