@@ -55,6 +55,7 @@ Patch1:		grub2-00_header.patch
 Patch2:		grub2-custom-color.patch
 Patch3:		grub2-read-cfg.patch
 Patch4:		grub2-symlink-is-garbage.patch
+Patch5:		grub-2.04-workaround-llvm-bug-48528.patch
 Patch6:		grub-2.02-fuse3.patch
 # (crazy) replaces:
 # grub-2.00.Linux.remove.patch

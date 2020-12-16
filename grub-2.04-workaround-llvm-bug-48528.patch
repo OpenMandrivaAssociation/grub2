@@ -1,0 +1,13 @@
+diff -up grub-2.04/configure.ac.omv~ grub-2.04/configure.ac
+--- grub-2.04/configure.ac.omv~	2020-12-16 01:42:05.447399450 +0100
++++ grub-2.04/configure.ac	2020-12-16 01:43:26.876917025 +0100
+@@ -854,8 +854,7 @@ if test x"$platform" != xemu ; then
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
+ 		         [grub_cv_target_cc_soft_float="-mno-inline-float-divide -mno-inline-sqrt"], [])
+     fi
+-    for cand in "-msoft-float -Xclang -msoft-float -Xclang -no-implicit-float" \
+-		"-Xclang -msoft-float -Xclang -no-implicit-float" \
++    for cand in "-msoft-float -Xclang -no-implicit-float" \
+ 		"-Xclang -msoft-float" "-msoft-float"; do
+       if test x"$grub_cv_target_cc_soft_float" != xno ; then
+         break
