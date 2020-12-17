@@ -1,0 +1,49 @@
+From 59c8e9fb533536739098498b11fe33635845b4ca Mon Sep 17 00:00:00 2001
+From: Daniel Axtens <dja@axtens.net>
+Date: Mon, 20 Jul 2020 17:07:49 +1000
+Subject: [PATCH] lzma: Fix compilation error under clang 10
+
+Compiling under clang 10 gives:
+
+grub-core/lib/LzmaEnc.c:1362:9: error: misleading indentation; statement is not part of the previous 'if' [-Werror,-Wmisleading-indentation]
+        {
+        ^
+grub-core/lib/LzmaEnc.c:1358:7: note: previous statement is here
+      if (repIndex == 0)
+      ^
+1 error generated.
+
+It's not really that unclear in context: there's a commented-out
+if-statement. But tweak the alignment anyway so that clang is happy.
+
+Signed-off-by: Daniel Axtens <dja@axtens.net>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/lib/LzmaEnc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/grub-core/lib/LzmaEnc.c b/grub-core/lib/LzmaEnc.c
+index 753e56a95..52b331558 100644
+--- a/grub-core/lib/LzmaEnc.c
++++ b/grub-core/lib/LzmaEnc.c
+@@ -1359,7 +1359,7 @@ static UInt32 GetOptimum(CLzmaEnc *p, UInt32 position, UInt32 *backRes)
+         startLen = lenTest + 1;
+ 
+       /* if (_maxMode) */
+-        {
++      {
+           UInt32 lenTest2 = lenTest + 1;
+           UInt32 limit = lenTest2 + p->numFastBytes;
+           UInt32 nextRepMatchPrice;
+@@ -1403,7 +1403,7 @@ static UInt32 GetOptimum(CLzmaEnc *p, UInt32 position, UInt32 *backRes)
+               }
+             }
+           }
+-        }
++      }
+     }
+     }
+     /* for (UInt32 lenTest = 2; lenTest <= newLen; lenTest++) */
+-- 
+2.29.2
+

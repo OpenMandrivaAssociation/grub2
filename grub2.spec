@@ -24,7 +24,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.04
-Release:	6
+Release:	7
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -92,6 +92,19 @@ Patch102:	grub2-2.04-fix-grub-install-locale-copy.patch
 # Patches from Unity
 Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 
+# Patches from upstream
+Patch1000:	0000-probe-Support-probing-for-partition-UUID-with-part-u.patch
+Patch1001:	0001-probe-Support-probing-for-msdos-PARTUUID.patch
+Patch1002:	0002-include-grub-i386-linux.h-Include-missing-grub-types.patch
+Patch1003:	0003-lzma-Fix-compilation-error-under-clang-10.patch
+Patch1004:	0004-crypto-Remove-GPG_ERROR_CFLAGS-from-gpg_err_code_t-e.patch
+Patch1005:	0005-safemath-Add-some-arithmetic-primitives-that-check-f.patch
+Patch1006:	0006-configure-Drop-unneeded-TARGET_CFLAGS-expansion.patch
+Patch1007:	0007-configure-Set-gnu99-C-language-standard-by-default.patch
+Patch1008:	0008-mdraid1x_linux-Fix-gcc10-error-Werror-array-bounds.patch
+Patch1009:	0009-build-Fix-GRUB-i386-pc-build-with-Ubuntu-gcc.patch
+Patch1010:	0010-build-Fix-option-to-explicitly-disable-memory-debugg.patch
+Patch1011:	0011-Makefile-Make-libgrub.pp-depend-on-config-util.h.patch
 BuildRequires:	efi-srpm-macros
 BuildRequires:	autogen
 BuildRequires:	bison
@@ -132,8 +145,8 @@ Suggests:	%{name}-extra >= %{EVRD}
 %ifarch %{efi}
 # (tpg) this is needed for grub2-install
 Requires:	efibootmgr
-%endif
 Requires:	efi-filesystem
+%endif
 
 %description
 GNU GRUB is a Multiboot boot loader. It was derived from GRUB, the
@@ -198,7 +211,7 @@ Documentation for GRUB.
 
 %ifarch %{arm} %{armx}
 %global optflags %{optflags} -fuse-ld=bfd
-%global ldflags %{ldflags} -fuse-ld=bfd
+%global build_ldflags %{build_ldflags} -fuse-ld=bfd
 %endif
 
 %prep

@@ -1,0 +1,28 @@
+From 2df291226638261d50fadcab1f5edb6c12ab6cfd Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Fri, 31 Jul 2020 09:33:23 -0500
+Subject: [PATCH] crypto: Remove GPG_ERROR_CFLAGS from gpg_err_code_t enum
+
+This was probably added by accident when originally creating the file.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ include/grub/crypto.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/include/grub/crypto.h b/include/grub/crypto.h
+index a24e89dd9..21cd1f75a 100644
+--- a/include/grub/crypto.h
++++ b/include/grub/crypto.h
+@@ -56,7 +56,6 @@ typedef enum
+     GPG_ERR_NOT_FOUND,
+     GPG_ERR_NOT_IMPLEMENTED,
+     GPG_ERR_NOT_SUPPORTED,
+-    GPG_ERROR_CFLAGS,
+     GPG_ERR_PUBKEY_ALGO,
+     GPG_ERR_SELFTEST_FAILED,
+     GPG_ERR_TOO_SHORT,
+-- 
+2.29.2
+
