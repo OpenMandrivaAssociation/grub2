@@ -6,5 +6,3 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg
-printf '%s\n' "Installing GRUB."
-/usr/sbin/grub2-install

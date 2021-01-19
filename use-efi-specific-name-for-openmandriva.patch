@@ -16,11 +16,11 @@ diff -Naur grub-2.04/grub-core/osdep/unix/platform.c grub-2.04.tpg/grub-core/osd
 +  /* Set up default name for OpenMandriva distribution */
 +  if (strcmp(efi_distributor, "openmandriva") == 0)
 +    {
-+      ret_old = grub_install_remove_efi_entries_by_distributor (efi_distributor);
-+      if (ret_old)
-+        return ret_old;
++      ret = grub_install_remove_efi_entries_by_distributor (efi_distributor);
++      if (ret)
++        return ret;
 +
-+      efi_distributor = "OpenMandriva Lx [GRUB]"
++      efi_distributor = "OpenMandriva Lx [GRUB]";
 +    }
 +
    char *efidir_part_str = xasprintf ("%d", efidir_part);

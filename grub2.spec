@@ -453,8 +453,6 @@ os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 %transfiletriggerpostun -p <lua> -- /boot/ /boot/grub2/themes/
 os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 
-#-----------------------------------------------------------------------
-
 %files  -f grub.lang
 %{libdir32}/grub/*-%{platform}
 %ifnarch %{aarch64}
