@@ -1,9 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
-
-if [ $EUID != 0 ]; then
-    printf "%s\n" "$0: Need root to run"
+if [ "$(id -u)" != "0" ]; then
+    printf '%s\n' "$0: Need root to run"
     exit 1
 fi
 
 /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg
+printf '%s\n' "Installing GRUB."
+/usr/sbin/grub2-install

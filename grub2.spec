@@ -24,7 +24,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.04
-Release:	7
+Release:	8
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -79,6 +79,8 @@ Patch16:	grub-2.02-define-abort.patch
 Patch17:	grub-2.04-grub-extras-lua-fix.patch
 # Show clang kernels after gcc kernels
 Patch18:	grub2-clang-kernels-last.patch
+# (tpg) use specific EFI entry name if bootloader-id is empty
+Patch19:	use-efi-specific-name-for-openmandriva.patch
 
 # (crazy) these are 2 BAD patches , FIXME after Lx4
 # Patch7 prepares remove for that ( partially )
@@ -105,6 +107,7 @@ Patch1008:	0008-mdraid1x_linux-Fix-gcc10-error-Werror-array-bounds.patch
 Patch1009:	0009-build-Fix-GRUB-i386-pc-build-with-Ubuntu-gcc.patch
 Patch1010:	0010-build-Fix-option-to-explicitly-disable-memory-debugg.patch
 Patch1011:	0011-Makefile-Make-libgrub.pp-depend-on-config-util.h.patch
+
 BuildRequires:	efi-srpm-macros
 BuildRequires:	autogen
 BuildRequires:	bison
@@ -444,13 +447,11 @@ if [ -e %{_sysconfdir}/default/grub ]; then
     %{_sbindir}/update-grub2
 fi
 
-
 %transfiletriggerin -p <lua> -- /boot/ /boot/grub2/themes/
 os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 
 %transfiletriggerpostun -p <lua> -- /boot/ /boot/grub2/themes/
 os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
-
 
 #-----------------------------------------------------------------------
 

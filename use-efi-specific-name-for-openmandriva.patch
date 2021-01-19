@@ -1,0 +1,28 @@
+This patch is about to set default EFI bootentry name to
+'OpenMandriva Lx [GRUB]' for cases when bootloader-id is
+discovered as 'openmandriva' based on GRUB_DISTRUBUTOR
+config entry.
+
+Make sure EFI entry with 'openmandriva' is removed
+from system and replaced with new entry.
+
+diff -Naur grub-2.04/grub-core/osdep/unix/platform.c grub-2.04.tpg/grub-core/osdep/unix/platform.c
+--- grub-2.04/grub-core/osdep/unix/platform.c	2018-11-24 17:13:02.000000000 +0000
++++ grub-2.04.tpg/grub-core/osdep/unix/platform.c	2021-01-19 18:23:53.797291618 +0000
+@@ -158,6 +158,16 @@
+   if (ret)
+     return ret;
+ 
++  /* Set up default name for OpenMandriva distribution */
++  if (strcmp(efi_distributor, "openmandriva") == 0)
++    {
++      ret_old = grub_install_remove_efi_entries_by_distributor (efi_distributor);
++      if (ret_old)
++        return ret_old;
++
++      efi_distributor = "OpenMandriva Lx [GRUB]"
++    }
++
+   char *efidir_part_str = xasprintf ("%d", efidir_part);
+ 
+   if (!verbosity)
