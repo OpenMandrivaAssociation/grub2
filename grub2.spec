@@ -404,22 +404,6 @@ rm -f %{buildroot}%{_sbindir}/%{name}-ofpathname
 
 %find_lang grub
 
-%post
-exec >/dev/null 2>&1
-
-# Do not install grub2 if running in a chroot
-# http://stackoverflow.com/questions/75182/detecting-a-chroot-jail-from-within
-if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
-# Determine the partition with /boot
-    BOOT_PARTITION=$(df -h /boot |(read; awk '{print $1; exit}'|sed 's/[[:digit:]]*$//'))
-# (Re-)Generate core.img, but don't let it be installed in boot sector
-    %{_sbindir}/%{name}-install $BOOT_PARTITION
-# Generate grub.cfg and add GRUB2 chainloader to menu on initial install
-    if [ $1 = 1 ]; then
-	%{_sbindir}/update-grub2
-    fi
-fi
-
 %triggerin -- %{name} < %{EVRD}
 # (tpg) run only on update
 # (tpg) remove wrong line in boot options
@@ -467,16 +451,6 @@ os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 %transfiletriggerpostun -p <lua> -- /boot/ /boot/grub2/themes/
 os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 
-%preun
-exec >/dev/null
-if [ $1 = 0 ]; then
-# XXX Ugly
-    rm -f /boot/%{name}/*.mod ||:
-    rm -f /boot/%{name}/*.img ||:
-    rm -f /boot/%{name}/*.lst ||:
-    rm -f /boot/%{name}/*.o ||:
-    rm -f /boot/%{name}/device.map ||:
-fi
 
 #-----------------------------------------------------------------------
 
