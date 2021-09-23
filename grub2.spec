@@ -14,7 +14,6 @@
 %define platform efi
 %endif
 
-%define debug_package %{nil}
 %define snapshot %{nil}
 
 Summary:	GNU GRUB is a Multiboot boot loader
@@ -450,7 +449,6 @@ os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 
 %transfiletriggerpostun -p <lua> -- /boot/ /boot/grub2/themes/
 os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
-
 
 #-----------------------------------------------------------------------
 
