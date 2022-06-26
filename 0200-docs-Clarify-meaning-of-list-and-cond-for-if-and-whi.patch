@@ -1,0 +1,53 @@
+From f5e92d9fb4c0d754bc9c0b807300155d0d50a611 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Tue, 12 Apr 2022 16:56:19 +0000
+Subject: [PATCH 200/261] docs: Clarify meaning of "list" and "cond" for "if"
+ and "while" commands respectively
+
+It is not clear from the documentation what a "list" is in the context
+of the "if" command. Note that its a list of simple commands separated
+by a ";" and that only the exit status of the last command matters.
+The same is true for the "cond" parameter to the "while" command.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ docs/grub.texi | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/docs/grub.texi b/docs/grub.texi
+index 93f2d311e..ffda5d22f 100644
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -1781,18 +1781,20 @@ of the last command that executes.  If the expansion of the items following
+ status is 0.
+ 
+ @item if @var{list}; then @var{list}; [elif @var{list}; then @var{list};] @dots{} [else @var{list};] fi
+-The @code{if} @var{list} is executed.  If its exit status is zero, the
+-@code{then} @var{list} is executed.  Otherwise, each @code{elif} @var{list}
+-is executed in turn, and if its exit status is zero, the corresponding
+-@code{then} @var{list} is executed and the command completes.  Otherwise,
+-the @code{else} @var{list} is executed, if present.  The exit status is the
+-exit status of the last command executed, or zero if no condition tested
+-true.
++The @code{if} @var{list} is executed, where @var{list} is a series of
++@dfn{simple command}s separated by a ";".  If its exit status of the last
++command is zero, the @code{then} @var{list} is executed.  Otherwise, each
++@code{elif} @var{list} is executed in turn, and if its last command's exit
++status is zero, the corresponding @code{then} @var{list} is executed and the
++command completes. Otherwise, the @code{else} @var{list} is executed, if
++present.  The exit status is the exit status of the last command executed, or
++zero if no condition tested true.
+ 
+ @item while @var{cond}; do @var{list}; done
+ @itemx until @var{cond}; do @var{list}; done
+ The @code{while} command continuously executes the @code{do} @var{list} as
+-long as the last command in @var{cond} returns an exit status of zero.  The
++long as the last command in @var{cond} returns an exit status of zero, where
++@var{cond} is a list of @dfn{simple command}s separated by a ";".  The
+ @code{until} command is identical to the @code{while} command, except that
+ the test is negated; the @code{do} @var{list} is executed as long as the
+ last command in @var{cond} returns a non-zero exit status.  The exit status
+-- 
+2.36.1
+

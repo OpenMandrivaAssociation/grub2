@@ -1,0 +1,484 @@
+From a21618c8a92169fa163765b53a0363801481ca34 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Thu, 14 Oct 2021 15:58:07 -0500
+Subject: [PATCH 054/261] tests: Test aborts due to missing requirements should
+ be marked as error instead of skipped
+
+Many tests abort due to not being root or missing tools, for instance mkfs
+commands for file system tests. The tests are exited with code 77, which
+means they were skipped. A skipped test is a test that should not be run,
+e.g. a test specific to ARM64 should not be run on an x86 build. These aborts
+are actually a hard error, code 99. That means that the test could not be
+completed, but not because what was supposed to be tested failed, e.g. in
+these cases where a missing tool prevents the running of a test.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/btrfs_test.in       | 4 ++--
+ tests/cpio_test.in        | 2 +-
+ tests/exfat_test.in       | 4 ++--
+ tests/ext234_test.in      | 8 ++++----
+ tests/f2fs_test.in        | 4 ++--
+ tests/fat_test.in         | 4 ++--
+ tests/gzcompress_test.in  | 2 +-
+ tests/hfs_test.in         | 6 +++---
+ tests/hfsplus_test.in     | 4 ++--
+ tests/iso9660_test.in     | 2 +-
+ tests/jfs_test.in         | 4 ++--
+ tests/lzocompress_test.in | 2 +-
+ tests/minixfs_test.in     | 8 ++++----
+ tests/nilfs2_test.in      | 4 ++--
+ tests/ntfs_test.in        | 6 +++---
+ tests/partmap_test.in     | 2 +-
+ tests/reiserfs_test.in    | 4 ++--
+ tests/romfs_test.in       | 2 +-
+ tests/squashfs_test.in    | 2 +-
+ tests/tar_test.in         | 2 +-
+ tests/udf_test.in         | 4 ++--
+ tests/xfs_test.in         | 4 ++--
+ tests/xzcompress_test.in  | 2 +-
+ tests/zfs_test.in         | 4 ++--
+ 24 files changed, 45 insertions(+), 45 deletions(-)
+
+diff --git a/tests/btrfs_test.in b/tests/btrfs_test.in
+index 0c9bf3a68..0d098c9a2 100644
+--- a/tests/btrfs_test.in
++++ b/tests/btrfs_test.in
+@@ -7,12 +7,12 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.btrfs >/dev/null 2>&1; then
+    echo "mkfs.btrfs not installed; cannot test btrfs."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" btrfs
+diff --git a/tests/cpio_test.in b/tests/cpio_test.in
+index 5742cf17b..e2e668cf6 100644
+--- a/tests/cpio_test.in
++++ b/tests/cpio_test.in
+@@ -4,7 +4,7 @@ set -e
+ 
+ if ! which cpio >/dev/null 2>&1; then
+    echo "cpio not installed; cannot test cpio."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" cpio_bin
+diff --git a/tests/exfat_test.in b/tests/exfat_test.in
+index cd3cd4cb2..7939f25d2 100644
+--- a/tests/exfat_test.in
++++ b/tests/exfat_test.in
+@@ -7,12 +7,12 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.exfat >/dev/null 2>&1; then
+    echo "mkfs.exfat not installed; cannot test exFAT."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" exfat
+diff --git a/tests/ext234_test.in b/tests/ext234_test.in
+index 4f1eb527e..4df696710 100644
+--- a/tests/ext234_test.in
++++ b/tests/ext234_test.in
+@@ -7,22 +7,22 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.ext2 >/dev/null 2>&1; then
+    echo "mkfs.ext2 not installed; cannot test ext2."
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.ext3 >/dev/null 2>&1; then
+    echo "mkfs.ext3 not installed; cannot test ext3."
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.ext4 >/dev/null 2>&1; then
+    echo "mkfs.ext4 not installed; cannot test ext4."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" ext2_old
+diff --git a/tests/f2fs_test.in b/tests/f2fs_test.in
+index 8c415db61..85f8cc8bc 100644
+--- a/tests/f2fs_test.in
++++ b/tests/f2fs_test.in
+@@ -7,12 +7,12 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+- exit 77
++ exit 99
+ fi
+ 
+ if ! which mkfs.f2fs >/dev/null 2>&1; then
+  echo "mkfs.f2fs not installed; cannot test f2fs."
+- exit 77
++ exit 99
+ fi
+ 
+ 
+diff --git a/tests/fat_test.in b/tests/fat_test.in
+index b6b4748ca..8a2b37c5c 100644
+--- a/tests/fat_test.in
++++ b/tests/fat_test.in
+@@ -7,12 +7,12 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.vfat >/dev/null 2>&1; then
+    echo "mkfs.vfat not installed; cannot test FAT."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" vfat16a
+diff --git a/tests/gzcompress_test.in b/tests/gzcompress_test.in
+index d7a594bb2..8e7e6a633 100644
+--- a/tests/gzcompress_test.in
++++ b/tests/gzcompress_test.in
+@@ -21,7 +21,7 @@ grubshell=@builddir@/grub-shell
+ 
+ if ! which gzip >/dev/null 2>&1; then
+    echo "gzip not installed; cannot test gzip compression."
+-   exit 77
++   exit 99
+ fi
+ 
+ v=$(echo hello | "${grubshell}" --mkrescue-arg=--compress=gz)
+diff --git a/tests/hfs_test.in b/tests/hfs_test.in
+index 5b0c5e33e..960f1cbd0 100644
+--- a/tests/hfs_test.in
++++ b/tests/hfs_test.in
+@@ -7,17 +7,17 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.hfs >/dev/null 2>&1; then
+    echo "mkfs.hfs not installed; cannot test HFS."
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! grep -q mac_roman /proc/modules && ! modprobe mac_roman; then
+    echo "no mac-roman support; cannot test HFS."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" hfs
+diff --git a/tests/hfsplus_test.in b/tests/hfsplus_test.in
+index 85f1c37dc..f727cf0e2 100644
+--- a/tests/hfsplus_test.in
++++ b/tests/hfsplus_test.in
+@@ -7,12 +7,12 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.hfsplus >/dev/null 2>&1; then
+    echo "mkfs.hfsplus not installed; cannot test hfsplus."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" hfsplus
+diff --git a/tests/iso9660_test.in b/tests/iso9660_test.in
+index 571b938d7..ed0a5bf8d 100644
+--- a/tests/iso9660_test.in
++++ b/tests/iso9660_test.in
+@@ -4,7 +4,7 @@ set -e
+ 
+ if ! which xorriso >/dev/null 2>&1; then
+    echo "xorriso not installed; cannot test iso9660."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" joliet
+diff --git a/tests/jfs_test.in b/tests/jfs_test.in
+index 6cf7576b3..d13780e23 100644
+--- a/tests/jfs_test.in
++++ b/tests/jfs_test.in
+@@ -7,12 +7,12 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.jfs >/dev/null 2>&1; then
+    echo "mkfs.jfs not installed; cannot test JFS."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" jfs
+diff --git a/tests/lzocompress_test.in b/tests/lzocompress_test.in
+index 42e270df0..915f74bd9 100644
+--- a/tests/lzocompress_test.in
++++ b/tests/lzocompress_test.in
+@@ -21,7 +21,7 @@ grubshell=@builddir@/grub-shell
+ 
+ if ! which lzop >/dev/null 2>&1; then
+    echo "lzop not installed; cannot test lzo compression."
+-   exit 77
++   exit 99
+ fi
+ 
+ v=$(echo hello | "${grubshell}" --mkrescue-arg=--compress=lzo)
+diff --git a/tests/minixfs_test.in b/tests/minixfs_test.in
+index 437d92df6..c62f56c8b 100644
+--- a/tests/minixfs_test.in
++++ b/tests/minixfs_test.in
+@@ -7,22 +7,22 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.minix >/dev/null 2>&1; then
+    echo "mkfs.minix not installed; cannot test minixfs."
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! mkfs.minix -h | grep -- -v > /dev/null; then
+     echo "mkfs.minix doesn't support minix2fs; cannot test minix*fs."
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! mkfs.minix -h | grep -- -3 > /dev/null; then
+     echo "mkfs.minix doesn't support minix3fs; cannot test minix*fs."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" minix
+diff --git a/tests/nilfs2_test.in b/tests/nilfs2_test.in
+index ad44d5b33..8cc93754c 100644
+--- a/tests/nilfs2_test.in
++++ b/tests/nilfs2_test.in
+@@ -7,12 +7,12 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.nilfs2 >/dev/null 2>&1; then
+    echo "mkfs.nilfs2 not installed; cannot test nilfs2."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" nilfs2
+diff --git a/tests/ntfs_test.in b/tests/ntfs_test.in
+index 9eb7b01f6..c2b08d27f 100644
+--- a/tests/ntfs_test.in
++++ b/tests/ntfs_test.in
+@@ -7,17 +7,17 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.ntfs >/dev/null 2>&1; then
+    echo "mkfs.ntfs not installed; cannot test ntfs."
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which setfattr >/dev/null 2>&1; then
+    echo "setfattr not installed; cannot test ntfs."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" ntfs
+diff --git a/tests/partmap_test.in b/tests/partmap_test.in
+index 0043bcf4c..bc2be78aa 100644
+--- a/tests/partmap_test.in
++++ b/tests/partmap_test.in
+@@ -98,7 +98,7 @@ esac
+ 
+ if ! which parted >/dev/null 2>&1; then
+    echo "parted not installed; cannot test partmap"
+-   exit 77
++   exit 99
+ fi
+ 
+ imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+diff --git a/tests/reiserfs_test.in b/tests/reiserfs_test.in
+index 8ecfe740b..37226c01b 100644
+--- a/tests/reiserfs_test.in
++++ b/tests/reiserfs_test.in
+@@ -7,12 +7,12 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.reiserfs >/dev/null 2>&1; then
+    echo "mkfs.reiserfs not installed; cannot test reiserfs."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" reiserfs
+diff --git a/tests/romfs_test.in b/tests/romfs_test.in
+index 98bb50c32..f968e9b7d 100644
+--- a/tests/romfs_test.in
++++ b/tests/romfs_test.in
+@@ -4,7 +4,7 @@ set -e
+ 
+ if ! which genromfs >/dev/null 2>&1; then
+    echo "genromfs not installed; cannot test romfs."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" romfs
+diff --git a/tests/squashfs_test.in b/tests/squashfs_test.in
+index 2f044f95d..15e70218f 100644
+--- a/tests/squashfs_test.in
++++ b/tests/squashfs_test.in
+@@ -4,7 +4,7 @@ set -e
+ 
+ if ! which mksquashfs >/dev/null 2>&1; then
+    echo "mksquashfs not installed; cannot test squashfs."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" squash4_gzip
+diff --git a/tests/tar_test.in b/tests/tar_test.in
+index 6e2f2de8b..97944b243 100644
+--- a/tests/tar_test.in
++++ b/tests/tar_test.in
+@@ -4,7 +4,7 @@ set -e
+ 
+ if ! which tar >/dev/null 2>&1; then
+    echo "tar not installed; cannot test tar."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" tarfs
+diff --git a/tests/udf_test.in b/tests/udf_test.in
+index fb92f0173..302b28ab2 100644
+--- a/tests/udf_test.in
++++ b/tests/udf_test.in
+@@ -7,12 +7,12 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkudffs >/dev/null 2>&1; then
+    echo "mkudffs not installed; cannot test UDF."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" udf
+diff --git a/tests/xfs_test.in b/tests/xfs_test.in
+index 03a351359..5e029c182 100644
+--- a/tests/xfs_test.in
++++ b/tests/xfs_test.in
+@@ -7,12 +7,12 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which mkfs.xfs >/dev/null 2>&1; then
+    echo "mkfs.xfs not installed; cannot test xfs."
+-   exit 77
++   exit 99
+ fi
+ 
+ 
+diff --git a/tests/xzcompress_test.in b/tests/xzcompress_test.in
+index cfc6ccba6..6ef73e41e 100644
+--- a/tests/xzcompress_test.in
++++ b/tests/xzcompress_test.in
+@@ -21,7 +21,7 @@ grubshell=@builddir@/grub-shell
+ 
+ if ! which xz >/dev/null 2>&1; then
+    echo "xz not installed; cannot test xz compression."
+-   exit 77
++   exit 99
+ fi
+ 
+ v=$(echo hello | "${grubshell}" --mkrescue-arg=--compress=xz)
+diff --git a/tests/zfs_test.in b/tests/zfs_test.in
+index eee62c10d..58cc25b22 100644
+--- a/tests/zfs_test.in
++++ b/tests/zfs_test.in
+@@ -7,12 +7,12 @@ if [ "x$EUID" = "x" ] ; then
+ fi
+ 
+ if [ "$EUID" != 0 ] ; then
+-   exit 77
++   exit 99
+ fi
+ 
+ if ! which zpool >/dev/null 2>&1; then
+    echo "zpool not installed; cannot test zfs."
+-   exit 77
++   exit 99
+ fi
+ 
+ "@builddir@/grub-fs-tester" zfs
+-- 
+2.36.1
+

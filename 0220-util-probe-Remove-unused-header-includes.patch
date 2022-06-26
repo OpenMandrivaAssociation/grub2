@@ -1,0 +1,27 @@
+From 6c04aa85b9eac59b797e51a66aed26f4ad852f7c Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Wed, 11 May 2022 22:19:47 -0500
+Subject: [PATCH 220/261] util/probe: Remove unused header includes
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ util/probe.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/util/probe.c b/util/probe.c
+index 05a6d1462..81d91cf59 100644
+--- a/util/probe.c
++++ b/util/probe.c
+@@ -36,8 +36,6 @@
+ #include <grub/i18n.h>
+ #include <grub/emu/misc.h>
+ #include <grub/util/ofpath.h>
+-#include <grub/crypto.h>
+-#include <grub/cryptodisk.h>
+ 
+ #include <string.h>
+ 
+-- 
+2.36.1
+

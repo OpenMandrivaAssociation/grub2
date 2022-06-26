@@ -1,0 +1,231 @@
+From 9bbcfb71ce497c2f72603b10fff399e0f9b28d8b Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Tue, 12 Oct 2021 19:39:58 -0500
+Subject: [PATCH 036/261] tests: Do not occlude subshell error codes when used
+ as input to the test command
+
+When using the output of a subshell as input, its error code is ignored in
+the context of "set -e". Many test scripts use grub-shell in a subshell with
+output used as an argument to the test command to test for expected output.
+Refactor these tests so that the subshell output goes to a shell variable,
+so that if the subshell errors the script will immediately exit with an
+error code.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/ahci_test.in          | 7 ++++++-
+ tests/cdboot_test.in        | 3 ++-
+ tests/core_compress_test.in | 6 ++++--
+ tests/ehci_test.in          | 7 ++++++-
+ tests/fddboot_test.in       | 3 ++-
+ tests/gzcompress_test.in    | 3 ++-
+ tests/hddboot_test.in       | 3 ++-
+ tests/lzocompress_test.in   | 3 ++-
+ tests/netboot_test.in       | 3 ++-
+ tests/ohci_test.in          | 7 ++++++-
+ tests/pata_test.in          | 3 ++-
+ tests/uhci_test.in          | 7 ++++++-
+ tests/xzcompress_test.in    | 3 ++-
+ 13 files changed, 44 insertions(+), 14 deletions(-)
+
+diff --git a/tests/ahci_test.in b/tests/ahci_test.in
+index d844fe680..56760326a 100644
+--- a/tests/ahci_test.in
++++ b/tests/ahci_test.in
+@@ -41,7 +41,12 @@ echo "hello" > "$outfile"
+ 
+ tar cf "$imgfile" "$outfile"
+ 
+-if [ "$(echo "nativedisk; source '(ahci0)/$outfile';" | "${grubshell}" --qemu-opts="-drive id=disk,file=$imgfile,if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0 " | tail -n 1)" != "Hello World" ]; then
++v=$(echo "nativedisk; source '(ahci0)/$outfile';" |
++    "${grubshell}" --qemu-opts="-drive id=disk,file=$imgfile,if=none
++				-device ahci,id=ahci
++				-device ide-hd,drive=disk,bus=ahci.0" |
++    tail -n 1)
++if [ "$v" != "Hello World" ]; then
+    rm "$imgfile"
+    rm "$outfile"
+    exit 1
+diff --git a/tests/cdboot_test.in b/tests/cdboot_test.in
+index 75acdfedb..bf9549a6b 100644
+--- a/tests/cdboot_test.in
++++ b/tests/cdboot_test.in
+@@ -34,6 +34,7 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ 	exit 0;;
+ esac
+ 
+-if [ "$(echo hello | "${grubshell}" --boot=cd)" != "Hello World" ]; then
++v=$(echo hello | "${grubshell}" --boot=cd)
++if [ "$v" != "Hello World" ]; then
+    exit 1
+ fi
+diff --git a/tests/core_compress_test.in b/tests/core_compress_test.in
+index 9d216ebcf..52708fd83 100644
+--- a/tests/core_compress_test.in
++++ b/tests/core_compress_test.in
+@@ -27,10 +27,12 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ esac
+ 
+ 
+-if [ "$(echo hello | "${grubshell}" --grub-mkimage-extra=--compress=xz)" != "Hello World" ]; then
++v=$(echo hello | "${grubshell}" --grub-mkimage-extra=--compress=xz)
++if [ "$v" != "Hello World" ]; then
+    exit 1
+ fi
+ 
+-if [ "$(echo hello | "${grubshell}" --grub-mkimage-extra=--compress=none)" != "Hello World" ]; then
++v=$(echo hello | "${grubshell}" --grub-mkimage-extra=--compress=none)
++if [ "$v" != "Hello World" ]; then
+    exit 1
+ fi
+diff --git a/tests/ehci_test.in b/tests/ehci_test.in
+index b197f8cdc..c368c59ec 100644
+--- a/tests/ehci_test.in
++++ b/tests/ehci_test.in
+@@ -41,7 +41,12 @@ echo "hello" > "$outfile"
+ 
+ tar cf "$imgfile" "$outfile"
+ 
+-if [ "$(echo "nativedisk; source '(usb0)/$outfile';" | "${grubshell}" --qemu-opts="-device ich9-usb-ehci1 -drive id=my_usb_disk,file=$imgfile,if=none -device usb-storage,drive=my_usb_disk" | tail -n 1)" != "Hello World" ]; then
++v=$(echo "nativedisk; source '(usb0)/$outfile';" |
++    "${grubshell}" --qemu-opts="-device ich9-usb-ehci1
++				-drive id=my_usb_disk,file=$imgfile,if=none
++				-device usb-storage,drive=my_usb_disk" |
++    tail -n 1)
++if [ "$v" != "Hello World" ]; then
+    rm "$imgfile"
+    rm "$outfile"
+    exit 1
+diff --git a/tests/fddboot_test.in b/tests/fddboot_test.in
+index 2d7dfc889..32281c75f 100644
+--- a/tests/fddboot_test.in
++++ b/tests/fddboot_test.in
+@@ -46,6 +46,7 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ 	exit 0;;
+ esac
+ 
+-if [ "$(echo hello | "${grubshell}" --boot=fd --mkrescue-arg="--compress=xz --fonts= --locales= --themes= -no-pad")" != "Hello World" ]; then
++v=$(echo hello | "${grubshell}" --boot=fd --mkrescue-arg="--compress=xz --fonts= --locales= --themes= -no-pad")
++if [ "$v" != "Hello World" ]; then
+    exit 1
+ fi
+diff --git a/tests/gzcompress_test.in b/tests/gzcompress_test.in
+index 42c8fe7c4..d7a594bb2 100644
+--- a/tests/gzcompress_test.in
++++ b/tests/gzcompress_test.in
+@@ -24,6 +24,7 @@ if ! which gzip >/dev/null 2>&1; then
+    exit 77
+ fi
+ 
+-if [ "$(echo hello | "${grubshell}" --mkrescue-arg=--compress=gz)" != "Hello World" ]; then
++v=$(echo hello | "${grubshell}" --mkrescue-arg=--compress=gz)
++if [ "$v" != "Hello World" ]; then
+    exit 1
+ fi
+diff --git a/tests/hddboot_test.in b/tests/hddboot_test.in
+index 6d70847a5..ded2cde7b 100644
+--- a/tests/hddboot_test.in
++++ b/tests/hddboot_test.in
+@@ -31,7 +31,8 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ 	exit 0;;
+ esac
+ 
+-if [ "$(echo hello | "${grubshell}" --boot=hd)" != "Hello World" ]; then
++v=$(echo hello | "${grubshell}" --boot=hd)
++if [ "$v" != "Hello World" ]; then
+    exit 1
+ fi
+ 
+diff --git a/tests/lzocompress_test.in b/tests/lzocompress_test.in
+index 4e5f7e078..42e270df0 100644
+--- a/tests/lzocompress_test.in
++++ b/tests/lzocompress_test.in
+@@ -24,6 +24,7 @@ if ! which lzop >/dev/null 2>&1; then
+    exit 77
+ fi
+ 
+-if [ "$(echo hello | "${grubshell}" --mkrescue-arg=--compress=lzo)" != "Hello World" ]; then
++v=$(echo hello | "${grubshell}" --mkrescue-arg=--compress=lzo)
++if [ "$v" != "Hello World" ]; then
+    exit 1
+ fi
+diff --git a/tests/netboot_test.in b/tests/netboot_test.in
+index 9f71e3d88..b274f3e2d 100644
+--- a/tests/netboot_test.in
++++ b/tests/netboot_test.in
+@@ -40,6 +40,7 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ 	exit 0;;
+ esac
+ 
+-if [ "$(echo hello | "${grubshell}" --boot=net)" != "Hello World" ]; then
++v=$(echo hello | "${grubshell}" --boot=net)
++if [ "$v" != "Hello World" ]; then
+    exit 1
+ fi
+diff --git a/tests/ohci_test.in b/tests/ohci_test.in
+index 8693f8c47..45949fb4c 100644
+--- a/tests/ohci_test.in
++++ b/tests/ohci_test.in
+@@ -41,7 +41,12 @@ echo "hello" > "$outfile"
+ 
+ tar cf "$imgfile" "$outfile"
+ 
+-if [ "$(echo "nativedisk; source '(usb0)/$outfile';" | "${grubshell}" --qemu-opts="-device pci-ohci -drive id=my_usb_disk,file=$imgfile,if=none -device usb-storage,drive=my_usb_disk" | tail -n 1)" != "Hello World" ]; then
++v=$(echo "nativedisk; source '(usb0)/$outfile';" |
++    "${grubshell}" --qemu-opts="-device pci-ohci
++				-drive id=my_usb_disk,file=$imgfile,if=none
++				-device usb-storage,drive=my_usb_disk" |
++    tail -n 1)
++if [ "$v" != "Hello World" ]; then
+    rm "$imgfile"
+    rm "$outfile"
+    exit 1
+diff --git a/tests/pata_test.in b/tests/pata_test.in
+index 4b18fdef3..38dff74a8 100644
+--- a/tests/pata_test.in
++++ b/tests/pata_test.in
+@@ -45,7 +45,8 @@ echo "hello" > "$outfile"
+ 
+ tar cf "$imgfile" "$outfile"
+ 
+-if [ "$(echo "nativedisk; source '($indisk)/$outfile';" | "${grubshell}" --qemu-opts="-$disk $imgfile")" != "Hello World" ]; then
++v=$(echo "nativedisk; source '($indisk)/$outfile';" | "${grubshell}" --qemu-opts="-$disk $imgfile")
++if [ "$v" != "Hello World" ]; then
+    rm "$imgfile"
+    rm "$outfile"
+    exit 1
+diff --git a/tests/uhci_test.in b/tests/uhci_test.in
+index f0eec5032..5a3b94c65 100644
+--- a/tests/uhci_test.in
++++ b/tests/uhci_test.in
+@@ -41,7 +41,12 @@ echo "hello" > "$outfile"
+ 
+ tar cf "$imgfile" "$outfile"
+ 
+-if [ "$(echo "nativedisk; source '(usb0)/$outfile';" | "${grubshell}" --qemu-opts="-device ich9-usb-uhci1 -drive id=my_usb_disk,file=$imgfile,if=none -device usb-storage,drive=my_usb_disk" | tail -n 1)" != "Hello World" ]; then
++v=$(echo "nativedisk; source '(usb0)/$outfile';" |
++    "${grubshell}" --qemu-opts="-device ich9-usb-uhci1
++				-drive id=my_usb_disk,file=$imgfile,if=none
++				-device usb-storage,drive=my_usb_disk" |
++    tail -n 1)
++if [ "$v" != "Hello World" ]; then
+    rm "$imgfile"
+    rm "$outfile"
+    exit 1
+diff --git a/tests/xzcompress_test.in b/tests/xzcompress_test.in
+index 03bfb5e95..cfc6ccba6 100644
+--- a/tests/xzcompress_test.in
++++ b/tests/xzcompress_test.in
+@@ -24,6 +24,7 @@ if ! which xz >/dev/null 2>&1; then
+    exit 77
+ fi
+ 
+-if [ "$(echo hello | "${grubshell}" --mkrescue-arg=--compress=xz)" != "Hello World" ]; then
++v=$(echo hello | "${grubshell}" --mkrescue-arg=--compress=xz)
++if [ "$v" != "Hello World" ]; then
+    exit 1
+ fi
+-- 
+2.36.1
+

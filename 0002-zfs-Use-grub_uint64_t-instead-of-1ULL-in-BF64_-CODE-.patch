@@ -1,0 +1,57 @@
+From 3ffd708dd56aebb937b8f09203f9fde8b6fc30c3 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Thu, 4 Mar 2021 18:22:45 -0600
+Subject: [PATCH 002/261] zfs: Use grub_uint64_t instead of 1ULL in
+ BF64_*CODE() macros
+
+The underlying type of 1ULL does not change across architectures but
+grub_uint64_t does. This allows using the BF64_*CODE() macros as
+arguments to format string functions that use the PRI* format string
+macros that also vary with architecture.
+
+Change the grub_error() call, where this was previously an issue and
+temporarily fixed by casting and using a format string literal code,
+to now use PRI* macros and remove casting.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/fs/zfs/zfs.c | 5 +++--
+ include/grub/zfs/spa.h | 4 ++--
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/grub-core/fs/zfs/zfs.c b/grub-core/fs/zfs/zfs.c
+index cf4d2ab18..44e4e1814 100644
+--- a/grub-core/fs/zfs/zfs.c
++++ b/grub-core/fs/zfs/zfs.c
+@@ -1869,8 +1869,9 @@ zio_read (blkptr_t *bp, grub_zfs_endian_t endian, void **buf,
+     {
+       if (BPE_GET_ETYPE(bp) != BP_EMBEDDED_TYPE_DATA)
+ 	return grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
+-			   "unsupported embedded BP (type=%llu)\n",
+-			   (long long unsigned int) BPE_GET_ETYPE(bp));
++			   "unsupported embedded BP (type=%"
++			   PRIuGRUB_UINT64_T ")\n",
++			   BPE_GET_ETYPE (bp));
+       lsize = BPE_GET_LSIZE(bp);
+       psize = BF64_GET_SB(grub_zfs_to_cpu64 ((bp)->blk_prop, endian), 25, 7, 0, 1);
+     }
+diff --git a/include/grub/zfs/spa.h b/include/grub/zfs/spa.h
+index 8dd1fa8e3..5afbe4ecd 100644
+--- a/include/grub/zfs/spa.h
++++ b/include/grub/zfs/spa.h
+@@ -44,9 +44,9 @@
+  * General-purpose 32-bit and 64-bit bitfield encodings.
+  */
+ #define	BF32_DECODE(x, low, len)	P2PHASE((x) >> (low), 1U << (len))
+-#define	BF64_DECODE(x, low, len)	P2PHASE((x) >> (low), 1ULL << (len))
++#define	BF64_DECODE(x, low, len)	P2PHASE((x) >> (low), ((grub_uint64_t) 1) << (len))
+ #define	BF32_ENCODE(x, low, len)	(P2PHASE((x), 1U << (len)) << (low))
+-#define	BF64_ENCODE(x, low, len)	(P2PHASE((x), 1ULL << (len)) << (low))
++#define	BF64_ENCODE(x, low, len)	(P2PHASE((x), ((grub_uint64_t) 1) << (len)) << (low))
+ 
+ #define	BF32_GET(x, low, len)		BF32_DECODE(x, low, len)
+ #define	BF64_GET(x, low, len)		BF64_DECODE(x, low, len)
+-- 
+2.36.1
+

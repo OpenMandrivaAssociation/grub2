@@ -1,0 +1,38 @@
+From ad019a107a17460620374b1fc29b78884153fdb8 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Wed, 11 May 2022 21:44:01 -0500
+Subject: [PATCH 209/261] net/net: Fix incorrect condition for calling
+ grub_net_tcp_retransmit()
+
+The commit 848724273e4 (net/net: Avoid unnecessary calls to
+grub_net_tcp_retransmit()) needs to have its condition inverted to avoid
+unnecessary calls to grub_net_tcp_retransmit(). As it is, it creates many
+unnecessary calls and does not call grub_net_tcp_retransmit() when needed.
+The call to grub_net_tcp_retransmit() should only be made when
+grub_net_cards does _not_ equal NULL, meaning that there are potentially
+network cards that need TCP retransmission.
+
+Fixes: 848724273e4 (net/net: Avoid unnecessary calls to grub_net_tcp_retransmit())
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/net/net.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/grub-core/net/net.c b/grub-core/net/net.c
+index 88ea49fee..2b6771523 100644
+--- a/grub-core/net/net.c
++++ b/grub-core/net/net.c
+@@ -1634,7 +1634,7 @@ grub_net_poll_cards_idle_real (void)
+ 	|| ctime >= card->last_poll + card->idle_poll_delay_ms)
+       receive_packets (card, 0);
+   }
+-  if (grub_net_cards == NULL)
++  if (grub_net_cards != NULL)
+     grub_net_tcp_retransmit ();
+ }
+ 
+-- 
+2.36.1
+

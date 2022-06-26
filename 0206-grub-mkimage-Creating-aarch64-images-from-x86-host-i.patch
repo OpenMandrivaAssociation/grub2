@@ -1,0 +1,50 @@
+From bda136e1bb1c29c8c969b708d2e2b9003f6ec16f Mon Sep 17 00:00:00 2001
+From: Darren Kenny <darren.kenny@oracle.com>
+Date: Wed, 27 Apr 2022 10:46:48 +0000
+Subject: [PATCH 206/261] grub-mkimage: Creating aarch64 images from x86 host
+ is broken
+
+A recent fix that made appears to have broken the ability to create an
+aarch64 boot image on a x86-based host.
+
+This was due to an overzealous testing of the architecture when building
+grub-mkimage and removing the code that build an ARM image when not built
+on ARM.
+
+On the occasion remove redundant break.
+
+Fixes: 8541f319 (grub-mkimage: Only check aarch64 relocations when built for aarch64)
+
+Signed-off-by: Darren Kenny <darren.kenny@oracle.com>
+Tested-by: Selva Ganesan <selvaganesan89@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ util/grub-mkimagexx.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/util/grub-mkimagexx.c b/util/grub-mkimagexx.c
+index 1e29e255e..a1927e786 100644
+--- a/util/grub-mkimagexx.c
++++ b/util/grub-mkimagexx.c
+@@ -1631,7 +1631,7 @@ translate_relocation_pe (struct translate_context *ctx,
+ 	}
+       break;
+     case EM_AARCH64:
+-#if defined(MKIMAGE_ELF64) && defined(__arm__)
++#if defined(MKIMAGE_ELF64)
+       switch (ELF_R_TYPE (info))
+ 	{
+ 	case R_AARCH64_ABS64:
+@@ -1667,8 +1667,7 @@ translate_relocation_pe (struct translate_context *ctx,
+ 			   (unsigned int) ELF_R_TYPE (info));
+ 	  break;
+ 	}
+-#endif /* defined(MKIMAGE_ELF64) && define(__arm__) */
+-      break;
++#endif /* defined(MKIMAGE_ELF64) */
+       break;
+ #if defined(MKIMAGE_ELF32)
+     case EM_ARM:
+-- 
+2.36.1
+

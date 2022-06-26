@@ -1,0 +1,41 @@
+From b0da8d3d35162de9f39ed667a85623632900faa3 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Fri, 18 Mar 2022 01:34:05 -0500
+Subject: [PATCH 170/261] gdb: Add malloc and free symbols to kernel.exec to
+ improve gdb functionality
+
+Add linker flags when linking kernel.exec to have malloc and free point to
+grub_malloc() and grub_free() respectively. Some gdb functionality depends on
+gdb locating the symbols "malloc" and "free", such as dynamically creating
+strings for arguments to injected function calls. A trivial example would
+the gdb command 'p strlen("astring")'. Make sure not to do this on emu
+platforms, or an infinite loop occurs because emu has a special
+grub_malloc() that calls malloc().
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ conf/Makefile.common | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/conf/Makefile.common b/conf/Makefile.common
+index b343a038e..2d8f1bf2e 100644
+--- a/conf/Makefile.common
++++ b/conf/Makefile.common
+@@ -39,6 +39,13 @@ LDFLAGS_KERNEL = $(LDFLAGS_PLATFORM) -nostdlib $(TARGET_LDFLAGS_OLDMAGIC)
+ CPPFLAGS_KERNEL = $(CPPFLAGS_CPU) $(CPPFLAGS_PLATFORM) -DGRUB_KERNEL=1
+ CCASFLAGS_KERNEL = $(CCASFLAGS_CPU) $(CCASFLAGS_PLATFORM)
+ STRIPFLAGS_KERNEL = -R .rel.dyn -R .reginfo -R .note -R .comment -R .drectve -R .note.gnu.gold-version -R .MIPS.abiflags -R .ARM.exidx
++if !COND_emu
++if COND_HAVE_ASM_USCORE
++  LDFLAGS_KERNEL += -Wl,--defsym=_malloc=_grub_malloc -Wl,--defsym=_free=_grub_free
++else
++  LDFLAGS_KERNEL += -Wl,--defsym=malloc=grub_malloc -Wl,--defsym=free=grub_free
++endif
++endif
+ 
+ CFLAGS_MODULE = $(CFLAGS_PLATFORM) -ffreestanding
+ LDFLAGS_MODULE = $(LDFLAGS_PLATFORM) -nostdlib $(TARGET_LDFLAGS_OLDMAGIC) -Wl,-r
+-- 
+2.36.1
+

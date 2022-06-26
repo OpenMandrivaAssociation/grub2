@@ -1,0 +1,39 @@
+From 63d3211403fad20a6431562bcaab01751ae4c00f Mon Sep 17 00:00:00 2001
+From: Qiumiao Zhang <zhangqiumiao1@huawei.com>
+Date: Sat, 16 Apr 2022 09:50:11 +0800
+Subject: [PATCH 204/261] net: Fix NULL pointer dereference when parsing
+ ICMP6_ROUTER_ADVERTISE messages
+
+During UEFI PXE boot in IPv6 network, if the DHCP server adopts stateful
+automatic configuration, then the client receives a ICMP6_ROUTER_ADVERTISE
+multicast message from the server. This may be received without the interface
+having a configured network address, so orig_inf will be NULL, which can lead
+to a NULL dereference when creating the default route. Actually, in this case,
+the client obtains the default route through DHCPv6 instead of RA messages.
+So if orig_inf == NULL and route_inf == NULL, we should not set the
+default route.
+
+Fixes: https://savannah.gnu.org/bugs/?62072
+
+Signed-off-by: Qiumiao Zhang <zhangqiumiao1@huawei.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/net/icmp6.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/grub-core/net/icmp6.c b/grub-core/net/icmp6.c
+index 986d57b01..9a8c45112 100644
+--- a/grub-core/net/icmp6.c
++++ b/grub-core/net/icmp6.c
+@@ -477,7 +477,7 @@ grub_net_recv_icmp6_packet (struct grub_net_buff *nb,
+ 
+ 	    /* May not have gotten slaac info, find a global address on this
+ 	      card.  */
+-	    if (route_inf == NULL)
++	    if (route_inf == NULL && orig_inf != NULL)
+ 	      {
+ 		FOR_NET_NETWORK_LEVEL_INTERFACES (inf)
+ 		{
+-- 
+2.36.1
+

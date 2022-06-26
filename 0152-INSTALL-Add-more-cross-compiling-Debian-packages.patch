@@ -1,0 +1,31 @@
+From 02b50321d1e45c2e542e0bee12ab1354cdee843a Mon Sep 17 00:00:00 2001
+From: Daniel Kiper <daniel.kiper@oracle.com>
+Date: Thu, 10 Mar 2022 21:59:58 +0100
+Subject: [PATCH 152/261] INSTALL: Add more cross-compiling Debian packages
+
+The mingw-w64-tools is especially important because with out it some
+Windows builds may fail due to lack of proper pkg-config.
+
+Signed-off-by: Daniel Kiper <daniel.kiper@oracle.com>
+Reviewed-by: Robbie Harwood <rharwood@redhat.com>
+---
+ INSTALL | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/INSTALL b/INSTALL
+index a64f63723..aff44f75c 100644
+--- a/INSTALL
++++ b/INSTALL
+@@ -52,7 +52,8 @@ need the following.
+ 
+ Your distro may package cross-compiling toolchains such as the following
+ incomplete list on Debian: gcc-aarch64-linux-gnu, gcc-arm-linux-gnueabihf,
+-gcc-mipsel-linux-gnu, and mingw-w64.
++gcc-mips-linux-gnu, gcc-mipsel-linux-gnu, gcc-powerpc64-linux-gnu,
++gcc-riscv64-linux-gnu, gcc-sparc64-linux-gnu, mingw-w64 and mingw-w64-tools.
+ 
+ More cross compiling toolchains can be found at the following trusted sites:
+ 
+-- 
+2.36.1
+

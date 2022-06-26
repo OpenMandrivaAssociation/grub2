@@ -1,0 +1,28 @@
+From e88fbbb82e1f6111d78fb21f1d26be43d3f352c7 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Fri, 17 Sep 2021 23:03:58 +0000
+Subject: [PATCH 045/261] tests: mkfs.btrfs now supports only 4 KiB sector
+ sizes and above
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/util/grub-fs-tester.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/util/grub-fs-tester.in b/tests/util/grub-fs-tester.in
+index f6ef75030..0fd2ecf45 100644
+--- a/tests/util/grub-fs-tester.in
++++ b/tests/util/grub-fs-tester.in
+@@ -59,7 +59,7 @@ case x"$fs" in
+ 	MINLOGSECSIZE=8
+ 	MAXLOGSECSIZE=12;;
+     xbtrfs*)
+-	MINLOGSECSIZE=8
++	MINLOGSECSIZE=12
+ 	    #  OS LIMITATION: It could go up to 32768 but Linux rejects sector sizes > 4096
+ 	MAXLOGSECSIZE=12;;
+     xxfs)
+-- 
+2.36.1
+

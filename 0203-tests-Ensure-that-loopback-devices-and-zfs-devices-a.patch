@@ -1,0 +1,54 @@
+From a8cf36d77bdba0a04b68901b53c6a1313fe8c74a Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Sun, 6 Feb 2022 16:00:12 -0600
+Subject: [PATCH 203/261] tests: Ensure that loopback devices and zfs devices
+ are cleaned up
+
+ZFS file systems are not unmounted using umount, but instead by exporting
+them. So export the ZFS file system that has the same label as the one that
+was created during the test, if such one exists. This is required to delete
+the loopback device that uses the ZFS image file. Otherwise the added code
+to delete all loopback devices setup during the test run will never be able
+to finish because the loopback device can not be deleted while in use.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/util/grub-fs-tester.in | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/tests/util/grub-fs-tester.in b/tests/util/grub-fs-tester.in
+index a8eb0fd03..3c1d712de 100644
+--- a/tests/util/grub-fs-tester.in
++++ b/tests/util/grub-fs-tester.in
+@@ -15,10 +15,27 @@ tempdir=`mktemp -d "${TMPDIR:-/tmp}/${0##*/}.$(date '+%Y%m%d%H%M%S%N').${fs}.XXX
+ XORRISOFS_CHARSET="-input-charset UTF-8 -output-charset UTF-8"
+ 
+ MOUNTS=
++LODEVICES=
+ cleanup() {
++    if [ -n "$fs" -a -z "${fs##*zfs*}" -a -n "$FSLABEL" ]; then
++	zpool list "$FSLABEL" 2>/dev/null &&
++	while ! zpool export "$FSLABEL" ; do
++	    sleep 1;
++	done
++    fi
++
+     for i in $MOUNTS; do
+ 	umount "$i" || :
+     done
++
++    for lodev in $LODEVICES; do
++	local i=600
++	while losetup -l -O NAME | grep -q "^$lodev\$"; do
++	    losetup -d "$lodev" || sleep 1
++	    [ "$((i--))" = "0" ] && break
++	done
++    done
++    return 0
+ }
+ trap cleanup EXIT INT
+ # This is for bash, dash and ash do not recognize ERR
+-- 
+2.36.1
+

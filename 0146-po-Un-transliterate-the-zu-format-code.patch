@@ -1,0 +1,91 @@
+From 0cfb9240ae2deeec1437bc1fc885a23842bbd132 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Fri, 11 Mar 2022 01:08:32 -0600
+Subject: [PATCH 146/261] po: Un-transliterate the %zu format code
+
+Commit 45bffae13 (util/resolve: Bail with error if moddep.lst file line is
+too long) uses the %zu format specifier which has not been used in
+any translated strings yet. So the sed scripts used for transliterating
+certain languages need to be updated otherwise creation of the message
+indexes will fail on an unknown format code. This is essentially the same
+issue fixed for the %m format code in commit 2e246b6f (po: Fix replacement
+of %m in sed programs).
+
+Also reorder transliteration lines to be more lexicographically ordered.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ po/arabic.sed   | 3 ++-
+ po/cyrillic.sed | 3 ++-
+ po/greek.sed    | 3 ++-
+ po/hebrew.sed   | 3 ++-
+ 4 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/po/arabic.sed b/po/arabic.sed
+index 21dc8b6db..3fbee7248 100644
+--- a/po/arabic.sed
++++ b/po/arabic.sed
+@@ -74,9 +74,10 @@ s,%\([0-9]*\)للد,%\1lld,g
+ 
+ s,%\([0-9\.\*]*\)س,%\1s,g
+ s,%\([0-9\.\*]*\)م,%\1m,g
+-s,%\([0-9]*\)لو,%\1lu,g
+ s,%\([0-9]*\)و,%\1u,g
++s,%\([0-9]*\)لو,%\1lu,g
+ s,%\([0-9]*\)للو,%\1llu,g
++s,%\([0-9]*\)زو,%\1zu,g
+ s,%\([0-9]*\)كس,%\1x,g
+ s,%\([0-9]*\)لكس,%\1lx,g
+ s,%\([0-9]*\)للكس,%\1llx,g
+diff --git a/po/cyrillic.sed b/po/cyrillic.sed
+index 2e3e6655d..472f09529 100644
+--- a/po/cyrillic.sed
++++ b/po/cyrillic.sed
+@@ -97,9 +97,10 @@ s,%\([0-9]*\)ллд,%\1lld,g
+ 
+ s,%\([0-9\.\*]*\)с,%\1s,g
+ s,%\([0-9\.\*]*\)м,%\1m,g
+-s,%\([0-9]*\)лу,%\1lu,g
+ s,%\([0-9]*\)у,%\1u,g
++s,%\([0-9]*\)лу,%\1lu,g
+ s,%\([0-9]*\)ллу,%\1llu,g
++s,%\([0-9]*\)зу,%\1zu,g
+ s,%\([0-9]*\)ѯ,%\1x,g
+ s,%\([0-9]*\)лѯ,%\1lx,g
+ s,%\([0-9]*\)ллѯ,%\1llx,g
+diff --git a/po/greek.sed b/po/greek.sed
+index 3543f6aac..0e81625fb 100644
+--- a/po/greek.sed
++++ b/po/greek.sed
+@@ -99,9 +99,10 @@ s,%\([0-9]*\)λλδ,%\1lld,g
+ 
+ s,%\([0-9\.\*]*\)σ,%\1s,g
+ s,%\([0-9\.\*]*\)μ,%\1m,g
+-s,%\([0-9]*\)λυ,%\1lu,g
+ s,%\([0-9]*\)υ,%\1u,g
++s,%\([0-9]*\)λυ,%\1lu,g
+ s,%\([0-9]*\)λλυ,%\1llu,g
++s,%\([0-9]*\)ζυ,%\1zu,g
+ s,%\([0-9]*\)ξ,%\1x,g
+ s,%\([0-9]*\)λξ,%\1lx,g
+ s,%\([0-9]*\)λλξ,%\1llx,g
+diff --git a/po/hebrew.sed b/po/hebrew.sed
+index 9210014bc..33174bbdc 100644
+--- a/po/hebrew.sed
++++ b/po/hebrew.sed
+@@ -82,9 +82,10 @@ s,%\([0-9]*\)ללד,%\1lld,g
+ 
+ s,%\([0-9\.\*]*\)ש,%\1s,g
+ s,%\([0-9\.\*]*\)מ,%\1m,g
+-s,%\([0-9]*\)לוּ,%\1lu,g
+ s,%\([0-9]*\)וּ,%\1u,g
++s,%\([0-9]*\)לוּ,%\1lu,g
+ s,%\([0-9]*\)ללוּ,%\1llu,g
++s,%\([0-9]*\)זוּ,%\1zu,g
+ s,%\([0-9]*\)כּס,%\1x,g
+ s,%\([0-9]*\)לכּס,%\1lx,g
+ s,%\([0-9]*\)ללכּס,%\1llx,g
+-- 
+2.36.1
+

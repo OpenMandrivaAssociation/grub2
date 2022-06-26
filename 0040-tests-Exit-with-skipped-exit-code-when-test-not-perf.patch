@@ -1,0 +1,379 @@
+From 4dc5259b6efff2ff6c0548d34e2017a817994682 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Tue, 12 Oct 2021 19:40:02 -0500
+Subject: [PATCH 040/261] tests: Exit with skipped exit code when test not
+ performed
+
+These tests were not performed and therefore did not pass, nor fail. This
+fixes misleading test exit code where, for instance, the pseries_test will
+pass on i386-pc, which is not a pseries architecture.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/ahci_test.in          |  8 ++++----
+ tests/cdboot_test.in        |  8 ++++----
+ tests/core_compress_test.in |  2 +-
+ tests/ehci_test.in          |  8 ++++----
+ tests/fddboot_test.in       | 16 ++++++++--------
+ tests/grub_cmd_date.in      |  2 +-
+ tests/grub_cmd_set_date.in  |  6 +++---
+ tests/grub_cmd_sleep.in     |  2 +-
+ tests/hddboot_test.in       |  6 +++---
+ tests/netboot_test.in       | 12 ++++++------
+ tests/ohci_test.in          |  8 ++++----
+ tests/partmap_test.in       |  8 ++++----
+ tests/pata_test.in          |  6 +++---
+ tests/pseries_test.in       |  2 +-
+ tests/uhci_test.in          |  8 ++++----
+ 15 files changed, 51 insertions(+), 51 deletions(-)
+
+diff --git a/tests/ahci_test.in b/tests/ahci_test.in
+index 3f7645ad8..6d2e61d4e 100644
+--- a/tests/ahci_test.in
++++ b/tests/ahci_test.in
+@@ -22,16 +22,16 @@ grubshell=@builddir@/grub-shell
+ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+     # PLATFORM: Don't mess with real devices when OS is active
+     *-emu)
+-	exit 0;;
++	exit 77;;
+     # FIXME: qemu gets bonito DMA wrong
+     mipsel-loongson)
+-	exit 0;;
++	exit 77;;
+     # PLATFORM: no AHCI on ARC and qemu-mips platforms
+     mips*-arc | mips*-qemu_mips)
+-	exit 0;;
++	exit 77;;
+     # FIXME: No native drivers are available for those
+     powerpc-ieee1275 | sparc64-ieee1275 | arm*-efi)
+-	exit 0;;
++	exit 77;;
+ esac
+ 
+ imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+diff --git a/tests/cdboot_test.in b/tests/cdboot_test.in
+index bf9549a6b..f00cdec58 100644
+--- a/tests/cdboot_test.in
++++ b/tests/cdboot_test.in
+@@ -22,16 +22,16 @@ grubshell=@builddir@/grub-shell
+ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+     # PLATFORM: emu is different
+     *-emu)
+-	exit 0;;
++	exit 77;;
+     # PLATFORM: Flash targets
+     i386-qemu | i386-coreboot | mips-qemu_mips | mipsel-qemu_mips)
+-	exit 0;;
++	exit 77;;
+     # FIXME: currently grub-shell uses only -kernel for loongson
+     mipsel-loongson)
+-	exit 0;;
++	exit 77;;
+     # FIXME: OFW fails to open CD-ROM
+     i386-ieee1275)
+-	exit 0;;
++	exit 77;;
+ esac
+ 
+ v=$(echo hello | "${grubshell}" --boot=cd)
+diff --git a/tests/core_compress_test.in b/tests/core_compress_test.in
+index 52708fd83..24a811418 100644
+--- a/tests/core_compress_test.in
++++ b/tests/core_compress_test.in
+@@ -22,7 +22,7 @@ grubshell=@builddir@/grub-shell
+ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+     # FIXME: Only mips currently supports configurable core compression
+     *-emu | i386-* | x86_64-* | sparc64-* | ia64-*)
+-	exit 0
++	exit 77
+ 	;;
+ esac
+ 
+diff --git a/tests/ehci_test.in b/tests/ehci_test.in
+index df408d77a..df671b4b6 100644
+--- a/tests/ehci_test.in
++++ b/tests/ehci_test.in
+@@ -22,16 +22,16 @@ grubshell=@builddir@/grub-shell
+ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+     # PLATFORM: Don't mess with real devices when OS is active
+     *-emu)
+-	exit 0;;
++	exit 77;;
+     # FIXME: qemu gets bonito DMA wrong
+     mipsel-loongson)
+-	exit 0;;
++	exit 77;;
+     # PLATFORM: no USB on ARC and qemu-mips platforms
+     mips*-arc | mips*-qemu_mips)
+-	exit 0;;
++	exit 77;;
+     # FIXME: No native drivers are available for those
+     powerpc-ieee1275 | sparc64-ieee1275 | arm*-efi)
+-	exit 0;;
++	exit 77;;
+ esac
+ 
+ imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+diff --git a/tests/fddboot_test.in b/tests/fddboot_test.in
+index 32281c75f..6ef49efcb 100644
+--- a/tests/fddboot_test.in
++++ b/tests/fddboot_test.in
+@@ -22,28 +22,28 @@ grubshell=@builddir@/grub-shell
+ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+     # PLATFORM: emu is different
+     *-emu)
+-	exit 0;;
++	exit 77;;
+     # PLATFORM: Flash targets
+     i386-qemu | i386-coreboot | mips-qemu_mips | mipsel-qemu_mips)
+-	exit 0;;
++	exit 77;;
+     # FIXME: currently grub-shell uses only -kernel for loongson
+     mipsel-loongson)
+-	exit 0;;
++	exit 77;;
+     # FIXME: We don't support EFI floppy boot in grub-mkrescue
+     *-efi)
+-	exit 0;;
++	exit 77;;
+     # FIXME: no floppy support
+     i386-multiboot)
+-	exit 0;;
++	exit 77;;
+     # FIXME: QEMU firmware crashes when trying to boot from floppy
+     sparc64-ieee1275)
+-	exit 0;;
++	exit 77;;
+     # FIXME: QEMU doesn't emulate SCSI floppies
+     mipsel-arc | mips-arc)
+-	exit 0;;
++	exit 77;;
+     # PLATFORM: powerpc doesn't boot from floppy except OldWorld Macs which we don't support anyway
+     powerpc-ieee1275)
+-	exit 0;;
++	exit 77;;
+ esac
+ 
+ v=$(echo hello | "${grubshell}" --boot=fd --mkrescue-arg="--compress=xz --fonts= --locales= --themes= -no-pad")
+diff --git a/tests/grub_cmd_date.in b/tests/grub_cmd_date.in
+index 737a278e6..4903ad6cc 100644
+--- a/tests/grub_cmd_date.in
++++ b/tests/grub_cmd_date.in
+@@ -5,7 +5,7 @@ set -e
+ 
+ # FIXME: OpenBIOS on sparc64 doesn't implement RTC
+ if [ "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" = sparc64-ieee1275 ]; then
+-    exit 0
++    exit 77
+ fi
+ 
+ pdt="$(date -u +%s)"
+diff --git a/tests/grub_cmd_set_date.in b/tests/grub_cmd_set_date.in
+index aac120a6c..17673cd8a 100644
+--- a/tests/grub_cmd_set_date.in
++++ b/tests/grub_cmd_set_date.in
+@@ -6,15 +6,15 @@ set -e
+ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+     # FIXME: OpenBIOS on sparc64 doesn't implement RTC
+     sparc64-ieee1275)
+-	exit 0;;
++	exit 77;;
+     # PLATFORM: ARC doesn't provide any way to set time
+     *-arc)
+-	exit 0;;
++	exit 77;;
+     # PLATFORM: EMU doesn't provide any way to set time
+     # Even if it did we'd need some kind of sandbox to avoid
+     # modifying real system time.
+     *-emu)
+-	exit 0;;
++	exit 77;;
+ esac
+ 
+ out=$(cat <<EOF | @builddir@/grub-shell
+diff --git a/tests/grub_cmd_sleep.in b/tests/grub_cmd_sleep.in
+index 8797f6632..1a57fb388 100644
+--- a/tests/grub_cmd_sleep.in
++++ b/tests/grub_cmd_sleep.in
+@@ -5,7 +5,7 @@ set -e
+ 
+ # FIXME: OpenBIOS on sparc64 doesn't implement RTC
+ if [ "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" = sparc64-ieee1275 ]; then
+-    exit 0
++    exit 77
+ fi
+ 
+ # Compare RTC with interval timer.
+diff --git a/tests/hddboot_test.in b/tests/hddboot_test.in
+index ded2cde7b..764e0da1c 100644
+--- a/tests/hddboot_test.in
++++ b/tests/hddboot_test.in
+@@ -22,13 +22,13 @@ grubshell=@builddir@/grub-shell
+ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+     # PLATFORM: emu is different
+     *-emu)
+-	exit 0;;
++	exit 77;;
+     # PLATFORM: Flash targets
+     i386-qemu | i386-coreboot | mips-qemu_mips | mipsel-qemu_mips)
+-	exit 0;;
++	exit 77;;
+     # FIXME: currently grub-shell uses only -kernel for loongson
+     mipsel-loongson)
+-	exit 0;;
++	exit 77;;
+ esac
+ 
+ v=$(echo hello | "${grubshell}" --boot=hd)
+diff --git a/tests/netboot_test.in b/tests/netboot_test.in
+index b274f3e2d..510c9c34b 100644
+--- a/tests/netboot_test.in
++++ b/tests/netboot_test.in
+@@ -22,22 +22,22 @@ grubshell=@builddir@/grub-shell
+ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+     # PLATFORM: emu is different
+     *-emu)
+-	exit 0;;
++	exit 77;;
+     # PLATFORM: Flash targets
+     i386-qemu | i386-coreboot | mips-qemu_mips | mipsel-qemu_mips)
+-	exit 0;;
++	exit 77;;
+     # FIXME: currently grub-shell uses only -kernel for loongson
+     mipsel-loongson)
+-	exit 0;;
++	exit 77;;
+     # FIXME: no rtl8139 support
+     i386-multiboot)
+-	exit 0;;
++	exit 77;;
+     # FIXME: We don't fully support netboot on ARC
+     *-arc)
+-	exit 0;;
++	exit 77;;
+     # FIXME: Many QEMU firmware have no netboot capability
+     *-efi | i386-ieee1275 | powerpc-ieee1275 | sparc64-ieee1275)
+-	exit 0;;
++	exit 77;;
+ esac
+ 
+ v=$(echo hello | "${grubshell}" --boot=net)
+diff --git a/tests/ohci_test.in b/tests/ohci_test.in
+index c72618656..741ad881f 100644
+--- a/tests/ohci_test.in
++++ b/tests/ohci_test.in
+@@ -22,16 +22,16 @@ grubshell=@builddir@/grub-shell
+ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+     # PLATFORM: Don't mess with real devices when OS is active
+     *-emu)
+-	exit 0;;
++	exit 77;;
+     # FIXME: qemu gets bonito DMA wrong
+     mipsel-loongson)
+-	exit 0;;
++	exit 77;;
+     # PLATFORM: no USB on ARC and qemu-mips platforms
+     mips*-arc | mips*-qemu_mips)
+-	exit 0;;
++	exit 77;;
+     # FIXME: No native drivers are available for those
+     powerpc-ieee1275 | sparc64-ieee1275 | arm*-efi)
+-	exit 0;;
++	exit 77;;
+ esac
+ 
+ imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+diff --git a/tests/partmap_test.in b/tests/partmap_test.in
+index 7906db43d..e72af9ce4 100644
+--- a/tests/partmap_test.in
++++ b/tests/partmap_test.in
+@@ -70,21 +70,21 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+     powerpc-ieee1275)
+ 	disk=ieee1275//pci@80000000/mac-io@4/ata-3@20000/disk@0
+ 	# FIXME: QEMU firmware has bugs which prevent it from accessing hard disk w/o recognised label.
+-	exit 0
++	exit 77
+ 	;;
+     sparc64-ieee1275)
+ 	disk=ieee1275//pci@1fe\,0/pci-ata@5/ide0@500/disk@0
+ 	# FIXME: QEMU firmware has bugs which prevent it from accessing hard disk w/o recognised label.
+-	exit 0
++	exit 77
+ 	;;
+     i386-ieee1275)
+ 	disk=ieee1275/d
+ 	# FIXME: QEMU firmware has bugs which prevent it from accessing hard disk w/o recognised label.
+-	exit 0
++	exit 77
+ 	;;
+     mips-arc)
+ 	# FIXME: ARC firmware has bugs which prevent it from accessing hard disk w/o dvh disklabel.
+-	exit 0 ;;
++	exit 77 ;;
+     mipsel-arc)
+ 	disk=arc/scsi0/disk0/rdisk0
+ 	;;
+diff --git a/tests/pata_test.in b/tests/pata_test.in
+index a69719bf5..4fee0b0fb 100644
+--- a/tests/pata_test.in
++++ b/tests/pata_test.in
+@@ -25,13 +25,13 @@ indisk=ata0
+ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+     # PLATFORM: Don't mess with real devices when OS is active
+     *-emu)
+-	exit 0;;
++	exit 77;;
+     # PLATFORM: no ATA on ARC platforms (they use SCSI)
+     *-arc)
+-	exit 0;;
++	exit 77;;
+     # FIXME: No native drivers are available for those
+     powerpc-ieee1275 | sparc64-ieee1275 | arm*-efi)
+-	exit 0;;
++	exit 77;;
+     i386-ieee1275)
+ 	disk=hdb
+ 	indisk=ata1
+diff --git a/tests/pseries_test.in b/tests/pseries_test.in
+index 655eb4f3a..9b4090cf5 100644
+--- a/tests/pseries_test.in
++++ b/tests/pseries_test.in
+@@ -20,7 +20,7 @@ grubshell=@builddir@/grub-shell
+ . "@builddir@/grub-core/modinfo.sh"
+ 
+ if [ "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" != powerpc-ieee1275 ]; then
+-   exit 0
++   exit 77
+ fi
+ 
+ if [ "$(echo hello | "${grubshell}" --pseries --timeout=180 --boot=cd)" != "Hello World" ]; then
+diff --git a/tests/uhci_test.in b/tests/uhci_test.in
+index 7b8892c63..5aa5eb726 100644
+--- a/tests/uhci_test.in
++++ b/tests/uhci_test.in
+@@ -22,16 +22,16 @@ grubshell=@builddir@/grub-shell
+ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+     # PLATFORM: Don't mess with real devices when OS is active
+     *-emu)
+-	exit 0;;
++	exit 77;;
+     # FIXME: qemu gets bonito DMA wrong
+     mipsel-loongson)
+-	exit 0;;
++	exit 77;;
+     # PLATFORM: no USB on ARC and qemu-mips platforms
+     mips*-arc | mips*-qemu_mips)
+-	exit 0;;
++	exit 77;;
+     # FIXME: No native drivers are available for those
+     powerpc-ieee1275 | sparc64-ieee1275 | arm*-efi)
+-	exit 0;;
++	exit 77;;
+ esac
+ 
+ imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+-- 
+2.36.1
+

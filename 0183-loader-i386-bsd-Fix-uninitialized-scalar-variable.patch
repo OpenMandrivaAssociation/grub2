@@ -1,0 +1,35 @@
+From c0272c12b6c895de21f88cbb6387cdec04ff48a5 Mon Sep 17 00:00:00 2001
+From: Alec Brown <alec.r.brown@oracle.com>
+Date: Mon, 21 Mar 2022 02:28:56 -0400
+Subject: [PATCH 183/261] loader/i386/bsd: Fix uninitialized scalar variable
+
+In the function grub_netbsd_setup_video(), struct grub_netbsd_btinfo_framebuf
+params is called but isn't being initialized. The member grub_uint8_t
+reserved[16] isn't set to any values and is instead filled with junk data from
+the stack. We can prevent this by setting params to {0}.
+
+Fixes: CID 375026
+
+Signed-off-by: Alec Brown <alec.r.brown@oracle.com>
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/loader/i386/bsd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/grub-core/loader/i386/bsd.c b/grub-core/loader/i386/bsd.c
+index 799a24cd2..5838fc8f4 100644
+--- a/grub-core/loader/i386/bsd.c
++++ b/grub-core/loader/i386/bsd.c
+@@ -929,7 +929,7 @@ grub_netbsd_setup_video (void)
+   struct grub_video_mode_info mode_info;
+   void *framebuffer;
+   const char *modevar;
+-  struct grub_netbsd_btinfo_framebuf params;
++  struct grub_netbsd_btinfo_framebuf params = {0};
+   grub_err_t err;
+   grub_video_driver_id_t driv_id;
+ 
+-- 
+2.36.1
+

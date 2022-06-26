@@ -1,0 +1,47 @@
+From 093ac51dc6c022bbb7402ba8b632ee68325944d3 Mon Sep 17 00:00:00 2001
+From: Daniel Kiper <daniel.kiper@oracle.com>
+Date: Thu, 10 Mar 2022 16:40:43 +0100
+Subject: [PATCH 148/261] loader/i386/bsd: Initialize ptr variable in
+ grub_bsd_add_meta()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Latest GCC may complain in that way:
+
+  In file included from ../include/grub/disk.h:31,
+                   from ../include/grub/file.h:26,
+                   from ../include/grub/loader.h:23,
+                   from loader/i386/bsd.c:19:
+  loader/i386/bsd.c: In function ‘grub_cmd_openbsd’:
+  ../include/grub/misc.h:71:10: error: ‘ptr’ may be used uninitialized in this function [-Werror=maybe-uninitialized]
+     71 |   return grub_memmove (dest, src, n);
+        |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+  loader/i386/bsd.c:266:9: note: ‘ptr’ was declared here
+    266 |   void *ptr;
+        |         ^~~
+
+So, let's fix it by assigning NULL to ptr in grub_bsd_add_meta().
+
+Signed-off-by: Daniel Kiper <daniel.kiper@oracle.com>
+Reviewed-by: Robbie Harwood <rharwood@redhat.com>
+---
+ grub-core/loader/i386/bsd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/grub-core/loader/i386/bsd.c b/grub-core/loader/i386/bsd.c
+index 6c324ca30..799a24cd2 100644
+--- a/grub-core/loader/i386/bsd.c
++++ b/grub-core/loader/i386/bsd.c
+@@ -263,7 +263,7 @@ grub_err_t
+ grub_bsd_add_meta (grub_uint32_t type, const void *data, grub_uint32_t len)
+ {
+   grub_err_t err;
+-  void *ptr;
++  void *ptr = NULL;
+ 
+   err = grub_bsd_add_meta_ptr (type, &ptr, len);
+   if (err)
+-- 
+2.36.1
+

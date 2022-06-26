@@ -1,0 +1,949 @@
+From 51f284f82dc97b3cadae99b930243a50194f492d Mon Sep 17 00:00:00 2001
+From: Elyes Haouas <ehaouas@noos.fr>
+Date: Fri, 4 Mar 2022 07:41:56 +0100
+Subject: [PATCH 124/261] commands: Remove trailing whitespaces
+
+Signed-off-by: Elyes Haouas <ehaouas@noos.fr>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/commands/acpihalt.c                 |  6 +--
+ grub-core/commands/boottime.c                 |  2 +-
+ grub-core/commands/cacheinfo.c                |  2 +-
+ grub-core/commands/cat.c                      |  6 +--
+ grub-core/commands/echo.c                     |  2 +-
+ grub-core/commands/efi/lsefi.c                |  2 +-
+ grub-core/commands/efi/lsefimmap.c            |  6 +--
+ grub-core/commands/efi/lsefisystab.c          |  6 +--
+ grub-core/commands/halt.c                     |  2 +-
+ grub-core/commands/hashsum.c                  |  8 +--
+ grub-core/commands/hdparm.c                   |  2 +-
+ grub-core/commands/help.c                     |  6 +--
+ .../commands/i386/coreboot/cb_timestamps.c    |  2 +-
+ grub-core/commands/i386/coreboot/cbls.c       |  2 +-
+ grub-core/commands/i386/pc/drivemap.c         |  2 +-
+ grub-core/commands/i386/pc/halt.c             |  2 +-
+ grub-core/commands/i386/pc/lsapm.c            |  2 +-
+ grub-core/commands/i386/pc/play.c             |  2 +-
+ grub-core/commands/i386/pc/sendkey.c          | 30 +++++------
+ grub-core/commands/keylayouts.c               | 54 +++++++++----------
+ grub-core/commands/legacycfg.c                | 12 ++---
+ grub-core/commands/lsacpi.c                   |  2 +-
+ grub-core/commands/lspci.c                    |  6 +--
+ grub-core/commands/mips/loongson/lsspd.c      |  2 +-
+ grub-core/commands/nativedisk.c               |  2 +-
+ grub-core/commands/password_pbkdf2.c          |  2 +-
+ grub-core/commands/pgp.c                      | 14 ++---
+ grub-core/commands/search.c                   |  4 +-
+ grub-core/commands/search_wrap.c              |  4 +-
+ grub-core/commands/terminal.c                 |  4 +-
+ grub-core/commands/videoinfo.c                |  2 +-
+ grub-core/commands/videotest.c                |  2 +-
+ grub-core/commands/wildcard.c                 |  2 +-
+ 33 files changed, 102 insertions(+), 102 deletions(-)
+
+diff --git a/grub-core/commands/acpihalt.c b/grub-core/commands/acpihalt.c
+index 9cc7f18e3..9a5e22155 100644
+--- a/grub-core/commands/acpihalt.c
++++ b/grub-core/commands/acpihalt.c
+@@ -78,7 +78,7 @@ static inline grub_uint32_t
+ skip_name_string (const grub_uint8_t *ptr, const grub_uint8_t *end)
+ {
+   const grub_uint8_t *ptr0 = ptr;
+-  
++
+   while (ptr < end && (*ptr == '^' || *ptr == '\\'))
+     ptr++;
+   switch (*ptr)
+@@ -231,7 +231,7 @@ get_sleep_type (grub_uint8_t *table, grub_uint8_t *ptr, grub_uint8_t *end,
+ 		grub_uint8_t *scope, int scope_len)
+ {
+   grub_uint8_t *prev = table;
+-  
++
+   if (!ptr)
+     ptr = table + sizeof (struct grub_acpi_table_header);
+   while (ptr < end && prev < ptr)
+@@ -337,7 +337,7 @@ get_sleep_type (grub_uint8_t *table, grub_uint8_t *ptr, grub_uint8_t *end,
+ 	  }
+ 	default:
+ 	  grub_printf ("Unknown opcode 0x%x\n", *ptr);
+-	  return -1;	  
++	  return -1;
+ 	}
+     }
+ 
+diff --git a/grub-core/commands/boottime.c b/grub-core/commands/boottime.c
+index dcc078c2a..424412851 100644
+--- a/grub-core/commands/boottime.c
++++ b/grub-core/commands/boottime.c
+@@ -43,7 +43,7 @@ grub_cmd_boottime (struct grub_command *cmd __attribute__ ((unused)),
+       grub_uint32_t tmrel = cur->tp - last_time;
+       last_time = cur->tp;
+ 
+-      grub_printf ("%3d.%03ds %2d.%03ds %s:%d %s\n", 
++      grub_printf ("%3d.%03ds %2d.%03ds %s:%d %s\n",
+ 		   tmabs / 1000, tmabs % 1000, tmrel / 1000, tmrel % 1000, cur->file, cur->line,
+ 		   cur->msg);
+     }
+diff --git a/grub-core/commands/cacheinfo.c b/grub-core/commands/cacheinfo.c
+index d34a34696..e8ee05b85 100644
+--- a/grub-core/commands/cacheinfo.c
++++ b/grub-core/commands/cacheinfo.c
+@@ -42,7 +42,7 @@ grub_rescue_cmd_info (struct grub_command *cmd __attribute__ ((unused)),
+ 		    hits, misses);
+     }
+   else
+-    grub_printf ("%s\n", _("No disk cache statistics available\n"));    
++    grub_printf ("%s\n", _("No disk cache statistics available\n"));
+ 
+  return 0;
+ }
+diff --git a/grub-core/commands/cat.c b/grub-core/commands/cat.c
+index ba5f0061a..2b67c1c7f 100644
+--- a/grub-core/commands/cat.c
++++ b/grub-core/commands/cat.c
+@@ -104,7 +104,7 @@ grub_cmd_cat (grub_extcmd_context_t ctxt, int argc, char **args)
+ 	       || grub_isspace (code)) && code != '\r')
+ 	    {
+ 	      grub_printf ("%C", code);
+-	      count = 0; 
++	      count = 0;
+ 	      code = 0;
+ 	      utcount = 0;
+ 	      continue;
+@@ -113,7 +113,7 @@ grub_cmd_cat (grub_extcmd_context_t ctxt, int argc, char **args)
+ 	  if (dos && code == '\r')
+ 	    {
+ 	      is_0d = 1;
+-	      count = 0; 
++	      count = 0;
+ 	      code = 0;
+ 	      utcount = 0;
+ 	      continue;
+@@ -123,7 +123,7 @@ grub_cmd_cat (grub_extcmd_context_t ctxt, int argc, char **args)
+ 	  for (j = 0; j < utcount; j++)
+ 	    grub_printf ("<%x>", (unsigned int) utbuf[j]);
+ 	  grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
+-	  count = 0; 
++	  count = 0;
+ 	  code = 0;
+ 	  utcount = 0;
+ 	}
+diff --git a/grub-core/commands/echo.c b/grub-core/commands/echo.c
+index 81ba50d68..f95877285 100644
+--- a/grub-core/commands/echo.c
++++ b/grub-core/commands/echo.c
+@@ -119,7 +119,7 @@ grub_cmd_echo (grub_extcmd_context_t ctxt, int argc, char **args)
+   if (newline)
+     grub_printf ("\n");
+ 
+-  grub_refresh ();  
++  grub_refresh ();
+ 
+   return 0;
+ }
+diff --git a/grub-core/commands/efi/lsefi.c b/grub-core/commands/efi/lsefi.c
+index d1ce99af4..f46ba3b49 100644
+--- a/grub-core/commands/efi/lsefi.c
++++ b/grub-core/commands/efi/lsefi.c
+@@ -33,7 +33,7 @@ struct known_protocol
+ {
+   grub_efi_guid_t guid;
+   const char *name;
+-} known_protocols[] = 
++} known_protocols[] =
+   {
+     { GRUB_EFI_DISK_IO_GUID, "disk" },
+     { GRUB_EFI_BLOCK_IO_GUID, "block" },
+diff --git a/grub-core/commands/efi/lsefimmap.c b/grub-core/commands/efi/lsefimmap.c
+index c85ff7f36..d0885d72f 100644
+--- a/grub-core/commands/efi/lsefimmap.c
++++ b/grub-core/commands/efi/lsefimmap.c
+@@ -59,9 +59,9 @@ grub_cmd_lsefimmap (grub_command_t cmd __attribute__ ((unused)),
+     {
+       grub_efi_uint64_t size;
+       grub_efi_uint64_t attr;
+-      static const char types_str[][9] = 
++      static const char types_str[][9] =
+ 	{
+-	  "reserved", 
++	  "reserved",
+ 	  "ldr-code",
+ 	  "ldr-data",
+ 	  "BS-code ",
+@@ -81,7 +81,7 @@ grub_cmd_lsefimmap (grub_command_t cmd __attribute__ ((unused)),
+ 	grub_printf ("%s ", types_str[desc->type]);
+       else
+ 	grub_printf ("Unk %02x   ", desc->type);
+-      
++
+       grub_printf (" %016" PRIxGRUB_UINT64_T "-%016" PRIxGRUB_UINT64_T
+ 		   " %08" PRIxGRUB_UINT64_T,
+ 		   desc->physical_start,
+diff --git a/grub-core/commands/efi/lsefisystab.c b/grub-core/commands/efi/lsefisystab.c
+index 412adbc2c..f24906be6 100644
+--- a/grub-core/commands/efi/lsefisystab.c
++++ b/grub-core/commands/efi/lsefisystab.c
+@@ -73,7 +73,7 @@ grub_cmd_lsefisystab (struct grub_command *cmd __attribute__ ((unused)),
+     char *vendor;
+     grub_uint16_t *vendor_utf16;
+     grub_printf ("Vendor: ");
+-    
++
+     for (vendor_utf16 = st->firmware_vendor; *vendor_utf16; vendor_utf16++);
+     /* Allocate extra 3 bytes to simplify math. */
+     vendor = grub_calloc (4, vendor_utf16 - st->firmware_vendor + 1);
+@@ -100,7 +100,7 @@ grub_cmd_lsefisystab (struct grub_command *cmd __attribute__ ((unused)),
+ 		   t->vendor_guid.data3);
+       for (j = 0; j < 8; j++)
+ 	grub_printf ("%02x", t->vendor_guid.data4[j]);
+-      
++
+       for (j = 0; j < ARRAY_SIZE (guid_mappings); j++)
+ 	if (grub_memcmp (&guid_mappings[j].guid, &t->vendor_guid,
+ 			 sizeof (grub_efi_guid_t)) == 0)
+@@ -116,7 +116,7 @@ static grub_command_t cmd;
+ 
+ GRUB_MOD_INIT(lsefisystab)
+ {
+-  cmd = grub_register_command ("lsefisystab", grub_cmd_lsefisystab, 
++  cmd = grub_register_command ("lsefisystab", grub_cmd_lsefisystab,
+ 			       "", "Display EFI system tables.");
+ }
+ 
+diff --git a/grub-core/commands/halt.c b/grub-core/commands/halt.c
+index f8596ecdc..8f2e88040 100644
+--- a/grub-core/commands/halt.c
++++ b/grub-core/commands/halt.c
+@@ -37,7 +37,7 @@ static grub_command_t cmd;
+ GRUB_MOD_INIT(halt)
+ {
+   cmd = grub_register_command ("halt", grub_cmd_halt,
+-			       0, N_("Halts the computer.  This command does" 
++			       0, N_("Halts the computer.  This command does"
+ 			       " not work on all firmware implementations."));
+ }
+ 
+diff --git a/grub-core/commands/hashsum.c b/grub-core/commands/hashsum.c
+index b8a22b0c8..d56b5b0bb 100644
+--- a/grub-core/commands/hashsum.c
++++ b/grub-core/commands/hashsum.c
+@@ -39,7 +39,7 @@ static const struct grub_arg_option options[] = {
+   {0, 0, 0, 0, 0, 0}
+ };
+ 
+-static struct { const char *name; const char *hashname; } aliases[] = 
++static struct { const char *name; const char *hashname; } aliases[] =
+   {
+     {"sha256sum", "sha256"},
+     {"sha512sum", "sha512"},
+@@ -116,7 +116,7 @@ check_list (const gcry_md_spec_t *hash, const char *hashfilename,
+   hashlist = grub_file_open (hashfilename, GRUB_FILE_TYPE_HASHLIST);
+   if (!hashlist)
+     return grub_errno;
+-  
++
+   while (grub_free (buf), (buf = grub_file_getline (hashlist)))
+     {
+       const char *p = buf;
+@@ -143,7 +143,7 @@ check_list (const gcry_md_spec_t *hash, const char *hashfilename,
+       if (prefix)
+ 	{
+ 	  char *filename;
+-	  
++
+ 	  filename = grub_xasprintf ("%s/%s", prefix, p);
+ 	  if (!filename)
+ 	    {
+@@ -192,7 +192,7 @@ check_list (const gcry_md_spec_t *hash, const char *hashfilename,
+ 				 "hash of '%s' mismatches", p);
+ 	    }
+ 	  mismatch++;
+-	  continue;	  
++	  continue;
+ 	}
+       grub_printf_ (N_("%s: OK\n"), p);
+     }
+diff --git a/grub-core/commands/hdparm.c b/grub-core/commands/hdparm.c
+index 2e2319e64..96f2336f3 100644
+--- a/grub-core/commands/hdparm.c
++++ b/grub-core/commands/hdparm.c
+@@ -333,7 +333,7 @@ grub_cmd_hdparm (grub_extcmd_context_t ctxt, int argc, char **args)
+       grub_disk_close (disk);
+       return grub_error (GRUB_ERR_IO, "not an ATA device");
+     }
+-    
++
+ 
+   /* Change settings.  */
+   if (aam >= 0)
+diff --git a/grub-core/commands/help.c b/grub-core/commands/help.c
+index f0be89baa..ac3907f9d 100644
+--- a/grub-core/commands/help.c
++++ b/grub-core/commands/help.c
+@@ -64,11 +64,11 @@ grub_cmd_help (grub_extcmd_context_t ctxt __attribute__ ((unused)), int argc,
+ 
+ 	      stringwidth = 0;
+ 
+-	      while (unicode_last_screen_position < unicode_last_position && 
++	      while (unicode_last_screen_position < unicode_last_position &&
+ 		     stringwidth < ((grub_term_width (term) / 2) - 2))
+ 		{
+ 		  struct grub_unicode_glyph glyph;
+-		  unicode_last_screen_position 
++		  unicode_last_screen_position
+ 		    += grub_unicode_aglomerate_comb (unicode_last_screen_position,
+ 						     unicode_last_position
+ 						     - unicode_last_screen_position,
+@@ -88,7 +88,7 @@ grub_cmd_help (grub_extcmd_context_t ctxt __attribute__ ((unused)), int argc,
+ 	    if (cnt % 2)
+ 	      grub_printf ("\n");
+ 	    cnt++;
+-	  
++
+ 	    grub_free (command_help);
+ 	    grub_free (unicode_command_help);
+ 	  }
+diff --git a/grub-core/commands/i386/coreboot/cb_timestamps.c b/grub-core/commands/i386/coreboot/cb_timestamps.c
+index e97ea6bed..c44abb3fa 100644
+--- a/grub-core/commands/i386/coreboot/cb_timestamps.c
++++ b/grub-core/commands/i386/coreboot/cb_timestamps.c
+@@ -84,7 +84,7 @@ iterate_linuxbios_table (grub_linuxbios_table_item_t table_item,
+       grub_uint32_t tmrel = tsc2ms (ts_table->entries[i].tsc - last_tsc);
+       last_tsc = ts_table->entries[i].tsc;
+ 
+-      grub_printf ("%3d.%03ds %2d.%03ds %02d %s\n", 
++      grub_printf ("%3d.%03ds %2d.%03ds %02d %s\n",
+ 		   tmabs / 1000, tmabs % 1000, tmrel / 1000, tmrel % 1000,
+ 		   ts_table->entries[i].id,
+ 		   (ts_table->entries[i].id < ARRAY_SIZE (descs)
+diff --git a/grub-core/commands/i386/coreboot/cbls.c b/grub-core/commands/i386/coreboot/cbls.c
+index 102291f42..50b7b8750 100644
+--- a/grub-core/commands/i386/coreboot/cbls.c
++++ b/grub-core/commands/i386/coreboot/cbls.c
+@@ -84,7 +84,7 @@ iterate_linuxbios_table (grub_linuxbios_table_item_t table_item,
+ 
+ 	grub_printf (": %dx%dx%d pitch=%d lfb=0x%llx %d/%d/%d/%d %d/%d/%d/%d",
+ 		     fb->width, fb->height,
+-		     fb->bpp, fb->pitch, 
++		     fb->bpp, fb->pitch,
+ 		     (unsigned long long) fb->lfb,
+ 		     fb->red_mask_size, fb->green_mask_size,
+ 		     fb->blue_mask_size, fb->reserved_mask_size,
+diff --git a/grub-core/commands/i386/pc/drivemap.c b/grub-core/commands/i386/pc/drivemap.c
+index 7f7f2d41c..3fb22dc46 100644
+--- a/grub-core/commands/i386/pc/drivemap.c
++++ b/grub-core/commands/i386/pc/drivemap.c
+@@ -185,7 +185,7 @@ list_mappings (void)
+       return GRUB_ERR_NONE;
+     }
+ 
+-  /* TRANSLATORS:  This is the header of mapping list. 
++  /* TRANSLATORS:  This is the header of mapping list.
+      On the left is how OS will see the disks and
+      on the right current GRUB vision.  */
+   grub_puts_ (N_("OS disk #num ------> GRUB/BIOS device"));
+diff --git a/grub-core/commands/i386/pc/halt.c b/grub-core/commands/i386/pc/halt.c
+index 1e7c2c9b3..e87e8dccd 100644
+--- a/grub-core/commands/i386/pc/halt.c
++++ b/grub-core/commands/i386/pc/halt.c
+@@ -59,7 +59,7 @@ grub_halt (int no_apm)
+   regs.ebx = 0;
+   regs.flags = GRUB_CPU_INT_FLAGS_DEFAULT;
+   grub_bios_interrupt (0x15, &regs);
+-  
++
+   if (regs.flags & GRUB_CPU_INT_FLAGS_CARRY)
+     stop ();
+ 
+diff --git a/grub-core/commands/i386/pc/lsapm.c b/grub-core/commands/i386/pc/lsapm.c
+index c82476df1..8f49880da 100644
+--- a/grub-core/commands/i386/pc/lsapm.c
++++ b/grub-core/commands/i386/pc/lsapm.c
+@@ -34,7 +34,7 @@ grub_apm_get_info (struct grub_apm_info *info)
+   regs.ebx = 0;
+   regs.flags = GRUB_CPU_INT_FLAGS_DEFAULT;
+   grub_bios_interrupt (0x15, &regs);
+-  
++
+   if (regs.flags & GRUB_CPU_INT_FLAGS_CARRY)
+     return 0;
+   info->version = regs.eax & 0xffff;
+diff --git a/grub-core/commands/i386/pc/play.c b/grub-core/commands/i386/pc/play.c
+index a980e4688..7ff8cd633 100644
+--- a/grub-core/commands/i386/pc/play.c
++++ b/grub-core/commands/i386/pc/play.c
+@@ -80,7 +80,7 @@ grub_cmd_play (grub_command_t cmd __attribute__ ((unused)),
+ {
+ 
+   if (argc < 1)
+-    return grub_error (GRUB_ERR_BAD_ARGUMENT, 
++    return grub_error (GRUB_ERR_BAD_ARGUMENT,
+ 		       /* TRANSLATORS: It's musical notes, not the notes
+ 			  you take. Play command expects arguments which can
+ 			  be either a filename or tempo+notes.
+diff --git a/grub-core/commands/i386/pc/sendkey.c b/grub-core/commands/i386/pc/sendkey.c
+index 26d9acd3d..af91cc835 100644
+--- a/grub-core/commands/i386/pc/sendkey.c
++++ b/grub-core/commands/i386/pc/sendkey.c
+@@ -55,12 +55,12 @@ static const struct grub_arg_option options[] =
+     {"no-led", 0, 0, N_("don't update LED state"), 0, 0},
+     {0, 0, 0, 0, 0, 0}
+   };
+-static int simple_flag_offsets[] 
++static int simple_flag_offsets[]
+ = {5, 6, 4, 7, 11, 1, 0, 10, 13, 14, 12, 15, 9, 3, 8, 2};
+ 
+ static grub_uint32_t andmask = 0xffffffff, ormask = 0;
+ 
+-struct 
++struct
+ keysym
+ {
+   const char *unshifted_name;		/* the name in unshifted state */
+@@ -171,13 +171,13 @@ static struct keysym keysym_table[] =
+   {"right",		0,		0xe0,	0,	0x4d}
+ };
+ 
+-/* Set a simple flag in flags variable  
++/* Set a simple flag in flags variable
+    OUTOFFSET - offset of flag in FLAGS,
+    OP - action id
+ */
+ static void
+ grub_sendkey_set_simple_flag (int outoffset, int op)
+-{      
++{
+   if (op == 2)
+     {
+       andmask |= (1 << outoffset);
+@@ -199,7 +199,7 @@ grub_sendkey_parse_op (struct grub_arg_list state)
+   if (! state.set)
+     return 2;
+ 
+-  if (grub_strcmp (state.arg, "off") == 0 || grub_strcmp (state.arg, "0") == 0 
++  if (grub_strcmp (state.arg, "off") == 0 || grub_strcmp (state.arg, "0") == 0
+       || grub_strcmp (state.arg, "unpress") == 0)
+     return 0;
+ 
+@@ -234,7 +234,7 @@ grub_sendkey_preboot (int noret __attribute__ ((unused)))
+   grub_uint32_t *flags = (grub_uint32_t *) 0x417;
+ 
+   oldflags = *flags;
+-  
++
+   /* Set the sendkey.  */
+   *((char *) 0x41a) = 0x1e;
+   *((char *) 0x41c) = keylen + 0x1e;
+@@ -247,7 +247,7 @@ grub_sendkey_preboot (int noret __attribute__ ((unused)))
+   /* Transform "any alt" to "right alt" flag.  */
+   if (*flags & (1 << 9))
+     *flags &= ~(1 << 3);
+-  
++
+   *flags = (*flags & andmask) | ormask;
+ 
+   /* Transform "right ctrl" to "any ctrl" flag.  */
+@@ -294,10 +294,10 @@ find_key_code (char *key)
+ 
+   for (i = 0; i < ARRAY_SIZE(keysym_table); i++)
+     {
+-      if (keysym_table[i].unshifted_name 
++      if (keysym_table[i].unshifted_name
+ 	  && grub_strcmp (key, keysym_table[i].unshifted_name) == 0)
+ 	return keysym_table[i].keycode;
+-      else if (keysym_table[i].shifted_name 
++      else if (keysym_table[i].shifted_name
+ 	       && grub_strcmp (key, keysym_table[i].shifted_name) == 0)
+ 	return keysym_table[i].keycode;
+     }
+@@ -313,10 +313,10 @@ find_ascii_code (char *key)
+ 
+   for (i = 0; i < ARRAY_SIZE(keysym_table); i++)
+     {
+-      if (keysym_table[i].unshifted_name 
++      if (keysym_table[i].unshifted_name
+ 	  && grub_strcmp (key, keysym_table[i].unshifted_name) == 0)
+ 	return keysym_table[i].unshifted_ascii;
+-      else if (keysym_table[i].shifted_name 
++      else if (keysym_table[i].shifted_name
+ 	       && grub_strcmp (key, keysym_table[i].shifted_name) == 0)
+ 	return keysym_table[i].shifted_ascii;
+     }
+@@ -340,7 +340,7 @@ grub_cmd_sendkey (grub_extcmd_context_t ctxt, int argc, char **args)
+     for (i = 0; i < argc && keylen < 0x20; i++)
+       {
+ 	int key_code;
+-	
++
+ 	key_code = find_key_code (args[i]);
+ 	if (key_code)
+ 	  {
+@@ -353,7 +353,7 @@ grub_cmd_sendkey (grub_extcmd_context_t ctxt, int argc, char **args)
+   {
+     unsigned i;
+     for (i = 0; i < ARRAY_SIZE(simple_flag_offsets); i++)
+-      grub_sendkey_set_simple_flag (simple_flag_offsets[i], 
++      grub_sendkey_set_simple_flag (simple_flag_offsets[i],
+ 				    grub_sendkey_parse_op(state[i]));
+   }
+ 
+@@ -374,8 +374,8 @@ GRUB_MOD_INIT (sendkey)
+ 				 keypresses.  */
+ 			      N_("Emulate a keystroke sequence"), options);
+ 
+-  preboot_hook 
+-    = grub_loader_register_preboot_hook (grub_sendkey_preboot, 
++  preboot_hook
++    = grub_loader_register_preboot_hook (grub_sendkey_preboot,
+ 					 grub_sendkey_postboot,
+ 					 GRUB_LOADER_PREBOOT_HOOK_PRIO_CONSOLE);
+ }
+diff --git a/grub-core/commands/keylayouts.c b/grub-core/commands/keylayouts.c
+index c05d6128a..aa3ba34f2 100644
+--- a/grub-core/commands/keylayouts.c
++++ b/grub-core/commands/keylayouts.c
+@@ -35,7 +35,7 @@ static struct grub_keyboard_layout layout_us = {
+     /* Keyboard errors. Handled by driver.  */
+     /* 0x00 */   0,   0,   0,   0,
+ 
+-    /* 0x04 */ 'a',  'b',  'c',  'd', 
++    /* 0x04 */ 'a',  'b',  'c',  'd',
+     /* 0x08 */ 'e',  'f',  'g',  'h',  'i', 'j', 'k', 'l',
+     /* 0x10 */ 'm',  'n',  'o',  'p',  'q', 'r', 's', 't',
+     /* 0x18 */ 'u',  'v',  'w',  'x',  'y', 'z', '1', '2',
+@@ -43,11 +43,11 @@ static struct grub_keyboard_layout layout_us = {
+     /* 0x28 */ '\n', GRUB_TERM_ESC, GRUB_TERM_BACKSPACE, GRUB_TERM_TAB, ' ', '-', '=', '[',
+     /* According to usage table 0x31 should be mapped to '/'
+        but testing with real keyboard shows that 0x32 is remapped to '/'.
+-       Map 0x31 to 0. 
++       Map 0x31 to 0.
+     */
+     /* 0x30 */ ']',   0,   '\\', ';', '\'', '`', ',', '.',
+     /* 0x39 is CapsLock. Handled by driver.  */
+-    /* 0x38 */ '/',   0,   GRUB_TERM_KEY_F1, GRUB_TERM_KEY_F2, 
++    /* 0x38 */ '/',   0,   GRUB_TERM_KEY_F1, GRUB_TERM_KEY_F2,
+     /* 0x3c */ GRUB_TERM_KEY_F3,     GRUB_TERM_KEY_F4,
+     /* 0x3e */ GRUB_TERM_KEY_F5,     GRUB_TERM_KEY_F6,
+     /* 0x40 */ GRUB_TERM_KEY_F7,     GRUB_TERM_KEY_F8,
+@@ -56,16 +56,16 @@ static struct grub_keyboard_layout layout_us = {
+     /* PrtScr and ScrollLock. Not handled yet.  */
+     /* 0x46 */ 0,                    0,
+     /* 0x48 is Pause. Not handled yet.  */
+-    /* 0x48 */ 0,                    GRUB_TERM_KEY_INSERT, 
++    /* 0x48 */ 0,                    GRUB_TERM_KEY_INSERT,
+     /* 0x4a */ GRUB_TERM_KEY_HOME,   GRUB_TERM_KEY_PPAGE,
+     /* 0x4c */ GRUB_TERM_KEY_DC,     GRUB_TERM_KEY_END,
+     /* 0x4e */ GRUB_TERM_KEY_NPAGE,  GRUB_TERM_KEY_RIGHT,
+     /* 0x50 */ GRUB_TERM_KEY_LEFT,   GRUB_TERM_KEY_DOWN,
+     /* 0x53 is NumLock. Handled by driver.  */
+     /* 0x52 */ GRUB_TERM_KEY_UP,     0,
+-    /* 0x54 */ '/',                  '*', 
++    /* 0x54 */ '/',                  '*',
+     /* 0x56 */ '-',                  '+',
+-    /* 0x58 */ '\n',                 GRUB_TERM_KEY_END, 
++    /* 0x58 */ '\n',                 GRUB_TERM_KEY_END,
+     /* 0x5a */ GRUB_TERM_KEY_DOWN,   GRUB_TERM_KEY_NPAGE,
+     /* 0x5c */ GRUB_TERM_KEY_LEFT,   GRUB_TERM_KEY_CENTER,
+     /* 0x5e */ GRUB_TERM_KEY_RIGHT,  GRUB_TERM_KEY_HOME,
+@@ -77,7 +77,7 @@ static struct grub_keyboard_layout layout_us = {
+     /* Keyboard errors. Handled by driver.  */
+     /* 0x00 */   0,   0,   0,   0,
+ 
+-    /* 0x04 */ 'A',  'B',  'C',  'D', 
++    /* 0x04 */ 'A',  'B',  'C',  'D',
+     /* 0x08 */ 'E',  'F',  'G',  'H',  'I', 'J', 'K', 'L',
+     /* 0x10 */ 'M',  'N',  'O',  'P',  'Q', 'R', 'S', 'T',
+     /* 0x18 */ 'U',  'V',  'W',  'X',  'Y', 'Z', '!', '@',
+@@ -87,27 +87,27 @@ static struct grub_keyboard_layout layout_us = {
+     /* 0x2c */ ' '  | GRUB_TERM_SHIFT,  '_', '+', '{',
+     /* According to usage table 0x31 should be mapped to '/'
+        but testing with real keyboard shows that 0x32 is remapped to '/'.
+-       Map 0x31 to 0. 
++       Map 0x31 to 0.
+     */
+     /* 0x30 */ '}',  0,    '|',  ':',  '"', '~', '<', '>',
+     /* 0x39 is CapsLock. Handled by driver.  */
+     /* 0x38 */ '?',  0,
+     /* 0x3a */ GRUB_TERM_KEY_F1 | GRUB_TERM_SHIFT,
+-    /* 0x3b */ GRUB_TERM_KEY_F2 | GRUB_TERM_SHIFT, 
+-    /* 0x3c */ GRUB_TERM_KEY_F3 | GRUB_TERM_SHIFT, 
+-    /* 0x3d */ GRUB_TERM_KEY_F4 | GRUB_TERM_SHIFT, 
+-    /* 0x3e */ GRUB_TERM_KEY_F5 | GRUB_TERM_SHIFT, 
+-    /* 0x3f */ GRUB_TERM_KEY_F6 | GRUB_TERM_SHIFT, 
+-    /* 0x40 */ GRUB_TERM_KEY_F7 | GRUB_TERM_SHIFT, 
+-    /* 0x41 */ GRUB_TERM_KEY_F8 | GRUB_TERM_SHIFT, 
+-    /* 0x42 */ GRUB_TERM_KEY_F9 | GRUB_TERM_SHIFT, 
+-    /* 0x43 */ GRUB_TERM_KEY_F10 | GRUB_TERM_SHIFT, 
+-    /* 0x44 */ GRUB_TERM_KEY_F11 | GRUB_TERM_SHIFT, 
+-    /* 0x45 */ GRUB_TERM_KEY_F12 | GRUB_TERM_SHIFT, 
++    /* 0x3b */ GRUB_TERM_KEY_F2 | GRUB_TERM_SHIFT,
++    /* 0x3c */ GRUB_TERM_KEY_F3 | GRUB_TERM_SHIFT,
++    /* 0x3d */ GRUB_TERM_KEY_F4 | GRUB_TERM_SHIFT,
++    /* 0x3e */ GRUB_TERM_KEY_F5 | GRUB_TERM_SHIFT,
++    /* 0x3f */ GRUB_TERM_KEY_F6 | GRUB_TERM_SHIFT,
++    /* 0x40 */ GRUB_TERM_KEY_F7 | GRUB_TERM_SHIFT,
++    /* 0x41 */ GRUB_TERM_KEY_F8 | GRUB_TERM_SHIFT,
++    /* 0x42 */ GRUB_TERM_KEY_F9 | GRUB_TERM_SHIFT,
++    /* 0x43 */ GRUB_TERM_KEY_F10 | GRUB_TERM_SHIFT,
++    /* 0x44 */ GRUB_TERM_KEY_F11 | GRUB_TERM_SHIFT,
++    /* 0x45 */ GRUB_TERM_KEY_F12 | GRUB_TERM_SHIFT,
+     /* PrtScr and ScrollLock. Not handled yet.  */
+     /* 0x46 */ 0,                    0,
+     /* 0x48 is Pause. Not handled yet.  */
+-    /* 0x48 */ 0,                    GRUB_TERM_KEY_INSERT | GRUB_TERM_SHIFT, 
++    /* 0x48 */ 0,                    GRUB_TERM_KEY_INSERT | GRUB_TERM_SHIFT,
+     /* 0x4a */ GRUB_TERM_KEY_HOME | GRUB_TERM_SHIFT,
+     /* 0x4b */ GRUB_TERM_KEY_PPAGE | GRUB_TERM_SHIFT,
+     /* 0x4c */ GRUB_TERM_KEY_DC | GRUB_TERM_SHIFT,
+@@ -118,7 +118,7 @@ static struct grub_keyboard_layout layout_us = {
+     /* 0x51 */ GRUB_TERM_KEY_DOWN | GRUB_TERM_SHIFT,
+     /* 0x53 is NumLock. Handled by driver.  */
+     /* 0x52 */ GRUB_TERM_KEY_UP | GRUB_TERM_SHIFT,     0,
+-    /* 0x54 */ '/',                    '*', 
++    /* 0x54 */ '/',                    '*',
+     /* 0x56 */ '-',                    '+',
+     /* 0x58 */ '\n' | GRUB_TERM_SHIFT, '1', '2', '3', '4', '5','6', '7',
+     /* 0x60 */ '8', '9', '0', '.', '|'
+@@ -148,7 +148,7 @@ map_key_core (int code, int status, int *alt_gr_consumed)
+       else if (grub_current_layout->keyboard_map_l3[code])
+ 	{
+ 	  *alt_gr_consumed = 1;
+-	  return grub_current_layout->keyboard_map_l3[code];  
++	  return grub_current_layout->keyboard_map_l3[code];
+ 	}
+     }
+   if (status & (GRUB_TERM_STATUS_LSHIFT | GRUB_TERM_STATUS_RSHIFT))
+@@ -172,12 +172,12 @@ grub_term_map_key (grub_keyboard_key_t code, int status)
+     }
+ 
+   key = map_key_core (code, status, &alt_gr_consumed);
+-  
++
+   if (key == 0 || key == GRUB_TERM_SHIFT) {
+     grub_printf ("Unknown key 0x%x detected\n", code);
+     return GRUB_TERM_NO_KEY;
+   }
+-  
++
+   if (status & GRUB_TERM_STATUS_CAPS)
+     {
+       if ((key >= 'a') && (key <= 'z'))
+@@ -185,8 +185,8 @@ grub_term_map_key (grub_keyboard_key_t code, int status)
+       else if ((key >= 'A') && (key <= 'Z'))
+ 	key += 'a' - 'A';
+     }
+-  
+-  if ((status & GRUB_TERM_STATUS_LALT) || 
++
++  if ((status & GRUB_TERM_STATUS_LALT) ||
+       ((status & GRUB_TERM_STATUS_RALT) && !alt_gr_consumed))
+     key |= GRUB_TERM_ALT;
+   if (status & (GRUB_TERM_STATUS_LCTRL | GRUB_TERM_STATUS_RCTRL))
+@@ -212,7 +212,7 @@ grub_cmd_keymap (struct grub_command *cmd __attribute__ ((unused)),
+     {
+       const char *prefix = grub_env_get ("prefix");
+       if (!prefix)
+-	return grub_error (GRUB_ERR_BAD_ARGUMENT, N_("variable `%s' isn't set"), "prefix");	
++	return grub_error (GRUB_ERR_BAD_ARGUMENT, N_("variable `%s' isn't set"), "prefix");
+       filename = grub_xasprintf ("%s/layouts/%s.gkb", prefix, argv[0]);
+       if (!filename)
+ 	return grub_errno;
+diff --git a/grub-core/commands/legacycfg.c b/grub-core/commands/legacycfg.c
+index cc5971f4d..e9e9d94ef 100644
+--- a/grub-core/commands/legacycfg.c
++++ b/grub-core/commands/legacycfg.c
+@@ -257,8 +257,8 @@ grub_cmd_legacy_source (struct grub_command *cmd,
+ }
+ 
+ static enum
+-  { 
+-    GUESS_IT, LINUX, MULTIBOOT, KFREEBSD, KNETBSD, KOPENBSD 
++  {
++    GUESS_IT, LINUX, MULTIBOOT, KFREEBSD, KNETBSD, KOPENBSD
+   } kernel_type;
+ 
+ static grub_err_t
+@@ -273,7 +273,7 @@ grub_cmd_legacy_kernel (struct grub_command *mycmd __attribute__ ((unused)),
+   char **cutargs;
+   int cutargc;
+   grub_err_t err = GRUB_ERR_NONE;
+-  
++
+   for (i = 0; i < 2; i++)
+     {
+       /* FIXME: really support this.  */
+@@ -410,7 +410,7 @@ grub_cmd_legacy_kernel (struct grub_command *mycmd __attribute__ ((unused)),
+ 	  if (dev)
+ 	    grub_device_close (dev);
+ 	}
+-	
++
+ 	/* k*BSD didn't really work well with grub-legacy.  */
+ 	if (kernel_type == GUESS_IT || kernel_type == KFREEBSD)
+ 	  {
+@@ -632,7 +632,7 @@ check_password_md5_real (const char *entered,
+   digest = GRUB_MD_MD5->read (ctx);
+   GRUB_MD_MD5->final (ctx);
+   grub_memcpy (alt_result, digest, MD5_HASHLEN);
+-  
++
+   GRUB_MD_MD5->init (ctx);
+   GRUB_MD_MD5->write (ctx, entered, enteredlen);
+   GRUB_MD_MD5->write (ctx, pw->salt, pw->saltlen); /* include the $1$ header */
+@@ -654,7 +654,7 @@ check_password_md5_real (const char *entered,
+ 	GRUB_MD_MD5->write (ctx, entered, enteredlen);
+       else
+ 	GRUB_MD_MD5->write (ctx, alt_result, 16);
+-      
++
+       if (i % 3 != 0)
+ 	GRUB_MD_MD5->write (ctx, pw->salt + 3, pw->saltlen - 3);
+ 
+diff --git a/grub-core/commands/lsacpi.c b/grub-core/commands/lsacpi.c
+index 082491405..f7a1a1b05 100644
+--- a/grub-core/commands/lsacpi.c
++++ b/grub-core/commands/lsacpi.c
+@@ -35,7 +35,7 @@ print_strn (grub_uint8_t *str, grub_size_t len)
+   for (; *str && len; str++, len--)
+     grub_printf ("%c", *str);
+   for (len++; len; len--)
+-    grub_printf (" ");  
++    grub_printf (" ");
+ }
+ 
+ #define print_field(x) print_strn(x, sizeof (x))
+diff --git a/grub-core/commands/lspci.c b/grub-core/commands/lspci.c
+index 65213a372..b3cdab1b3 100644
+--- a/grub-core/commands/lspci.c
++++ b/grub-core/commands/lspci.c
+@@ -171,7 +171,7 @@ grub_lspci_iter (grub_pci_device_t dev, grub_pci_id_t pciid,
+ 
+ 	  if (space == 0)
+ 	    continue;
+-	 
++
+ 	  switch (space & GRUB_PCI_ADDR_SPACE_MASK)
+ 	    {
+ 	    case GRUB_PCI_ADDR_SPACE_IO:
+@@ -195,13 +195,13 @@ grub_lspci_iter (grub_pci_device_t dev, grub_pci_id_t pciid,
+ 			       (space & GRUB_PCI_ADDR_MEM_MASK),
+ 			       space & GRUB_PCI_ADDR_MEM_PREFETCH
+ 			       ? "prefetchable" : "non-prefetchable");
+-		 
++
+ 		}
+ 	      else
+ 		grub_printf ("\t32-bit memory space %d at 0x%016llx [%s]\n",
+ 			     (unsigned) ((reg - GRUB_PCI_REG_ADDRESSES)
+ 			      / sizeof (grub_uint32_t)) - 1,
+-			     (unsigned long long) 
++			     (unsigned long long)
+ 			     (space & GRUB_PCI_ADDR_MEM_MASK),
+ 			     space & GRUB_PCI_ADDR_MEM_PREFETCH
+ 			     ? "prefetchable" : "non-prefetchable");
+diff --git a/grub-core/commands/mips/loongson/lsspd.c b/grub-core/commands/mips/loongson/lsspd.c
+index a88ab87ac..97569816d 100644
+--- a/grub-core/commands/mips/loongson/lsspd.c
++++ b/grub-core/commands/mips/loongson/lsspd.c
+@@ -44,7 +44,7 @@ grub_cmd_lsspd (grub_command_t cmd __attribute__ ((unused)),
+     }
+   grub_printf_ (N_("CS5536 at %d:%d.%d\n"), grub_pci_get_bus (dev),
+ 		grub_pci_get_device (dev), grub_pci_get_function (dev));
+-  
++
+   err = grub_cs5536_init_smbus (dev, 0x7fff, &smbbase);
+   if (err)
+     return err;
+diff --git a/grub-core/commands/nativedisk.c b/grub-core/commands/nativedisk.c
+index 7c8f97f6a..580c8d3b0 100644
+--- a/grub-core/commands/nativedisk.c
++++ b/grub-core/commands/nativedisk.c
+@@ -31,7 +31,7 @@
+ 
+ GRUB_MOD_LICENSE ("GPLv3+");
+ 
+-static const char *modnames_def[] = { 
++static const char *modnames_def[] = {
+   /* FIXME: autogenerate this.  */
+ #if defined (__i386__) || defined (__x86_64__) || defined (GRUB_MACHINE_MIPS_LOONGSON)
+   "pata", "ahci", "usbms", "ohci", "uhci", "ehci"
+diff --git a/grub-core/commands/password_pbkdf2.c b/grub-core/commands/password_pbkdf2.c
+index ab845d25e..bcb902f97 100644
+--- a/grub-core/commands/password_pbkdf2.c
++++ b/grub-core/commands/password_pbkdf2.c
+@@ -162,7 +162,7 @@ grub_cmd_password (grub_command_t cmd __attribute__ ((unused)),
+       return grub_errno;
+     }
+   ptr = ptr2 + 1;
+-  ptr2 += grub_strlen (ptr2); 
++  ptr2 += grub_strlen (ptr2);
+   while (ptr < ptr2)
+     {
+       int hex1, hex2;
+diff --git a/grub-core/commands/pgp.c b/grub-core/commands/pgp.c
+index 5daa1e9d0..c6766f044 100644
+--- a/grub-core/commands/pgp.c
++++ b/grub-core/commands/pgp.c
+@@ -74,7 +74,7 @@ read_packet_header (grub_file_t sig, grub_uint8_t *out_type, grub_size_t *len)
+   if (type == 0)
+     {
+       *out_type = 0xfe;
+-      return 0;      
++      return 0;
+     }
+ 
+   if (!(type & 0x80))
+@@ -166,7 +166,7 @@ struct
+   int (*pad) (gcry_mpi_t *hmpi, grub_uint8_t *hval,
+ 	      const gcry_md_spec_t *hash, struct grub_public_subkey *sk);
+   const char *module;
+-} pkalgos[] = 
++} pkalgos[] =
+   {
+     [1] = { "rsa", 1, 2, &grub_crypto_pk_rsa, rsa_pad, "gcry_rsa" },
+     [3] = { "rsa", 1, 2, &grub_crypto_pk_rsa, rsa_pad, "gcry_rsa" },
+@@ -320,7 +320,7 @@ grub_load_public_key (grub_file_t f)
+ 	      grub_error (GRUB_ERR_BAD_SIGNATURE, N_("bad signature"));
+ 	      break;
+ 	    }
+-	  
++
+ 	  lb = (grub_be_to_cpu16 (l) + GRUB_CHAR_BIT - 1) / GRUB_CHAR_BIT;
+ 	  if (lb > READBUF_SIZE - sizeof (grub_uint16_t))
+ 	    {
+@@ -335,7 +335,7 @@ grub_load_public_key (grub_file_t f)
+ 	  grub_memcpy (buffer, &l, sizeof (l));
+ 
+ 	  GRUB_MD_SHA1->write (fingerprint_context, buffer, lb + sizeof (grub_uint16_t));
+- 
++
+ 	  if (gcry_mpi_scan (&sk->mpis[i], GCRYMPI_FMT_PGP,
+ 			     buffer, lb + sizeof (grub_uint16_t), 0))
+ 	    {
+@@ -479,7 +479,7 @@ grub_verify_signature_init (struct grub_pubkey_context *ctxt, grub_file_t sig)
+   h = ctxt->v4.hash;
+   t = ctxt->v4.type;
+   pk = ctxt->v4.pkeyalgo;
+-  
++
+   if (t != 0)
+     return grub_error (GRUB_ERR_BAD_SIGNATURE, N_("bad signature"));
+ 
+@@ -922,7 +922,7 @@ grub_env_write_sec (struct grub_env_var *var __attribute__ ((unused)),
+   return grub_strdup (sec ? "enforce" : "no");
+ }
+ 
+-static grub_ssize_t 
++static grub_ssize_t
+ pseudo_read (struct grub_file *file, char *buf, grub_size_t len)
+ {
+   grub_memcpy (buf, (grub_uint8_t *) file->data + file->offset, len);
+@@ -931,7 +931,7 @@ pseudo_read (struct grub_file *file, char *buf, grub_size_t len)
+ 
+ 
+ /* Filesystem descriptor.  */
+-struct grub_fs pseudo_fs = 
++struct grub_fs pseudo_fs =
+   {
+     .name = "pseudo",
+     .fs_read = pseudo_read
+diff --git a/grub-core/commands/search.c b/grub-core/commands/search.c
+index 51656e361..de90259cd 100644
+--- a/grub-core/commands/search.c
++++ b/grub-core/commands/search.c
+@@ -181,14 +181,14 @@ part_hook (grub_disk_t disk, const grub_partition_t partition, void *data)
+   if (!devname)
+     return 1;
+   ret = iterate_device (devname, ctx);
+-  grub_free (devname);    
++  grub_free (devname);
+ 
+   return ret;
+ }
+ 
+ /* Helper for FUNC_NAME.  */
+ static void
+-try (struct search_ctx *ctx)    
++try (struct search_ctx *ctx)
+ {
+   unsigned i;
+   struct cache_entry **prev;
+diff --git a/grub-core/commands/search_wrap.c b/grub-core/commands/search_wrap.c
+index 47fc8eb99..47ab56977 100644
+--- a/grub-core/commands/search_wrap.c
++++ b/grub-core/commands/search_wrap.c
+@@ -181,13 +181,13 @@ grub_cmd_search (grub_extcmd_context_t ctxt, int argc, char **args)
+     }
+ 
+   if (state[SEARCH_LABEL].set)
+-    grub_search_label (id, var, state[SEARCH_NO_FLOPPY].set, 
++    grub_search_label (id, var, state[SEARCH_NO_FLOPPY].set,
+ 		       hints, nhints);
+   else if (state[SEARCH_FS_UUID].set)
+     grub_search_fs_uuid (id, var, state[SEARCH_NO_FLOPPY].set,
+ 			 hints, nhints);
+   else if (state[SEARCH_FILE].set)
+-    grub_search_fs_file (id, var, state[SEARCH_NO_FLOPPY].set, 
++    grub_search_fs_file (id, var, state[SEARCH_NO_FLOPPY].set,
+ 			 hints, nhints);
+   else
+     grub_error (GRUB_ERR_INVALID_COMMAND, "unspecified search type");
+diff --git a/grub-core/commands/terminal.c b/grub-core/commands/terminal.c
+index 37e0ab8b1..78a140099 100644
+--- a/grub-core/commands/terminal.c
++++ b/grub-core/commands/terminal.c
+@@ -199,9 +199,9 @@ handle_command (int argc, char **args, struct abstract_terminal **enabled,
+ 
+          grub_list_remove (GRUB_AS_LIST (term));
+          grub_list_push (GRUB_AS_LIST_P (enabled), GRUB_AS_LIST (term));
+-       }       
++       }
+     }
+-  
++
+   {
+     struct abstract_terminal *next;
+     for (term = *enabled; term; term = next)
+diff --git a/grub-core/commands/videoinfo.c b/grub-core/commands/videoinfo.c
+index 016a4d818..5eb969748 100644
+--- a/grub-core/commands/videoinfo.c
++++ b/grub-core/commands/videoinfo.c
+@@ -29,7 +29,7 @@ GRUB_MOD_LICENSE ("GPLv3+");
+ 
+ struct hook_ctx
+ {
+-  unsigned height, width, depth; 
++  unsigned height, width, depth;
+   struct grub_video_mode_info *current_mode;
+ };
+ 
+diff --git a/grub-core/commands/videotest.c b/grub-core/commands/videotest.c
+index b6c181b52..ac145afc2 100644
+--- a/grub-core/commands/videotest.c
++++ b/grub-core/commands/videotest.c
+@@ -158,7 +158,7 @@ grub_cmd_videotest (grub_command_t cmd __attribute__ ((unused)),
+     {
+ 
+       if (i == 0 || i == 1)
+-	{	  
++	{
+ 	  color = grub_video_map_rgb (0, 0, 0);
+ 	  grub_video_fill_rect (color, 0, 0, width, height);
+ 
+diff --git a/grub-core/commands/wildcard.c b/grub-core/commands/wildcard.c
+index cc3290311..ed6586505 100644
+--- a/grub-core/commands/wildcard.c
++++ b/grub-core/commands/wildcard.c
+@@ -444,7 +444,7 @@ check_file_iter (const char *name, const struct grub_dirhook_info *info,
+       ctx->found = 1;
+       return 1;
+     }
+-  
++
+   return 0;
+ }
+ 
+-- 
+2.36.1
+

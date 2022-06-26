@@ -1,0 +1,30 @@
+From 8efbfcfc37d8219abe54061917ee025220145a98 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Wed, 11 May 2022 21:56:19 -0500
+Subject: [PATCH 211/261] docs: Make note that sendkey is only available on
+ i386-pc
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ docs/grub.texi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/docs/grub.texi b/docs/grub.texi
+index 5de94d062..8397febba 100644
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -5100,7 +5100,9 @@ Insert keystrokes into the keyboard buffer when booting.  Sometimes an
+ operating system or chainloaded boot loader requires particular keys to be
+ pressed: for example, one might need to press a particular key to enter
+ "safe mode", or when chainloading another boot loader one might send
+-keystrokes to it to navigate its menu.  
++keystrokes to it to navigate its menu.
++
++Note: This command is currently only available on the i386-pc target.
+ 
+ You may provide up to 16 keystrokes (the length of the BIOS keyboard
+ buffer).  Keystroke names may be upper-case or lower-case letters, digits,
+-- 
+2.36.1
+

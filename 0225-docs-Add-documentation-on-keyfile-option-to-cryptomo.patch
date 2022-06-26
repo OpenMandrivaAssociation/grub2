@@ -1,0 +1,40 @@
+From d46e65328ec7ca660063f623283be0874c7321e9 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Fri, 20 May 2022 14:32:19 -0500
+Subject: [PATCH 225/261] docs: Add documentation on keyfile option to
+ cryptomount
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ docs/grub.texi | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/docs/grub.texi b/docs/grub.texi
+index acf462ccf..9b902273c 100644
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -4489,11 +4489,15 @@ Alias for @code{hashsum --hash crc32 arg @dots{}}. See command @command{hashsum}
+ @node cryptomount
+ @subsection cryptomount
+ 
+-@deffn Command cryptomount [@option{-p} password] device|@option{-u} uuid|@option{-a}|@option{-b}
+-Setup access to encrypted device. If @option{-p} is not given, a passphrase
+-is requested interactively. Otherwise, the given @var{password} will be used and
+-no passphrase will be requested interactively.
+-Option @var{device} configures specific grub device
++@deffn Command cryptomount [ [@option{-p} password] | [@option{-k} keyfile [@option{-O} keyoffset] [@option{-S} keysize] ] ] device|@option{-u} uuid|@option{-a}|@option{-b}
++Setup access to encrypted device. A passphrase will be requested interactively,
++if neither the @option{-p} nor @option{-k} options are given. The option
++@option{-p} can be used to supply a passphrase (useful for scripts).
++Alternatively the @option{-k} option can be used to supply a keyfile with
++options @option{-O} and @option{-S} optionally supplying the offset and size,
++respectively, of the key data in the given key file.
++
++Argument @var{device} configures specific grub device
+ (@pxref{Naming convention}); option @option{-u} @var{uuid} configures device
+ with specified @var{uuid}; option @option{-a} configures all detected encrypted
+ devices; option @option{-b} configures all geli containers that have boot flag set.
+-- 
+2.36.1
+

@@ -1,0 +1,1046 @@
+From 91803b0a1b220666532d5e5d82b4a7dbc2f1d008 Mon Sep 17 00:00:00 2001
+From: Elyes Haouas <ehaouas@noos.fr>
+Date: Fri, 4 Mar 2022 07:42:15 +0100
+Subject: [PATCH 143/261] include: Remove trailing whitespaces
+
+Signed-off-by: Elyes Haouas <ehaouas@noos.fr>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ include/grub/arc/arc.h               |  4 ++--
+ include/grub/bitmap_scale.h          |  2 +-
+ include/grub/charset.h               |  4 ++--
+ include/grub/crypto.h                | 10 ++++----
+ include/grub/datetime.h              |  4 ++--
+ include/grub/disk.h                  |  2 +-
+ include/grub/diskfilter.h            |  4 ++--
+ include/grub/dl.h                    |  2 +-
+ include/grub/efi/api.h               |  2 +-
+ include/grub/efi/edid.h              |  2 +-
+ include/grub/efi/efi.h               |  2 +-
+ include/grub/gfxmenu_view.h          |  4 ++--
+ include/grub/hfsplus.h               |  2 +-
+ include/grub/i386/bsd.h              |  2 +-
+ include/grub/i386/linux.h            |  2 +-
+ include/grub/i386/openbsd_bootarg.h  |  2 +-
+ include/grub/i386/pc/vbe.h           | 14 ++++++------
+ include/grub/ieee1275/ieee1275.h     |  2 +-
+ include/grub/menu_viewer.h           |  2 +-
+ include/grub/mips/loongson/serial.h  |  2 +-
+ include/grub/mips/qemu_mips/serial.h |  2 +-
+ include/grub/multiboot.h             |  2 +-
+ include/grub/multiboot2.h            |  2 +-
+ include/grub/net.h                   | 12 +++++-----
+ include/grub/net/arp.h               |  2 +-
+ include/grub/net/ethernet.h          |  6 ++---
+ include/grub/net/ip.h                |  4 ++--
+ include/grub/net/udp.h               |  2 +-
+ include/grub/relocator.h             |  2 +-
+ include/grub/relocator_private.h     | 14 ++++++------
+ include/grub/term.h                  | 10 ++++----
+ include/grub/unicode.h               |  2 +-
+ include/grub/usb.h                   |  4 ++--
+ include/grub/usbtrans.h              |  2 +-
+ include/grub/util/install.h          |  6 ++---
+ include/grub/vgaregs.h               |  4 ++--
+ include/grub/video.h                 |  4 ++--
+ include/multiboot2.h                 |  4 ++--
+ include/xen/arch-x86/xen-x86_32.h    |  4 ++--
+ include/xen/arch-x86/xen-x86_64.h    |  4 ++--
+ include/xen/arch-x86/xen.h           |  6 ++---
+ include/xen/io/console.h             |  4 ++--
+ include/xen/io/protocols.h           |  2 +-
+ include/xen/io/ring.h                | 34 ++++++++++++++--------------
+ include/xen/xen-compat.h             |  4 ++--
+ include/xen/xen.h                    | 22 +++++++++---------
+ 46 files changed, 117 insertions(+), 117 deletions(-)
+
+diff --git a/include/grub/arc/arc.h b/include/grub/arc/arc.h
+index 999de7196..6d14b9748 100644
+--- a/include/grub/arc/arc.h
++++ b/include/grub/arc/arc.h
+@@ -184,7 +184,7 @@ struct grub_arc_firmware_vector
+   const struct grub_arc_component * (*getpeer) (const struct grub_arc_component *comp);
+   const struct grub_arc_component * (*getchild) (const struct grub_arc_component *comp);
+   void *getparent;
+-  
++
+   /* 0x30. */
+   void *getconfigurationdata;
+   void *addchild;
+@@ -227,7 +227,7 @@ struct grub_arc_firmware_vector
+   void *setfileinformation;
+   void *flushallcaches;
+   void *testunicodecharacter;
+-  
++
+   /* 0x90. */
+   struct grub_arc_display_status * (*getdisplaystatus) (grub_arc_fileno_t fileno);
+ };
+diff --git a/include/grub/bitmap_scale.h b/include/grub/bitmap_scale.h
+index 927a7cba5..7230bc91f 100644
+--- a/include/grub/bitmap_scale.h
++++ b/include/grub/bitmap_scale.h
+@@ -65,7 +65,7 @@ grub_err_t
+ EXPORT_FUNC (grub_video_bitmap_create_scaled) (struct grub_video_bitmap **dst,
+ 					       int dst_width, int dst_height,
+ 					       struct grub_video_bitmap *src,
+-					       enum 
++					       enum
+ 					       grub_video_bitmap_scale_method
+ 					       scale_method);
+ 
+diff --git a/include/grub/charset.h b/include/grub/charset.h
+index d14faea32..31a3b52dd 100644
+--- a/include/grub/charset.h
++++ b/include/grub/charset.h
+@@ -49,7 +49,7 @@
+ #define GRUB_UTF16_LOWER_SURROGATE(code) \
+   (0xDC00 | (((code) - GRUB_UCS2_LIMIT) & 0x3ff))
+ 
+-/* Process one character from UTF8 sequence. 
++/* Process one character from UTF8 sequence.
+    At beginning set *code = 0, *count = 0. Returns 0 on failure and
+    1 on success. *count holds the number of trailing bytes.  */
+ static inline int
+@@ -317,7 +317,7 @@ grub_encode_utf8_character (grub_uint8_t *dest, grub_uint8_t *destend,
+ 			    grub_uint32_t code);
+ 
+ const grub_uint32_t *
+-grub_unicode_get_comb_start (const grub_uint32_t *str, 
++grub_unicode_get_comb_start (const grub_uint32_t *str,
+ 			     const grub_uint32_t *cur);
+ 
+ #endif
+diff --git a/include/grub/crypto.h b/include/grub/crypto.h
+index 21cd1f75a..31c87c302 100644
+--- a/include/grub/crypto.h
++++ b/include/grub/crypto.h
+@@ -28,7 +28,7 @@
+ #include <grub/err.h>
+ #include <grub/mm.h>
+ 
+-typedef enum 
++typedef enum
+   {
+     GPG_ERR_NO_ERROR,
+     GPG_ERR_BAD_MPI,
+@@ -72,7 +72,7 @@ typedef gpg_error_t gcry_error_t;
+ typedef gpg_err_code_t gcry_err_code_t;
+ #define gcry_error_t gcry_err_code_t
+ #if 0
+-enum gcry_cipher_modes 
++enum gcry_cipher_modes
+   {
+     GCRY_CIPHER_MODE_NONE   = 0,  /* Not yet specified. */
+     GCRY_CIPHER_MODE_ECB    = 1,  /* Electronic codebook. */
+@@ -326,13 +326,13 @@ gcry_err_code_t
+ grub_crypto_cbc_decrypt (grub_crypto_cipher_handle_t cipher,
+ 			 void *out, const void *in, grub_size_t size,
+ 			 void *iv);
+-void 
++void
+ grub_cipher_register (gcry_cipher_spec_t *cipher);
+ void
+ grub_cipher_unregister (gcry_cipher_spec_t *cipher);
+-void 
++void
+ grub_md_register (gcry_md_spec_t *digest);
+-void 
++void
+ grub_md_unregister (gcry_md_spec_t *cipher);
+ 
+ extern struct gcry_pk_spec *grub_crypto_pk_dsa;
+diff --git a/include/grub/datetime.h b/include/grub/datetime.h
+index 23ae0791c..bcec636f0 100644
+--- a/include/grub/datetime.h
++++ b/include/grub/datetime.h
+@@ -58,11 +58,11 @@ grub_datetime2unixtime (const struct grub_datetime *datetime, grub_int64_t *nix)
+   int y4, ay;
+   const grub_uint16_t monthssum[12]
+     = { 0,
+-	31, 
++	31,
+ 	31 + 28,
+ 	31 + 28 + 31,
+ 	31 + 28 + 31 + 30,
+-	31 + 28 + 31 + 30 + 31, 
++	31 + 28 + 31 + 30 + 31,
+ 	31 + 28 + 31 + 30 + 31 + 30,
+ 	31 + 28 + 31 + 30 + 31 + 30 + 31,
+ 	31 + 28 + 31 + 30 + 31 + 30 + 31 + 31,
+diff --git a/include/grub/disk.h b/include/grub/disk.h
+index 06210a704..a17d257c3 100644
+--- a/include/grub/disk.h
++++ b/include/grub/disk.h
+@@ -60,7 +60,7 @@ struct grub_disk_memberlist;
+ #endif
+ 
+ typedef enum
+-  { 
++  {
+     GRUB_DISK_PULL_NONE,
+     GRUB_DISK_PULL_REMOVABLE,
+     GRUB_DISK_PULL_RESCAN,
+diff --git a/include/grub/diskfilter.h b/include/grub/diskfilter.h
+index 8deb1a8c3..f020d025b 100644
+--- a/include/grub/diskfilter.h
++++ b/include/grub/diskfilter.h
+@@ -103,12 +103,12 @@ struct grub_diskfilter_lv {
+ struct grub_diskfilter_segment {
+   grub_uint64_t start_extent;
+   grub_uint64_t extent_count;
+-  enum 
++  enum
+     {
+       GRUB_DISKFILTER_STRIPED = 0,
+       GRUB_DISKFILTER_MIRROR = 1,
+       GRUB_DISKFILTER_RAID4 = 4,
+-      GRUB_DISKFILTER_RAID5 = 5,      
++      GRUB_DISKFILTER_RAID5 = 5,
+       GRUB_DISKFILTER_RAID6 = 6,
+       GRUB_DISKFILTER_RAID10 = 10,
+   } type;
+diff --git a/include/grub/dl.h b/include/grub/dl.h
+index b3753c9ca..d0f4115fe 100644
+--- a/include/grub/dl.h
++++ b/include/grub/dl.h
+@@ -98,7 +98,7 @@ grub_mod_fini (void)
+ #endif
+ #else
+ #ifdef __APPLE__
+-#define GRUB_MOD_SECTION(x) _ ## x , _ ##x 
++#define GRUB_MOD_SECTION(x) _ ## x , _ ##x
+ #else
+ #define GRUB_MOD_SECTION(x) . ## x
+ #endif
+diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
+index d73e8198e..86db96994 100644
+--- a/include/grub/efi/api.h
++++ b/include/grub/efi/api.h
+@@ -431,7 +431,7 @@ struct grub_efi_sal_system_table_translation_register_descriptor
+ struct grub_efi_sal_system_table_purge_translation_coherence
+ {
+   grub_uint8_t type;
+-  grub_uint8_t reserved[3];  
++  grub_uint8_t reserved[3];
+   grub_uint32_t ndomains;
+   grub_uint64_t coherence;
+ };
+diff --git a/include/grub/efi/edid.h b/include/grub/efi/edid.h
+index a0140b81c..43c0c4372 100644
+--- a/include/grub/efi/edid.h
++++ b/include/grub/efi/edid.h
+@@ -43,7 +43,7 @@ struct grub_efi_edid_override {
+ };
+ 
+ typedef struct grub_efi_edid_override grub_efi_edid_override_t;
+-  
++
+ 
+ struct grub_efi_active_edid
+ {
+diff --git a/include/grub/efi/efi.h b/include/grub/efi/efi.h
+index fc723962d..eb2dfdfce 100644
+--- a/include/grub/efi/efi.h
++++ b/include/grub/efi/efi.h
+@@ -94,7 +94,7 @@ int
+ EXPORT_FUNC (grub_efi_compare_device_paths) (const grub_efi_device_path_t *dp1,
+ 					     const grub_efi_device_path_t *dp2);
+ 
+-extern void (*EXPORT_VAR(grub_efi_net_config)) (grub_efi_handle_t hnd, 
++extern void (*EXPORT_VAR(grub_efi_net_config)) (grub_efi_handle_t hnd,
+ 						char **device,
+ 						char **path);
+ 
+diff --git a/include/grub/gfxmenu_view.h b/include/grub/gfxmenu_view.h
+index 4203c8fb9..c9e12db82 100644
+--- a/include/grub/gfxmenu_view.h
++++ b/include/grub/gfxmenu_view.h
+@@ -55,9 +55,9 @@ void
+ grub_gfxmenu_view_redraw (grub_gfxmenu_view_t view,
+ 			  const grub_video_rect_t *region);
+ 
+-void 
++void
+ grub_gfxmenu_clear_timeout (void *data);
+-void 
++void
+ grub_gfxmenu_print_timeout (int timeout, void *data);
+ void
+ grub_gfxmenu_set_chosen_entry (int entry, void *data);
+diff --git a/include/grub/hfsplus.h b/include/grub/hfsplus.h
+index e14dd31ff..2d8336aff 100644
+--- a/include/grub/hfsplus.h
++++ b/include/grub/hfsplus.h
+@@ -250,7 +250,7 @@ grub_hfsplus_btree_search (struct grub_hfsplus_btree *btree,
+ 			   struct grub_hfsplus_key_internal *key,
+ 			   int (*compare_keys) (struct grub_hfsplus_key *keya,
+ 						struct grub_hfsplus_key_internal *keyb),
+-			   struct grub_hfsplus_btnode **matchnode, 
++			   struct grub_hfsplus_btnode **matchnode,
+ 			   grub_off_t *keyoffset);
+ grub_err_t
+ grub_mac_bless_inode (grub_device_t dev, grub_uint32_t inode, int is_dir,
+diff --git a/include/grub/i386/bsd.h b/include/grub/i386/bsd.h
+index 524d47a1f..523dd8621 100644
+--- a/include/grub/i386/bsd.h
++++ b/include/grub/i386/bsd.h
+@@ -97,7 +97,7 @@ grub_err_t grub_netbsd_load_elf_meta64 (struct grub_relocator *relocator,
+ 					const char *filename,
+ 					grub_addr_t *kern_end);
+ 
+-grub_err_t grub_bsd_add_meta (grub_uint32_t type, 
++grub_err_t grub_bsd_add_meta (grub_uint32_t type,
+ 			      const void *data, grub_uint32_t len);
+ grub_err_t grub_freebsd_add_meta_module (const char *filename, const char *type,
+ 					 int argc, char **argv,
+diff --git a/include/grub/i386/linux.h b/include/grub/i386/linux.h
+index eddf9251d..0fd6e1212 100644
+--- a/include/grub/i386/linux.h
++++ b/include/grub/i386/linux.h
+@@ -310,7 +310,7 @@ struct linux_kernel_params
+   grub_uint32_t bootsect_kludge;	/* obsolete */
+   grub_uint16_t heap_end_ptr;		/* Free memory after setup end */
+   grub_uint8_t ext_loader_ver;		/* Extended loader version */
+-  grub_uint8_t ext_loader_type;		/* Extended loader type */  
++  grub_uint8_t ext_loader_type;		/* Extended loader type */
+   grub_uint32_t cmd_line_ptr;		/* Points to the kernel command line */
+   grub_uint32_t initrd_addr_max;	/* Maximum initrd address */
+   grub_uint32_t kernel_alignment;	/* Alignment of the kernel */
+diff --git a/include/grub/i386/openbsd_bootarg.h b/include/grub/i386/openbsd_bootarg.h
+index 9ebe6b4e4..8c28246d5 100644
+--- a/include/grub/i386/openbsd_bootarg.h
++++ b/include/grub/i386/openbsd_bootarg.h
+@@ -17,7 +17,7 @@
+  */
+ 
+ /*      $OpenBSD: bootarg.h,v 1.11 2003/06/02 20:20:54 mickey Exp $     */
+-     
++
+ /*
+  * Copyright (c) 1996-1999 Michael Shalayeff
+  * All rights reserved.
+diff --git a/include/grub/i386/pc/vbe.h b/include/grub/i386/pc/vbe.h
+index f349b5c2b..71e7584eb 100644
+--- a/include/grub/i386/pc/vbe.h
++++ b/include/grub/i386/pc/vbe.h
+@@ -188,14 +188,14 @@ struct grub_vbe_flat_panel_info
+ 
+ /* Prototypes for helper functions.  */
+ /* Call VESA BIOS 0x4f00 to get VBE Controller Information, return status.  */
+-grub_vbe_status_t 
++grub_vbe_status_t
+ grub_vbe_bios_get_controller_info (struct grub_vbe_info_block *controller_info);
+ /* Call VESA BIOS 0x4f01 to get VBE Mode Information, return status.  */
+-grub_vbe_status_t 
++grub_vbe_status_t
+ grub_vbe_bios_get_mode_info (grub_uint32_t mode,
+ 			     struct grub_vbe_mode_info_block *mode_info);
+ /* Call VESA BIOS 0x4f03 to return current VBE Mode, return status.  */
+-grub_vbe_status_t 
++grub_vbe_status_t
+ grub_vbe_bios_get_mode (grub_uint32_t *mode);
+ /* Call VESA BIOS 0x4f05 to set memory window, return status.  */
+ grub_vbe_status_t
+@@ -205,13 +205,13 @@ grub_vbe_status_t
+ grub_vbe_bios_get_memory_window (grub_uint32_t window,
+ 				 grub_uint32_t *position);
+ /* Call VESA BIOS 0x4f06 to set scanline length (in bytes), return status.  */
+-grub_vbe_status_t 
++grub_vbe_status_t
+ grub_vbe_bios_set_scanline_length (grub_uint32_t length);
+ /* Call VESA BIOS 0x4f06 to return scanline length (in bytes), return status.  */
+-grub_vbe_status_t 
++grub_vbe_status_t
+ grub_vbe_bios_get_scanline_length (grub_uint32_t *length);
+ /* Call VESA BIOS 0x4f07 to get display start, return status.  */
+-grub_vbe_status_t 
++grub_vbe_status_t
+ grub_vbe_bios_get_display_start (grub_uint32_t *x,
+ 				 grub_uint32_t *y);
+ 
+@@ -224,7 +224,7 @@ grub_err_t grub_vbe_probe (struct grub_vbe_info_block *info_block);
+ grub_err_t grub_vbe_get_video_mode (grub_uint32_t *mode);
+ grub_err_t grub_vbe_get_video_mode_info (grub_uint32_t mode,
+                                          struct grub_vbe_mode_info_block *mode_info);
+-grub_vbe_status_t 
++grub_vbe_status_t
+ grub_vbe_bios_get_pm_interface (grub_uint16_t *seg, grub_uint16_t *offset,
+ 				grub_uint16_t *length);
+ 
+diff --git a/include/grub/ieee1275/ieee1275.h b/include/grub/ieee1275/ieee1275.h
+index 6ce8605d6..f53228703 100644
+--- a/include/grub/ieee1275/ieee1275.h
++++ b/include/grub/ieee1275/ieee1275.h
+@@ -111,7 +111,7 @@ enum grub_ieee1275_flag
+   /* OLPC / XO firmware has the cursor ON/OFF routines.  */
+   GRUB_IEEE1275_FLAG_HAS_CURSORONOFF,
+ 
+-  /* Some PowerMacs claim to use 2 address cells but in fact use only 1. 
++  /* Some PowerMacs claim to use 2 address cells but in fact use only 1.
+      Other PowerMacs claim to use only 1 and really do so. Always assume
+      1 address cell is used on PowerMacs.
+    */
+diff --git a/include/grub/menu_viewer.h b/include/grub/menu_viewer.h
+index c6513c4e8..604c07ad1 100644
+--- a/include/grub/menu_viewer.h
++++ b/include/grub/menu_viewer.h
+@@ -39,7 +39,7 @@ struct grub_menu_viewer
+ void grub_menu_register_viewer (struct grub_menu_viewer *viewer);
+ 
+ grub_err_t
+-grub_menu_try_text (struct grub_term_output *term, 
++grub_menu_try_text (struct grub_term_output *term,
+ 		    int entry, grub_menu_t menu, int nested);
+ 
+ extern grub_err_t (*grub_gfxmenu_try_hook) (int entry, grub_menu_t menu,
+diff --git a/include/grub/mips/loongson/serial.h b/include/grub/mips/loongson/serial.h
+index 45e6d8457..b35455929 100644
+--- a/include/grub/mips/loongson/serial.h
++++ b/include/grub/mips/loongson/serial.h
+@@ -30,4 +30,4 @@
+ #else
+ #endif
+ 
+-#endif 
++#endif
+diff --git a/include/grub/mips/qemu_mips/serial.h b/include/grub/mips/qemu_mips/serial.h
+index 1708678dc..c4d8d6326 100644
+--- a/include/grub/mips/qemu_mips/serial.h
++++ b/include/grub/mips/qemu_mips/serial.h
+@@ -21,4 +21,4 @@
+ 
+ #define GRUB_MACHINE_SERIAL_PORTS { 0xb40003f8 }
+ 
+-#endif 
++#endif
+diff --git a/include/grub/multiboot.h b/include/grub/multiboot.h
+index bd0a9873e..d8847f753 100644
+--- a/include/grub/multiboot.h
++++ b/include/grub/multiboot.h
+@@ -74,7 +74,7 @@ grub_err_t grub_multiboot_set_video_mode (void);
+ #endif
+ 
+ #define GRUB_MULTIBOOT_CONSOLE_EGA_TEXT 1
+-#define GRUB_MULTIBOOT_CONSOLE_FRAMEBUFFER 2 
++#define GRUB_MULTIBOOT_CONSOLE_FRAMEBUFFER 2
+ 
+ grub_err_t
+ grub_multiboot_set_console (int console_type, int accepted_consoles,
+diff --git a/include/grub/multiboot2.h b/include/grub/multiboot2.h
+index 502d34ef1..b90aa6989 100644
+--- a/include/grub/multiboot2.h
++++ b/include/grub/multiboot2.h
+@@ -66,7 +66,7 @@ grub_err_t grub_multiboot2_set_video_mode (void);
+ #endif
+ 
+ #define GRUB_MULTIBOOT2_CONSOLE_EGA_TEXT 1
+-#define GRUB_MULTIBOOT2_CONSOLE_FRAMEBUFFER 2 
++#define GRUB_MULTIBOOT2_CONSOLE_FRAMEBUFFER 2
+ 
+ grub_err_t
+ grub_multiboot2_set_console (int console_type, int accepted_consoles,
+diff --git a/include/grub/net.h b/include/grub/net.h
+index 7ae4b6bd8..099a7ce30 100644
+--- a/include/grub/net.h
++++ b/include/grub/net.h
+@@ -35,12 +35,12 @@ enum
+     GRUB_NET_OUR_IPV4_HEADER_SIZE = 20,
+     GRUB_NET_OUR_IPV6_HEADER_SIZE = 40,
+     GRUB_NET_OUR_MAX_IP_HEADER_SIZE = 40,
+-    GRUB_NET_TCP_RESERVE_SIZE = GRUB_NET_TCP_HEADER_SIZE 
++    GRUB_NET_TCP_RESERVE_SIZE = GRUB_NET_TCP_HEADER_SIZE
+     + GRUB_NET_OUR_IPV4_HEADER_SIZE
+     + GRUB_NET_MAX_LINK_HEADER_SIZE
+   };
+ 
+-typedef enum grub_link_level_protocol_id 
++typedef enum grub_link_level_protocol_id
+ {
+   GRUB_NET_LINK_LEVEL_PROTOCOL_ETHERNET
+ } grub_link_level_protocol_id_t;
+@@ -149,7 +149,7 @@ struct grub_net_card
+ 
+ struct grub_net_network_level_interface;
+ 
+-typedef enum grub_network_level_protocol_id 
++typedef enum grub_network_level_protocol_id
+ {
+   GRUB_NET_NETWORK_LEVEL_PROTOCOL_DHCP_RECV,
+   GRUB_NET_NETWORK_LEVEL_PROTOCOL_IPV4,
+@@ -182,11 +182,11 @@ typedef struct grub_net_network_level_netaddress
+   {
+     struct {
+       grub_uint32_t base;
+-      int masksize; 
++      int masksize;
+     } ipv4;
+     struct {
+       grub_uint64_t base[2];
+-      int masksize; 
++      int masksize;
+     } ipv6;
+   };
+ } grub_net_network_level_netaddress_t;
+@@ -252,7 +252,7 @@ typedef struct grub_net_app_protocol *grub_net_app_level_t;
+ 
+ typedef struct grub_net_socket *grub_net_socket_t;
+ 
+-struct grub_net_app_protocol 
++struct grub_net_app_protocol
+ {
+   struct grub_net_app_protocol *next;
+   struct grub_net_app_protocol **prev;
+diff --git a/include/grub/net/arp.h b/include/grub/net/arp.h
+index 8d9d08113..8eb211ba8 100644
+--- a/include/grub/net/arp.h
++++ b/include/grub/net/arp.h
+@@ -29,4 +29,4 @@ grub_err_t
+ grub_net_arp_send_request (struct grub_net_network_level_interface *inf,
+                            const grub_net_network_level_address_t *proto_addr);
+ 
+-#endif 
++#endif
+diff --git a/include/grub/net/ethernet.h b/include/grub/net/ethernet.h
+index 23a935e98..534ee433c 100644
+--- a/include/grub/net/ethernet.h
++++ b/include/grub/net/ethernet.h
+@@ -29,13 +29,13 @@ typedef enum
+     GRUB_NET_ETHERTYPE_IP6 = 0x86DD,
+   } grub_net_ethertype_t;
+ 
+-grub_err_t 
++grub_err_t
+ send_ethernet_packet (struct grub_net_network_level_interface *inf,
+ 		      struct grub_net_buff *nb,
+ 		      grub_net_link_level_address_t target_addr,
+ 		      grub_net_ethertype_t ethertype);
+-grub_err_t 
++grub_err_t
+ grub_net_recv_ethernet_packet (struct grub_net_buff *nb,
+ 			       struct grub_net_card *card);
+ 
+-#endif 
++#endif
+diff --git a/include/grub/net/ip.h b/include/grub/net/ip.h
+index ab9d68f98..e21a5eebc 100644
+--- a/include/grub/net/ip.h
++++ b/include/grub/net/ip.h
+@@ -58,7 +58,7 @@ grub_net_send_ip_packet (struct grub_net_network_level_interface *inf,
+ 			 struct grub_net_buff *nb,
+ 			 grub_net_ip_protocol_t proto);
+ 
+-grub_err_t 
++grub_err_t
+ grub_net_recv_icmp_packet (struct grub_net_buff *nb,
+ 			   struct grub_net_network_level_interface *inf,
+ 			   const grub_net_link_level_address_t *ll_src,
+@@ -95,4 +95,4 @@ grub_net_icmp6_send_request (struct grub_net_network_level_interface *inf,
+ 
+ grub_err_t
+ grub_net_icmp6_send_router_solicit (struct grub_net_network_level_interface *inf);
+-#endif 
++#endif
+diff --git a/include/grub/net/udp.h b/include/grub/net/udp.h
+index 17f38cfa0..3cd8feb45 100644
+--- a/include/grub/net/udp.h
++++ b/include/grub/net/udp.h
+@@ -48,4 +48,4 @@ grub_net_send_udp_packet (const grub_net_udp_socket_t socket,
+ 			  struct grub_net_buff *nb);
+ 
+ 
+-#endif 
++#endif
+diff --git a/include/grub/relocator.h b/include/grub/relocator.h
+index 1b3bdd92a..bda322057 100644
+--- a/include/grub/relocator.h
++++ b/include/grub/relocator.h
+@@ -41,7 +41,7 @@ grub_phys_addr_t
+ get_physical_target_address (grub_relocator_chunk_t in);
+ 
+ grub_err_t
+-grub_relocator_alloc_chunk_align (struct grub_relocator *rel, 
++grub_relocator_alloc_chunk_align (struct grub_relocator *rel,
+ 				  grub_relocator_chunk_t *out,
+ 				  grub_phys_addr_t min_addr,
+ 				  grub_phys_addr_t max_addr,
+diff --git a/include/grub/relocator_private.h b/include/grub/relocator_private.h
+index 1c563cb64..d8e972e01 100644
+--- a/include/grub/relocator_private.h
++++ b/include/grub/relocator_private.h
+@@ -65,19 +65,19 @@ void grub_cpu_relocator_jumper (void *rels, grub_addr_t addr);
+ struct grub_relocator_mmap_event
+ {
+   enum {
+-    IN_REG_START = 0, 
+-    IN_REG_END = 1, 
+-    REG_BEG_START = 2, 
++    IN_REG_START = 0,
++    IN_REG_END = 1,
++    REG_BEG_START = 2,
+     REG_BEG_END = REG_BEG_START | 1,
+ #if GRUB_RELOCATOR_HAVE_FIRMWARE_REQUESTS
+-    REG_FIRMWARE_START = 4, 
++    REG_FIRMWARE_START = 4,
+     REG_FIRMWARE_END = REG_FIRMWARE_START | 1,
+     /* To track the regions already in heap.  */
+-    FIRMWARE_BLOCK_START = 6, 
++    FIRMWARE_BLOCK_START = 6,
+     FIRMWARE_BLOCK_END = FIRMWARE_BLOCK_START | 1,
+ #endif
+ #if GRUB_RELOCATOR_HAVE_LEFTOVERS
+-    REG_LEFTOVER_START = 8, 
++    REG_LEFTOVER_START = 8,
+     REG_LEFTOVER_END = REG_LEFTOVER_START | 1,
+ #endif
+     COLLISION_START = 10,
+@@ -99,7 +99,7 @@ struct grub_relocator_mmap_event
+   };
+ };
+ 
+-/* Return 0 on failure, 1 on success. The failure here 
++/* Return 0 on failure, 1 on success. The failure here
+    can be very time-expensive, so please make sure fill events is accurate.  */
+ #if GRUB_RELOCATOR_HAVE_FIRMWARE_REQUESTS
+ int grub_relocator_firmware_alloc_region (grub_phys_addr_t start,
+diff --git a/include/grub/term.h b/include/grub/term.h
+index 3387cb052..7f1a14c84 100644
+--- a/include/grub/term.h
++++ b/include/grub/term.h
+@@ -366,8 +366,8 @@ grub_term_gotoxy (struct grub_term_output *term, struct grub_term_coordinate pos
+   term->gotoxy (term, pos);
+ }
+ 
+-static inline void 
+-grub_term_setcolorstate (struct grub_term_output *term, 
++static inline void
++grub_term_setcolorstate (struct grub_term_output *term,
+ 			 grub_term_color_state state)
+ {
+   if (term->setcolorstate)
+@@ -378,20 +378,20 @@ static inline void
+ grub_setcolorstate (grub_term_color_state state)
+ {
+   struct grub_term_output *term;
+-  
++
+   FOR_ACTIVE_TERM_OUTPUTS(term)
+     grub_term_setcolorstate (term, state);
+ }
+ 
+ /* Turn on/off the cursor.  */
+-static inline void 
++static inline void
+ grub_term_setcursor (struct grub_term_output *term, int on)
+ {
+   if (term->setcursor)
+     term->setcursor (term, on);
+ }
+ 
+-static inline void 
++static inline void
+ grub_term_cls (struct grub_term_output *term)
+ {
+   if (term->cls)
+diff --git a/include/grub/unicode.h b/include/grub/unicode.h
+index 4de986a85..71a4d1a54 100644
+--- a/include/grub/unicode.h
++++ b/include/grub/unicode.h
+@@ -354,7 +354,7 @@ grub_uint32_t
+ grub_unicode_shape_code (grub_uint32_t in, grub_uint8_t attr);
+ 
+ const grub_uint32_t *
+-grub_unicode_get_comb_end (const grub_uint32_t *end, 
++grub_unicode_get_comb_end (const grub_uint32_t *end,
+ 			   const grub_uint32_t *cur);
+ 
+ #endif
+diff --git a/include/grub/usb.h b/include/grub/usb.h
+index 6475c552f..0f346af12 100644
+--- a/include/grub/usb.h
++++ b/include/grub/usb.h
+@@ -134,7 +134,7 @@ struct grub_usb_controller_dev
+   /* Value is calculated/estimated in driver - some TDs should be */
+   /* reserved for posible concurrent control or "interrupt" transfers */
+   grub_size_t max_bulk_tds;
+-  
++
+   /* The next host controller.  */
+   struct grub_usb_controller_dev *next;
+ };
+@@ -178,7 +178,7 @@ struct grub_usb_hub_port
+ {
+   grub_uint64_t soft_limit_time;
+   grub_uint64_t hard_limit_time;
+-  enum { 
++  enum {
+     PORT_STATE_NORMAL = 0,
+     PORT_STATE_WAITING_FOR_STABLE_POWER = 1,
+     PORT_STATE_FAILED_DEVICE = 2,
+diff --git a/include/grub/usbtrans.h b/include/grub/usbtrans.h
+index aef482cb9..039ebed65 100644
+--- a/include/grub/usbtrans.h
++++ b/include/grub/usbtrans.h
+@@ -63,7 +63,7 @@ struct grub_usb_transfer
+   struct grub_usb_device *dev;
+ 
+   struct grub_usb_transaction *transactions;
+-  
++
+   int last_trans;
+   /* Index of last processed transaction in OHCI/UHCI driver. */
+ 
+diff --git a/include/grub/util/install.h b/include/grub/util/install.h
+index 7df3191f4..7d7445af9 100644
+--- a/include/grub/util/install.h
++++ b/include/grub/util/install.h
+@@ -236,11 +236,11 @@ void
+ grub_install_sgi_setup (const char *install_device,
+ 			const char *imgfile, const char *destname);
+ 
+-int 
++int
+ grub_install_compress_gzip (const char *src, const char *dest);
+-int 
++int
+ grub_install_compress_lzop (const char *src, const char *dest);
+-int 
++int
+ grub_install_compress_xz (const char *src, const char *dest);
+ 
+ void
+diff --git a/include/grub/vgaregs.h b/include/grub/vgaregs.h
+index 1a666a1f0..0c9e985cf 100644
+--- a/include/grub/vgaregs.h
++++ b/include/grub/vgaregs.h
+@@ -50,8 +50,8 @@ enum
+   {
+     GRUB_VGA_CR_HTOTAL = 0x00,
+     GRUB_VGA_CR_HORIZ_END = 0x01,
+-    GRUB_VGA_CR_HBLANK_START = 0x02,    
+-    GRUB_VGA_CR_HBLANK_END = 0x03,    
++    GRUB_VGA_CR_HBLANK_START = 0x02,
++    GRUB_VGA_CR_HBLANK_END = 0x03,
+     GRUB_VGA_CR_HORIZ_SYNC_PULSE_START = 0x04,
+     GRUB_VGA_CR_HORIZ_SYNC_PULSE_END = 0x05,
+     GRUB_VGA_CR_VERT_TOTAL = 0x06,
+diff --git a/include/grub/video.h b/include/grub/video.h
+index 52c3fd71e..9dac0f379 100644
+--- a/include/grub/video.h
++++ b/include/grub/video.h
+@@ -413,7 +413,7 @@ static inline void
+ grub_video_register (grub_video_adapter_t adapter)
+ {
+   grub_video_adapter_t *p;
+-  for (p = &grub_video_adapter_list; *p && (*p)->prio > adapter->prio; 
++  for (p = &grub_video_adapter_list; *p && (*p)->prio > adapter->prio;
+        p = &((*p)->next));
+   adapter->next = *p;
+   *p = adapter;
+@@ -497,7 +497,7 @@ grub_err_t EXPORT_FUNC (grub_video_unmap_color) (grub_video_color_t color,
+ 						 grub_uint8_t *blue,
+ 						 grub_uint8_t *alpha);
+ 
+-grub_err_t EXPORT_FUNC (grub_video_fill_rect) (grub_video_color_t color, 
++grub_err_t EXPORT_FUNC (grub_video_fill_rect) (grub_video_color_t color,
+ 					       int x, int y,
+ 					       unsigned int width,
+ 					       unsigned int height);
+diff --git a/include/multiboot2.h b/include/multiboot2.h
+index 5693923c0..a039aa043 100644
+--- a/include/multiboot2.h
++++ b/include/multiboot2.h
+@@ -244,7 +244,7 @@ struct multiboot_tag_mmap
+   multiboot_uint32_t size;
+   multiboot_uint32_t entry_size;
+   multiboot_uint32_t entry_version;
+-  struct multiboot_mmap_entry entries[0];  
++  struct multiboot_mmap_entry entries[0];
+ };
+ 
+ struct multiboot_vbe_info_block
+@@ -388,7 +388,7 @@ struct multiboot_tag_efi_mmap
+   multiboot_uint32_t descr_size;
+   multiboot_uint32_t descr_vers;
+   multiboot_uint8_t efi_mmap[0];
+-}; 
++};
+ 
+ struct multiboot_tag_efi32_ih
+ {
+diff --git a/include/xen/arch-x86/xen-x86_32.h b/include/xen/arch-x86/xen-x86_32.h
+index 7eca6cd41..9ca33d824 100644
+--- a/include/xen/arch-x86/xen-x86_32.h
++++ b/include/xen/arch-x86/xen-x86_32.h
+@@ -1,8 +1,8 @@
+ /******************************************************************************
+  * xen-x86_32.h
+- * 
++ *
+  * Guest OS interface to x86 32-bit Xen.
+- * 
++ *
+  * Permission is hereby granted, free of charge, to any person obtaining a copy
+  * of this software and associated documentation files (the "Software"), to
+  * deal in the Software without restriction, including without limitation the
+diff --git a/include/xen/arch-x86/xen-x86_64.h b/include/xen/arch-x86/xen-x86_64.h
+index 5e18613bd..17b438406 100644
+--- a/include/xen/arch-x86/xen-x86_64.h
++++ b/include/xen/arch-x86/xen-x86_64.h
+@@ -1,8 +1,8 @@
+ /******************************************************************************
+  * xen-x86_64.h
+- * 
++ *
+  * Guest OS interface to x86 64-bit Xen.
+- * 
++ *
+  * Permission is hereby granted, free of charge, to any person obtaining a copy
+  * of this software and associated documentation files (the "Software"), to
+  * deal in the Software without restriction, including without limitation the
+diff --git a/include/xen/arch-x86/xen.h b/include/xen/arch-x86/xen.h
+index 56be26cb6..2ca71fcdd 100644
+--- a/include/xen/arch-x86/xen.h
++++ b/include/xen/arch-x86/xen.h
+@@ -1,8 +1,8 @@
+ /******************************************************************************
+  * arch-x86/xen.h
+- * 
++ *
+  * Guest OS interface to x86 Xen.
+- * 
++ *
+  * Permission is hereby granted, free of charge, to any person obtaining a copy
+  * of this software and associated documentation files (the "Software"), to
+  * deal in the Software without restriction, including without limitation the
+@@ -152,7 +152,7 @@ DEFINE_XEN_GUEST_HANDLE(trap_info_t);
+ typedef uint64_t tsc_timestamp_t; /* RDTSC timestamp */
+ 
+ /*
+- * The following is all CPU context. Note that the fpu_ctxt block is filled 
++ * The following is all CPU context. Note that the fpu_ctxt block is filled
+  * in by FXSAVE if the CPU has feature FXSR; otherwise FSAVE is used.
+  *
+  * Also note that when calling DOMCTL_setvcpucontext and VCPU_initialise
+diff --git a/include/xen/io/console.h b/include/xen/io/console.h
+index e2cd97f77..649601896 100644
+--- a/include/xen/io/console.h
++++ b/include/xen/io/console.h
+@@ -1,8 +1,8 @@
+ /******************************************************************************
+  * console.h
+- * 
++ *
+  * Console I/O interface for Xen guest OSes.
+- * 
++ *
+  * Permission is hereby granted, free of charge, to any person obtaining a copy
+  * of this software and associated documentation files (the "Software"), to
+  * deal in the Software without restriction, including without limitation the
+diff --git a/include/xen/io/protocols.h b/include/xen/io/protocols.h
+index 80b196bc3..d05c40505 100644
+--- a/include/xen/io/protocols.h
++++ b/include/xen/io/protocols.h
+@@ -1,6 +1,6 @@
+ /******************************************************************************
+  * protocols.h
+- * 
++ *
+  * Permission is hereby granted, free of charge, to any person obtaining a copy
+  * of this software and associated documentation files (the "Software"), to
+  * deal in the Software without restriction, including without limitation the
+diff --git a/include/xen/io/ring.h b/include/xen/io/ring.h
+index 73e13d7ae..91b3092e7 100644
+--- a/include/xen/io/ring.h
++++ b/include/xen/io/ring.h
+@@ -1,6 +1,6 @@
+ /******************************************************************************
+  * ring.h
+- * 
++ *
+  * Shared producer-consumer ring macros.
+  *
+  * Permission is hereby granted, free of charge, to any person obtaining a copy
+@@ -47,7 +47,7 @@ typedef unsigned int RING_IDX;
+ /*
+  * Calculate size of a shared ring, given the total available space for the
+  * ring and indexes (_sz), and the name tag of the request/response structure.
+- * A ring contains as many entries as will fit, rounded down to the nearest 
++ * A ring contains as many entries as will fit, rounded down to the nearest
+  * power of two (so we can mask with (size-1) to loop around).
+  */
+ #define __CONST_RING_SIZE(_s, _sz) \
+@@ -61,7 +61,7 @@ typedef unsigned int RING_IDX;
+ 
+ /*
+  * Macros to make the correct C datatypes for a new kind of ring.
+- * 
++ *
+  * To make a new ring datatype, you need to have two message structures,
+  * let's say request_t, and response_t already defined.
+  *
+@@ -71,7 +71,7 @@ typedef unsigned int RING_IDX;
+  *
+  * These expand out to give you a set of types, as you can see below.
+  * The most important of these are:
+- * 
++ *
+  *     mytag_sring_t      - The shared ring.
+  *     mytag_front_ring_t - The 'front' half of the ring.
+  *     mytag_back_ring_t  - The 'back' half of the ring.
+@@ -139,15 +139,15 @@ typedef struct __name##_back_ring __name##_back_ring_t
+ 
+ /*
+  * Macros for manipulating rings.
+- * 
+- * FRONT_RING_whatever works on the "front end" of a ring: here 
++ *
++ * FRONT_RING_whatever works on the "front end" of a ring: here
+  * requests are pushed on to the ring and responses taken off it.
+- * 
+- * BACK_RING_whatever works on the "back end" of a ring: here 
++ *
++ * BACK_RING_whatever works on the "back end" of a ring: here
+  * requests are taken off the ring and responses put on.
+- * 
+- * N.B. these macros do NO INTERLOCKS OR FLOW CONTROL. 
+- * This is OK in 1-for-1 request-response situations where the 
++ *
++ * N.B. these macros do NO INTERLOCKS OR FLOW CONTROL.
++ * This is OK in 1-for-1 request-response situations where the
+  * requestor (front end) never has more than RING_SIZE()-1
+  * outstanding requests.
+  */
+@@ -235,26 +235,26 @@ typedef struct __name##_back_ring __name##_back_ring_t
+ 
+ /*
+  * Notification hold-off (req_event and rsp_event):
+- * 
++ *
+  * When queueing requests or responses on a shared ring, it may not always be
+  * necessary to notify the remote end. For example, if requests are in flight
+  * in a backend, the front may be able to queue further requests without
+  * notifying the back (if the back checks for new requests when it queues
+  * responses).
+- * 
++ *
+  * When enqueuing requests or responses:
+- * 
++ *
+  *  Use RING_PUSH_{REQUESTS,RESPONSES}_AND_CHECK_NOTIFY(). The second argument
+  *  is a boolean return value. True indicates that the receiver requires an
+  *  asynchronous notification.
+- * 
++ *
+  * After dequeuing requests or responses (before sleeping the connection):
+- * 
++ *
+  *  Use RING_FINAL_CHECK_FOR_REQUESTS() or RING_FINAL_CHECK_FOR_RESPONSES().
+  *  The second argument is a boolean return value. True indicates that there
+  *  are pending messages on the ring (i.e., the connection should not be put
+  *  to sleep).
+- * 
++ *
+  *  These macros will set the req_event/rsp_event field to trigger a
+  *  notification on the very next message that is enqueued. If you want to
+  *  create batches of work (i.e., only receive a notification after several
+diff --git a/include/xen/xen-compat.h b/include/xen/xen-compat.h
+index 3eb80a02d..2508645b5 100644
+--- a/include/xen/xen-compat.h
++++ b/include/xen/xen-compat.h
+@@ -1,8 +1,8 @@
+ /******************************************************************************
+  * xen-compat.h
+- * 
++ *
+  * Guest OS interface to Xen.  Compatibility layer.
+- * 
++ *
+  * Permission is hereby granted, free of charge, to any person obtaining a copy
+  * of this software and associated documentation files (the "Software"), to
+  * deal in the Software without restriction, including without limitation the
+diff --git a/include/xen/xen.h b/include/xen/xen.h
+index 308109f17..692f97a5b 100644
+--- a/include/xen/xen.h
++++ b/include/xen/xen.h
+@@ -1,8 +1,8 @@
+ /******************************************************************************
+  * xen.h
+- * 
++ *
+  * Guest OS interface to Xen.
+- * 
++ *
+  * Permission is hereby granted, free of charge, to any person obtaining a copy
+  * of this software and associated documentation files (the "Software"), to
+  * deal in the Software without restriction, including without limitation the
+@@ -157,11 +157,11 @@ DEFINE_XEN_GUEST_HANDLE(xen_ulong_t);
+ #define __HYPERVISOR_dom0_op __HYPERVISOR_platform_op
+ #endif
+ 
+-/* 
++/*
+  * VIRTUAL INTERRUPTS
+- * 
++ *
+  * Virtual interrupts that a guest OS may receive from Xen.
+- * 
++ *
+  * In the side comments, 'V.' denotes a per-VCPU VIRQ while 'G.' denotes a
+  * global VIRQ. The former can be bound once per VCPU and cannot be re-bound.
+  * The latter can be allocated only once per guest: they must initially be
+@@ -211,7 +211,7 @@ DEFINE_XEN_GUEST_HANDLE(xen_ulong_t);
+  *                     (x) encodes the PFD as follows:
+  *                     x == 0 => PFD == DOMID_SELF
+  *                     x != 0 => PFD == x - 1
+- * 
++ *
+  * Sub-commands: ptr[1:0] specifies the appropriate MMU_* command.
+  * -------------
+  * ptr[1:0] == MMU_NORMAL_PT_UPDATE:
+@@ -257,13 +257,13 @@ DEFINE_XEN_GUEST_HANDLE(xen_ulong_t);
+  * To deallocate the pages, the operations are the reverse of the steps
+  * mentioned above. The argument is MMUEXT_UNPIN_TABLE for all levels and the
+  * pagetable MUST not be in use (meaning that the cr3 is not set to it).
+- * 
++ *
+  * ptr[1:0] == MMU_MACHPHYS_UPDATE:
+  * Updates an entry in the machine->pseudo-physical mapping table.
+  * ptr[:2]  -- Machine address within the frame whose mapping to modify.
+  *             The frame must belong to the FD, if one is specified.
+  * val      -- Value to write into the mapping entry.
+- * 
++ *
+  * ptr[1:0] == MMU_PT_UPDATE_PRESERVE_AD:
+  * As MMU_NORMAL_PT_UPDATE above, but A/D bits currently in the PTE are ORed
+  * with those in @val.
+@@ -655,7 +655,7 @@ typedef struct vcpu_time_info vcpu_time_info_t;
+ struct vcpu_info {
+     /*
+      * 'evtchn_upcall_pending' is written non-zero by Xen to indicate
+-     * a pending notification for a particular VCPU. It is then cleared 
++     * a pending notification for a particular VCPU. It is then cleared
+      * by the guest OS /before/ checking for pending work, thus avoiding
+      * a set-and-check race. Note that the mask is only accessed by Xen
+      * on the CPU that is currently hosting the VCPU. This means that the
+@@ -718,7 +718,7 @@ struct shared_info {
+      *  3. Virtual interrupts ('events'). A domain can bind an event-channel
+      *     port to a virtual interrupt source, such as the virtual-timer
+      *     device or the emergency console.
+-     * 
++     *
+      * Event channels are addressed by a "port index". Each channel is
+      * associated with two bits of information:
+      *  1. PENDING -- notifies the domain that there is a pending notification
+@@ -729,7 +729,7 @@ struct shared_info {
+      *     becomes pending while the channel is masked then the 'edge' is lost
+      *     (i.e., when the channel is unmasked, the guest must manually handle
+      *     pending notifications as no upcall will be scheduled by Xen).
+-     * 
++     *
+      * To expedite scanning of pending notifications, any 0->1 pending
+      * transition on an unmasked channel causes a corresponding bit in a
+      * per-vcpu selector word to be set. Each bit in the selector covers a
+-- 
+2.36.1
+

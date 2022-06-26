@@ -1,0 +1,79 @@
+From ea1b565e8c9928630ae596fae88c50cd61d5ea55 Mon Sep 17 00:00:00 2001
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date: Wed, 27 Apr 2022 23:00:29 +0200
+Subject: [PATCH 207/261] osdep/hurd: Support device entries with @/dev/disk:
+ qualifier
+
+Those are used with non-bootstrap disk drivers, for which libstore has to
+open /dev/disk before calling device_open on it instead of on the device
+master port. Normally in that case all /dev/ entries also have the @/dev/disk:
+qualifier, so we can just drop it.
+
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/osdep/hurd/getroot.c  | 18 ++++++++++++++++--
+ grub-core/osdep/hurd/hostdisk.c | 17 +++++++++++++++++
+ 2 files changed, 33 insertions(+), 2 deletions(-)
+
+diff --git a/grub-core/osdep/hurd/getroot.c b/grub-core/osdep/hurd/getroot.c
+index c66b206fa..69af72206 100644
+--- a/grub-core/osdep/hurd/getroot.c
++++ b/grub-core/osdep/hurd/getroot.c
+@@ -112,9 +112,23 @@ grub_util_find_hurd_root_device (const char *path)
+   if (strncmp (name, "device:", sizeof ("device:") - 1) == 0)
+     {
+       char *dev_name = name + sizeof ("device:") - 1;
+-      size_t size = sizeof ("/dev/") - 1 + strlen (dev_name) + 1;
++      size_t size;
+       char *next;
+-      ret = malloc (size);
++
++      if (dev_name[0] == '@')
++        {
++	  /*
++	   * Non-bootstrap disk driver, the /dev/ entry is normally set up with
++	   * the same @.
++	   */
++          char *next_name = strchr (dev_name, ':');
++
++          if (next_name)
++            dev_name = next_name + 1;
++        }
++
++      size = sizeof ("/dev/") - 1 + strlen (dev_name) + 1;
++      ret = xmalloc (size);
+       next = stpncpy (ret, "/dev/", size);
+       stpncpy (next, dev_name, size - (next - ret));
+     }
+diff --git a/grub-core/osdep/hurd/hostdisk.c b/grub-core/osdep/hurd/hostdisk.c
+index c47b5a5ea..8196d8c0e 100644
+--- a/grub-core/osdep/hurd/hostdisk.c
++++ b/grub-core/osdep/hurd/hostdisk.c
+@@ -87,6 +87,23 @@ grub_util_hurd_get_disk_info (const char *dev, grub_uint32_t *secsize, grub_disk
+ 	  *parent = xmalloc (len+1);
+ 	  memcpy (*parent, data, len);
+ 	  (*parent)[len] = '\0';
++
++	  if ((*parent)[0] == '@')
++	    {
++	      /*
++	       * Non-bootstrap disk driver, the /dev/ entry is normally set up with
++	       * the same @.
++	       */
++	      char *next_path = strchr (*parent, ':');
++
++	      if (next_path)
++		{
++		  char *n = xstrdup (next_path + 1);
++
++		  free (*parent);
++		  *parent = n;
++		}
++	    }
+ 	}
+     }
+   if (offset)
+-- 
+2.36.1
+

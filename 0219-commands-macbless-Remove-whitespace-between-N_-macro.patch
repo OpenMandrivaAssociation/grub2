@@ -1,0 +1,34 @@
+From 56ae06906de6bbc9d7e958183d996f080a2523dd Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Wed, 11 May 2022 22:19:46 -0500
+Subject: [PATCH 219/261] commands/macbless: Remove whitespace between N_ macro
+ and open parenthesis
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/commands/macbless.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/grub-core/commands/macbless.c b/grub-core/commands/macbless.c
+index 85cefd0f7..3d761452a 100644
+--- a/grub-core/commands/macbless.c
++++ b/grub-core/commands/macbless.c
+@@ -220,12 +220,10 @@ GRUB_MOD_INIT(macbless)
+ {
+   cmd = grub_register_command ("mactelbless", grub_cmd_macbless,
+ 			       N_("FILE"),
+-			       N_
+-			       ("Bless FILE of HFS or HFS+ partition for intel macs."));
++			       N_("Bless FILE of HFS or HFS+ partition for intel macs."));
+   cmd_ppc =
+     grub_register_command ("macppcbless", grub_cmd_macbless, N_("DIR"),
+-			   N_
+-			   ("Bless DIR of HFS or HFS+ partition for PPC macs."));
++			   N_("Bless DIR of HFS or HFS+ partition for PPC macs."));
+ }
+ 
+ GRUB_MOD_FINI(macbless)
+-- 
+2.36.1
+

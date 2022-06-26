@@ -1,0 +1,209 @@
+From bcb15e011a100ded569dd9565de866b066d95252 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Tue, 12 Oct 2021 19:40:01 -0500
+Subject: [PATCH 039/261] tests: A failure of mktemp should cause the test
+ script to exit with code 99
+
+A test exiting with code 99 means that there was an error in the test itself
+and not a failure in the thing being tested (also known as a hard error).
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/ahci_test.in            | 4 ++--
+ tests/ehci_test.in            | 4 ++--
+ tests/gettext_strings_test.in | 2 +-
+ tests/grub_cmd_test.in        | 6 +++---
+ tests/grub_script_blockarg.in | 2 +-
+ tests/ohci_test.in            | 4 ++--
+ tests/partmap_test.in         | 4 ++--
+ tests/pata_test.in            | 4 ++--
+ tests/syslinux_test.in        | 2 +-
+ tests/test_sha512sum.in       | 6 +++---
+ tests/uhci_test.in            | 4 ++--
+ 11 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/tests/ahci_test.in b/tests/ahci_test.in
+index 7853bb8b6..3f7645ad8 100644
+--- a/tests/ahci_test.in
++++ b/tests/ahci_test.in
+@@ -34,8 +34,8 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ 	exit 0;;
+ esac
+ 
+-imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
+-outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
++imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
++outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+ 
+ echo "hello" > "$outfile"
+ 
+diff --git a/tests/ehci_test.in b/tests/ehci_test.in
+index 426bfa7db..df408d77a 100644
+--- a/tests/ehci_test.in
++++ b/tests/ehci_test.in
+@@ -34,8 +34,8 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ 	exit 0;;
+ esac
+ 
+-imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
+-outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
++imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
++outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+ 
+ echo "hello" > "$outfile"
+ 
+diff --git a/tests/gettext_strings_test.in b/tests/gettext_strings_test.in
+index 813999ebe..1c37fe41b 100644
+--- a/tests/gettext_strings_test.in
++++ b/tests/gettext_strings_test.in
+@@ -2,7 +2,7 @@
+ 
+ cd '@srcdir@'
+ 
+-tdir="$(mktemp -d "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX")"
++tdir="$(mktemp -d "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX")" || exit 99
+ 
+ xgettext -f po/POTFILES.in -L C -o "$tdir/"skip.pot -x po/grub.pot --keyword=grub_util_info --keyword=grub_dprintf:1,2 --keyword=grub_register_command --keyword=grub_register_extcmd --keyword=grub_efiemu_resolve_symbol --keyword=grub_efiemu_register_symbol --keyword=grub_dl_load --keyword=grub_crypto_lookup_md_by_name --keyword=grub_crypto_lookup_cipher_by_name --keyword=grub_efiemu_resolve_symbol --keyword=alias --keyword=grub_ieee1275_get_property:2 --keyword=grub_ieee1275_find_device --keyword=grub_ieee1275_get_integer_property:2 --keyword=INIT_IEEE1275_COMMON:2  --keyword=grub_boot_time --keyword=grub_env_get --keyword=grub_env_set --keyword=grub_register_variable_hook --keyword=grub_fatal --keyword=__asm__ --keyword=volatile --keyword=__volatile__  --keyword=grub_error:2 --from-code=iso-8859-1
+ xgettext -f po/POTFILES.in -L C -o "$tdir/"skip2.pot -x po/grub.pot --keyword=volatile:2 --keyword=__volatile__:2 --keyword=grub_dprintf:2 --from-code=iso-8859-1
+diff --git a/tests/grub_cmd_test.in b/tests/grub_cmd_test.in
+index dac6f7d6a..043c3a634 100644
+--- a/tests/grub_cmd_test.in
++++ b/tests/grub_cmd_test.in
+@@ -2,8 +2,8 @@
+ set -e
+ 
+ # create a randome file
+-empty="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
+-non_empty="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
++empty="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
++non_empty="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+ cat >$non_empty <<EOF
+ hello world!
+ EOF
+@@ -21,7 +21,7 @@ else
+ fi
+ 
+ 
+-outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
++outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+ @builddir@/grub-shell --files=$grub_empty=$empty  --files=$grub_non_empty=$non_empty>$outfile <<EOF
+ if ! test -f $grub_empty; then
+   echo FAIL1
+diff --git a/tests/grub_script_blockarg.in b/tests/grub_script_blockarg.in
+index 134a43b05..a91c7ca82 100644
+--- a/tests/grub_script_blockarg.in
++++ b/tests/grub_script_blockarg.in
+@@ -28,7 +28,7 @@ cmd='test_blockarg { true }'
+ v=`echo "$cmd" | @builddir@/grub-shell`
+ error_if_not "$v" '{ true }'
+ 
+-tmp=`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"` || exit 1
++tmp=`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"` || exit 99
+ cmd='test_blockarg { test_blockarg { true } }'
+ echo "$cmd" | @builddir@/grub-shell >$tmp
+ error_if_not "`head -n1 $tmp|tail -n1`" '{ test_blockarg { true } }'
+diff --git a/tests/ohci_test.in b/tests/ohci_test.in
+index 2b96539b8..c72618656 100644
+--- a/tests/ohci_test.in
++++ b/tests/ohci_test.in
+@@ -34,8 +34,8 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ 	exit 0;;
+ esac
+ 
+-imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
+-outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
++imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
++outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+ 
+ echo "hello" > "$outfile"
+ 
+diff --git a/tests/partmap_test.in b/tests/partmap_test.in
+index 5f18ab51c..7906db43d 100644
+--- a/tests/partmap_test.in
++++ b/tests/partmap_test.in
+@@ -101,8 +101,8 @@ if ! which parted >/dev/null 2>&1; then
+    exit 77
+ fi
+ 
+-imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
+-outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
++imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
++outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+ 
+ #
+ # MSDOS partition types
+diff --git a/tests/pata_test.in b/tests/pata_test.in
+index 38dff74a8..a69719bf5 100644
+--- a/tests/pata_test.in
++++ b/tests/pata_test.in
+@@ -38,8 +38,8 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ 	;;
+ esac
+ 
+-imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
+-outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
++imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
++outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+ 
+ echo "hello" > "$outfile"
+ 
+diff --git a/tests/syslinux_test.in b/tests/syslinux_test.in
+index 4ea86390e..44d3cdf7a 100644
+--- a/tests/syslinux_test.in
++++ b/tests/syslinux_test.in
+@@ -2,7 +2,7 @@
+ 
+ set -e
+ 
+-outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
++outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+ 
+ "@builddir@/grub-syslinux2cfg" -r "@abs_top_srcdir@/tests/syslinux/ubuntu10.04" "@abs_top_srcdir@/tests/syslinux/ubuntu10.04/isolinux/isolinux.cfg" -o "$outfile"
+ 
+diff --git a/tests/test_sha512sum.in b/tests/test_sha512sum.in
+index d97b7ae2c..b2bd89609 100644
+--- a/tests/test_sha512sum.in
++++ b/tests/test_sha512sum.in
+@@ -2,7 +2,7 @@
+ set -e
+ 
+ # create a randome file
+-file="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
++file="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+ cat >$file <<EOF
+ hello world!
+ EOF
+@@ -16,12 +16,12 @@ else
+ fi
+ 
+ 
+-outfile1="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
++outfile1="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+ @builddir@/grub-shell --files=/boot/grub/file=$file >$outfile1 <<EOF
+ sha512sum $grub_file
+ EOF
+ 
+-outfile2="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
++outfile2="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+ sha512sum $file >$outfile2
+ 
+ SHA1=`cat $outfile1 | tr -d '\n' | cut -f1 -d\ `
+diff --git a/tests/uhci_test.in b/tests/uhci_test.in
+index 9a9492a43..7b8892c63 100644
+--- a/tests/uhci_test.in
++++ b/tests/uhci_test.in
+@@ -34,8 +34,8 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ 	exit 0;;
+ esac
+ 
+-imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
+-outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 1
++imgfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
++outfile="`mktemp "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"`" || exit 99
+ 
+ echo "hello" > "$outfile"
+ 
+-- 
+2.36.1
+

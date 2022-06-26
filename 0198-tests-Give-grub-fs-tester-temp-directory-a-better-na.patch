@@ -1,0 +1,34 @@
+From 8d6390aff170926b92acf327bcddc4aec7497862 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Sat, 9 Apr 2022 02:44:47 +0000
+Subject: [PATCH 198/261] tests: Give grub-fs-tester temp directory a better
+ name
+
+Instead of "tmp" the name is prefixed by the name of the scripts (e.g.
+grub-fs-tester). A timestamp is added in the name to allow for easily
+seeing a chronological sorting of runs and the name of the filesystem
+being tested. The random component is set to the minimal possible,
+3 characters, because the timestamp should provide enough uniqueness.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/util/grub-fs-tester.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/util/grub-fs-tester.in b/tests/util/grub-fs-tester.in
+index 868199109..02edcf897 100644
+--- a/tests/util/grub-fs-tester.in
++++ b/tests/util/grub-fs-tester.in
+@@ -7,7 +7,7 @@ fs="$1"
+ 
+ GRUBFSTEST="@builddir@/grub-fstest"
+ 
+-tempdir=`mktemp -d "${TMPDIR:-/tmp}/tmp.XXXXXXXXXX"` ||
++tempdir=`mktemp -d "${TMPDIR:-/tmp}/${0##*/}.$(date '+%Y%m%d%H%M%S%N').${fs}.XXX"` ||
+ { echo "Failed to make temporary directory"; exit 99; }
+ 
+ # xorriso -as mkisofs options to ignore locale when processing file names and
+-- 
+2.36.1
+

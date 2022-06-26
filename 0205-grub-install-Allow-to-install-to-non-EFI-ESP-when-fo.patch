@@ -1,0 +1,43 @@
+From 3aec0854104159f41ed6d45baeb551f8743f5ee8 Mon Sep 17 00:00:00 2001
+From: Icenowy Zheng <uwu@icenowy.me>
+Date: Sun, 24 Apr 2022 15:36:33 +0800
+Subject: [PATCH 205/261] grub-install: Allow to install to non-EFI ESP when
+ --force
+
+Although the EFI specification enforces support for FAT ESP, it's free
+for EFI implementations to implement support for ESPs with other formats
+(e.g. ext4, ntfs, etc), and at least U-Boot EFI will support ext4 ESP if
+U-Boot is built with ext4 support. In some situations a GRUB installation
+on such a non-FAT ESP could be useful (e.g. a NTFS-based USB disk that
+can dual boot a Windows installation media and a Linux LiveCD).
+
+As this is advanced and implementation-dependent behavior, let grub-install
+allow this kind of installation, but only when --force is specified.
+
+Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ util/grub-install.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/util/grub-install.c b/util/grub-install.c
+index d601c3e8d..7b04bd3c5 100644
+--- a/util/grub-install.c
++++ b/util/grub-install.c
+@@ -1092,7 +1092,12 @@ main (int argc, char *argv[])
+ 	efidir_is_mac = 1;
+ 
+       if (!efidir_is_mac && grub_strcmp (fs->name, "fat") != 0)
+-	grub_util_error (_("%s doesn't look like an EFI partition"), efidir);
++	{
++	  if (force)
++	    grub_util_warn (_("%s doesn't look like an EFI partition, system may not boot"), efidir);
++	  else
++	    grub_util_error (_("%s doesn't look like an EFI partition"), efidir);
++	}
+ 
+       /* The EFI specification requires that an EFI System Partition must
+ 	 contain an "EFI" subdirectory, and that OS loaders are stored in
+-- 
+2.36.1
+

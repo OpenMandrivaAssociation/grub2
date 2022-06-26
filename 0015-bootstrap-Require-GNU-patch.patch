@@ -1,0 +1,46 @@
+From ebed73d509c6433507b57c3b1d9486904f925c0f Mon Sep 17 00:00:00 2001
+From: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 30 Aug 2021 11:53:16 +0200
+Subject: [PATCH 015/261] bootstrap: Require GNU patch
+
+The bootstrap.conf uses patch, let's require it.
+
+Better than multiple messages:
+  ./bootstrap.conf: line 84: patch: command not found
+
+Mention it also in the INSTALL file.
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ INSTALL        | 1 +
+ bootstrap.conf | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/INSTALL b/INSTALL
+index 79a0af7d9..3270743b7 100644
+--- a/INSTALL
++++ b/INSTALL
+@@ -20,6 +20,7 @@ configuring the GRUB.
+ * GNU binutils 2.9.1.0.23 or later
+ * Flex 2.5.35 or later
+ * pkg-config
++* GNU patch
+ * Other standard GNU/Unix tools
+ * a libc with large file support (e.g. glibc 2.1 or later)
+ 
+diff --git a/bootstrap.conf b/bootstrap.conf
+index 6b043fc35..0dd893c5c 100644
+--- a/bootstrap.conf
++++ b/bootstrap.conf
+@@ -70,6 +70,7 @@ autoconf   2.63
+ automake   1.11
+ gettext    0.18.3
+ git        1.5.5
++patch      -
+ tar        -
+ "
+ 
+-- 
+2.36.1
+

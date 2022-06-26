@@ -1,0 +1,126 @@
+From 66533438810bd4d00520bd65a0d47b33b5929274 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Renaud=20M=C3=A9trich?= <rmetrich@redhat.com>
+Date: Mon, 7 Mar 2022 11:06:20 +0100
+Subject: [PATCH 169/261] commands/search: Add new --efidisk-only option for
+ EFI systems
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+When using "search" on EFI systems, we sometimes want to exclude devices
+that are not EFI disks, e.g. md, lvm. This is typically used when
+wanting to chainload when having a software raid (md) for EFI partition:
+with no option, "search --file /EFI/redhat/shimx64.efi" sets root envvar
+to "md/boot_efi" which cannot be used for chainloading since there is no
+effective EFI device behind.
+
+Signed-off-by: Renaud Métrich <rmetrich@redhat.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ docs/grub.texi                   |  5 ++++-
+ grub-core/commands/search.c      | 20 ++++++++++++++++++++
+ grub-core/commands/search_wrap.c |  5 +++++
+ include/grub/search.h            |  3 ++-
+ 4 files changed, 31 insertions(+), 2 deletions(-)
+
+diff --git a/docs/grub.texi b/docs/grub.texi
+index caba8befb..9835c878a 100644
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -5043,7 +5043,7 @@ unbootable. @xref{Using digital signatures}, for more information.
+ 
+ @deffn Command search @
+  [@option{--file}|@option{--label}|@option{--fs-uuid}] @
+- [@option{--set} [var]] [@option{--no-floppy}] name
++ [@option{--set} [var]] [@option{--no-floppy}|@option{--efidisk-only}] name
+ Search devices by file (@option{-f}, @option{--file}), filesystem label
+ (@option{-l}, @option{--label}), or filesystem UUID (@option{-u},
+ @option{--fs-uuid}).
+@@ -5055,6 +5055,9 @@ set as the value of environment variable @var{var}. The default variable is
+ The (@option{-n}, @option{--no-floppy}) option prevents searching floppy
+ devices, which can be slow.
+ 
++The (@option{--efidisk-only}) option prevents searching any other devices then
++EFI disks. This is typically used when chainloading to local EFI partition.
++
+ The @samp{search.file}, @samp{search.fs_label}, and @samp{search.fs_uuid}
+ commands are aliases for @samp{search --file}, @samp{search --label}, and
+ @samp{search --fs-uuid} respectively.
+diff --git a/grub-core/commands/search.c b/grub-core/commands/search.c
+index 125113505..263f1501c 100644
+--- a/grub-core/commands/search.c
++++ b/grub-core/commands/search.c
+@@ -66,6 +66,26 @@ iterate_device (const char *name, void *data)
+       name[0] == 'f' && name[1] == 'd' && name[2] >= '0' && name[2] <= '9')
+     return 0;
+ 
++  /* Limit to EFI disks when requested.  */
++  if (ctx->flags & SEARCH_FLAGS_EFIDISK_ONLY)
++    {
++      grub_device_t dev;
++
++      dev = grub_device_open (name);
++      if (dev == NULL)
++	{
++	  grub_errno = GRUB_ERR_NONE;
++	  return 0;
++	}
++      if (dev->disk == NULL || dev->disk->dev->id != GRUB_DISK_DEVICE_EFIDISK_ID)
++	{
++	  grub_device_close (dev);
++	  grub_errno = GRUB_ERR_NONE;
++	  return 0;
++	}
++      grub_device_close (dev);
++    }
++
+ #ifdef DO_SEARCH_FS_UUID
+ #define compare_fn grub_strcasecmp
+ #else
+diff --git a/grub-core/commands/search_wrap.c b/grub-core/commands/search_wrap.c
+index b79a2e99e..318581f3b 100644
+--- a/grub-core/commands/search_wrap.c
++++ b/grub-core/commands/search_wrap.c
+@@ -40,6 +40,7 @@ static const struct grub_arg_option options[] =
+      N_("Set a variable to the first device found."), N_("VARNAME"),
+      ARG_TYPE_STRING},
+     {"no-floppy",	'n', 0, N_("Do not probe any floppy drive."), 0, 0},
++    {"efidisk-only",	0, 0, N_("Only probe EFI disks."), 0, 0},
+     {"hint",	        'h', GRUB_ARG_OPTION_REPEATABLE,
+      N_("First try the device HINT. If HINT ends in comma, "
+ 	"also try subpartitions"), N_("HINT"), ARG_TYPE_STRING},
+@@ -73,6 +74,7 @@ enum options
+     SEARCH_FS_UUID,
+     SEARCH_SET,
+     SEARCH_NO_FLOPPY,
++    SEARCH_EFIDISK_ONLY,
+     SEARCH_HINT,
+     SEARCH_HINT_IEEE1275,
+     SEARCH_HINT_BIOS,
+@@ -184,6 +186,9 @@ grub_cmd_search (grub_extcmd_context_t ctxt, int argc, char **args)
+   if (state[SEARCH_NO_FLOPPY].set)
+     flags |= SEARCH_FLAGS_NO_FLOPPY;
+ 
++  if (state[SEARCH_EFIDISK_ONLY].set)
++    flags |= SEARCH_FLAGS_EFIDISK_ONLY;
++
+   if (state[SEARCH_LABEL].set)
+     grub_search_label (id, var, flags, hints, nhints);
+   else if (state[SEARCH_FS_UUID].set)
+diff --git a/include/grub/search.h b/include/grub/search.h
+index fa71cd950..ffd2411ca 100644
+--- a/include/grub/search.h
++++ b/include/grub/search.h
+@@ -22,7 +22,8 @@
+ enum search_flags
+   {
+     SEARCH_FLAGS_NONE		= 0,
+-    SEARCH_FLAGS_NO_FLOPPY	= 1
++    SEARCH_FLAGS_NO_FLOPPY	= 1,
++    SEARCH_FLAGS_EFIDISK_ONLY	= 2
+   };
+ 
+ void grub_search_fs_file (const char *key, const char *var,
+-- 
+2.36.1
+

@@ -1,0 +1,92 @@
+From 91b38780ac8db5d517481c6c86b73d60a0c37c8b Mon Sep 17 00:00:00 2001
+From: Jagannathan Raman <jag.raman@oracle.com>
+Date: Thu, 2 Jun 2022 15:18:27 +0000
+Subject: [PATCH 231/261] fs/zfs/zfs: zfs_mount() - avoid pointer downcasting
+
+Coverity reports that while loopis in the following functions uses
+tainted data as boundary:
+  zfs_mount() -> check_mos_features() -> dnode_get() -> zfs_log2()
+  zfs_mount() -> grub_memmove()
+
+The defect type is "Untrusted loop bound" caused as a result of
+"tainted_data_downcast". Coverity does not like the pointer downcast
+here and we need to address it.
+
+We believe Coverity flags pointer downcast for the following two
+reasons:
+1. External data: The pointer downcast could indicate that the source is
+  external data, which we need to further sanitize - such as verifying its
+  limits. In this case, the data is read from an external source, which is
+  a disk. But, zio_read(), which reads the data from the disk, sanitizes it
+  using a checksum. checksum is the best facility that ZFS offers to verify
+  external data, and we don't believe a better way exists. Therefore, no
+  further action is possible for this.
+
+2. Corruption due to alignment: downcasting a pointer from a strict type
+  to less strict type could result in data corruption. For example, the
+  following cast would corrupt because uint32_t is 4-byte aligned, and
+  won't be able to point to 0x1003 which is not 4-byte aligned.
+    uint8_t *ptr = 0x1003;
+    uint32_t *word = ptr; (incorrect, alignment issues)
+
+  This patch converts the "osp" pointer in zfs_mount() from a "void" type
+  to "objset_phys_t" type to address this issue.
+
+We are not sure if there are any other reasons why Coverity flags the
+downcast. However, the fix for alignment issue masks/suppresses any
+other issues from showing up.
+
+Fixes: CID 314023
+
+Signed-off-by: Jagannathan Raman <jag.raman@oracle.com>
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/fs/zfs/zfs.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/grub-core/fs/zfs/zfs.c b/grub-core/fs/zfs/zfs.c
+index d9c79663b..ffa0e5863 100644
+--- a/grub-core/fs/zfs/zfs.c
++++ b/grub-core/fs/zfs/zfs.c
+@@ -3643,7 +3643,7 @@ zfs_mount (grub_device_t dev)
+ {
+   struct grub_zfs_data *data = 0;
+   grub_err_t err;
+-  void *osp = 0;
++  objset_phys_t *osp = 0;
+   grub_size_t ospsize;
+   grub_zfs_endian_t ub_endian = GRUB_ZFS_UNKNOWN_ENDIAN;
+   uberblock_t *ub;
+@@ -3681,7 +3681,7 @@ zfs_mount (grub_device_t dev)
+ 	       ? GRUB_ZFS_LITTLE_ENDIAN : GRUB_ZFS_BIG_ENDIAN);
+ 
+   err = zio_read (&ub->ub_rootbp, ub_endian,
+-		  &osp, &ospsize, data);
++		  (void **) &osp, &ospsize, data);
+   if (err)
+     {
+       zfs_unmount (data);
+@@ -3697,8 +3697,7 @@ zfs_mount (grub_device_t dev)
+     }
+ 
+   if (ub->ub_version >= SPA_VERSION_FEATURES &&
+-      check_mos_features(&((objset_phys_t *) osp)->os_meta_dnode,ub_endian,
+-			 data) != 0)
++      check_mos_features(&osp->os_meta_dnode, ub_endian, data) != 0)
+     {
+       grub_error (GRUB_ERR_BAD_FS, "Unsupported features in pool");
+       grub_free (osp);
+@@ -3707,8 +3706,7 @@ zfs_mount (grub_device_t dev)
+     }
+ 
+   /* Got the MOS. Save it at the memory addr MOS. */
+-  grub_memmove (&(data->mos.dn), &((objset_phys_t *) osp)->os_meta_dnode,
+-		DNODE_SIZE);
++  grub_memmove (&(data->mos.dn), &osp->os_meta_dnode, DNODE_SIZE);
+   data->mos.endian = (grub_zfs_to_cpu64 (ub->ub_rootbp.blk_prop,
+ 					 ub_endian) >> 63) & 1;
+   grub_free (osp);
+-- 
+2.36.1
+

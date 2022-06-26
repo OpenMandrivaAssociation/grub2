@@ -1,0 +1,36 @@
+From a97d1ebb8eda29f5676d6b347b3698598e8519eb Mon Sep 17 00:00:00 2001
+From: Alec Brown <alec.r.brown@oracle.com>
+Date: Mon, 21 Mar 2022 02:29:01 -0400
+Subject: [PATCH 186/261] loader/i386/xnu: Fix uninitialized scalar variable
+
+In the function grub_xnu_boot(), struct grub_relocator32_state state is called
+but isn't being initialized. This results in the members grub_uint32_t ebx,
+grub_uint32_t ecx, grub_uint32_t edx, grub_uint32_t edi, and grub_uint32_t esi
+being filled with junk data from the stack since none of them are being set to
+any values. We can prevent this by setting state to {0}.
+
+Fixes: CID 375035
+
+Signed-off-by: Alec Brown <alec.r.brown@oracle.com>
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/loader/i386/xnu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/grub-core/loader/i386/xnu.c b/grub-core/loader/i386/xnu.c
+index da962175f..4c88ce5e0 100644
+--- a/grub-core/loader/i386/xnu.c
++++ b/grub-core/loader/i386/xnu.c
+@@ -960,7 +960,7 @@ grub_xnu_boot (void)
+   grub_addr_t devtree_target;
+   grub_size_t devtreelen;
+   int i;
+-  struct grub_relocator32_state state;
++  struct grub_relocator32_state state = {0};
+   grub_uint64_t fsbfreq = 100000000;
+   int v2 = (grub_xnu_darwin_version >= 11);
+   grub_uint32_t efi_system_table = 0;
+-- 
+2.36.1
+

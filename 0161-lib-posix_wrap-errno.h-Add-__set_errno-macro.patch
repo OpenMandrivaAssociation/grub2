@@ -1,0 +1,42 @@
+From cd63a2f8cd2c14748f4374abcd9a38705f2e7055 Mon Sep 17 00:00:00 2001
+From: Daniel Kiper <daniel.kiper@oracle.com>
+Date: Tue, 15 Mar 2022 14:05:45 -0400
+Subject: [PATCH 161/261] lib/posix_wrap/errno.h: Add __set_errno() macro
+
+$ ./configure --target=x86_64-w64-mingw32 --with-platform=efi --host=x86_64-w64-mingw32
+$ make
+
+[...]
+
+cat syminfo.lst | sort | gawk -f ./genmoddep.awk > moddep.lst || (rm -f moddep.lst; exit 1)
+__imp__errno in regexp is not defined
+
+This happens because grub-core/lib/gnulib/malloc/dynarray_resize.c and
+grub-core/lib/gnulib/malloc/dynarray_emplace_enlarge.c (both are used by
+regexp module) from the latest Gnulib call __set_errno() which originally
+sets errno variable (Windows builds add __imp__ prefix). Of course it is
+not defined and grub_errno should be used instead.
+
+Signed-off-by: Daniel Kiper <daniel.kiper@oracle.com>
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/lib/posix_wrap/errno.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/grub-core/lib/posix_wrap/errno.h b/grub-core/lib/posix_wrap/errno.h
+index ba63b2366..5ede4fe69 100644
+--- a/grub-core/lib/posix_wrap/errno.h
++++ b/grub-core/lib/posix_wrap/errno.h
+@@ -26,4 +26,8 @@
+ #define EINVAL GRUB_ERR_BAD_NUMBER
+ #define ENOMEM GRUB_ERR_OUT_OF_MEMORY
+ 
++/* From glibc <errno.h>. */
++#ifndef __set_errno
++# define __set_errno(val) (grub_errno = (val))
++#endif
+ #endif
+-- 
+2.36.1
+

@@ -1,0 +1,111 @@
+From 1e5ed5f5f5a8eb2d88d917f6ee2c4c9ad09587bb Mon Sep 17 00:00:00 2001
+From: Krzysztof Nowicki <krzysztof.a.nowicki@gmail.com>
+Date: Fri, 10 Sep 2021 09:54:31 +0200
+Subject: [PATCH 029/261] fs/ext2: Fix handling of missing sparse extent leafs
+
+When a file on ext4 is stored as sparse the data belonging to
+zero-filled blocks is not written to storage and the extent map is
+missing entries for these blocks. Such case can happen both for depth
+0 extents (leafs) as well as higher-level tables.
+
+Consider a scenario of a file which has a zero-filled beginning (e.g.
+ISO image). In such case real data starts at block 8. If such a file is
+stored using 2-level extent structure the extent list in the inode will
+be depth 1 and will have an entry to a depth 0 (leaf) extent header for
+blocks 8-n.
+
+Unfortunately existing GRUB2 ext2 driver is only able to handle missing
+entries in leaf extent tables, for which the grub_ext2_read_block()
+function returns 0. In case the whole leaf extent list is missing for
+a block the function fails with "invalid extent" error.
+
+The fix for this problem relies on the grub_ext4_find_leaf() helper
+function to distinguish two error cases: missing extent and error
+walking through the extent tree. The existing error message is raised
+only for the latter case, while for the missing leaf extent zero is
+returned from grub_ext2_read_block() indicating a sparse block.
+
+Signed-off-by: Krzysztof Nowicki <krzysztof.nowicki@nokia.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/fs/ext2.c | 26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
+
+diff --git a/grub-core/fs/ext2.c b/grub-core/fs/ext2.c
+index 4953a1591..0989e26e1 100644
+--- a/grub-core/fs/ext2.c
++++ b/grub-core/fs/ext2.c
+@@ -413,13 +413,15 @@ grub_ext2_blockgroup (struct grub_ext2_data *data, grub_uint64_t group,
+ 			 sizeof (struct grub_ext2_block_group), blkgrp);
+ }
+ 
+-static struct grub_ext4_extent_header *
++static grub_err_t
+ grub_ext4_find_leaf (struct grub_ext2_data *data,
+                      struct grub_ext4_extent_header *ext_block,
+-                     grub_uint32_t fileblock)
++                     grub_uint32_t fileblock,
++                     struct grub_ext4_extent_header **leaf)
+ {
+   struct grub_ext4_extent_idx *index;
+   void *buf = NULL;
++  *leaf = NULL;
+ 
+   while (1)
+     {
+@@ -432,7 +434,10 @@ grub_ext4_find_leaf (struct grub_ext2_data *data,
+ 	goto fail;
+ 
+       if (ext_block->depth == 0)
+-        return ext_block;
++        {
++          *leaf = ext_block;
++          return GRUB_ERR_NONE;
++        }
+ 
+       for (i = 0; i < grub_le_to_cpu16 (ext_block->entries); i++)
+         {
+@@ -441,7 +446,10 @@ grub_ext4_find_leaf (struct grub_ext2_data *data,
+         }
+ 
+       if (--i < 0)
+-	goto fail;
++        {
++          grub_free (buf);
++          return GRUB_ERR_NONE;
++        }
+ 
+       block = grub_le_to_cpu16 (index[i].leaf_hi);
+       block = (block << 32) | grub_le_to_cpu32 (index[i].leaf);
+@@ -458,7 +466,7 @@ grub_ext4_find_leaf (struct grub_ext2_data *data,
+     }
+  fail:
+   grub_free (buf);
+-  return 0;
++  return GRUB_ERR_BAD_FS;
+ }
+ 
+ static grub_disk_addr_t
+@@ -480,13 +488,17 @@ grub_ext2_read_block (grub_fshelp_node_t node, grub_disk_addr_t fileblock)
+       int i;
+       grub_disk_addr_t ret;
+ 
+-      leaf = grub_ext4_find_leaf (data, (struct grub_ext4_extent_header *) inode->blocks.dir_blocks, fileblock);
+-      if (! leaf)
++      if (grub_ext4_find_leaf (data, (struct grub_ext4_extent_header *) inode->blocks.dir_blocks,
++			       fileblock, &leaf) != GRUB_ERR_NONE)
+         {
+           grub_error (GRUB_ERR_BAD_FS, "invalid extent");
+           return -1;
+         }
+ 
++      if (leaf == NULL)
++        /* Leaf for the given block is absent (i.e. sparse) */
++        return 0;
++
+       ext = (struct grub_ext4_extent *) (leaf + 1);
+       for (i = 0; i < grub_le_to_cpu16 (leaf->entries); i++)
+         {
+-- 
+2.36.1
+

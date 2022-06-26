@@ -1,0 +1,32 @@
+From 50aace6bdb918150ba47e3c16146dcca271c134a Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Tue, 19 Oct 2021 01:47:03 -0500
+Subject: [PATCH 056/261] kern/misc: Add debug log condition to log output
+
+Adding the conditional to debug log messages allows the GRUB user to
+construct the $debug variable without needing to consult the source to
+find the conditional (especially useful for situations where the source
+is not readily available).
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/kern/misc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
+index 3af336ee2..11b8592c8 100644
+--- a/grub-core/kern/misc.c
++++ b/grub-core/kern/misc.c
+@@ -182,7 +182,7 @@ grub_real_dprintf (const char *file, const int line, const char *condition,
+ 
+   if (grub_debug_enabled (condition))
+     {
+-      grub_printf ("%s:%d: ", file, line);
++      grub_printf ("%s:%d:%s: ", file, line, condition);
+       va_start (args, fmt);
+       grub_vprintf (fmt, args);
+       va_end (args);
+-- 
+2.36.1
+

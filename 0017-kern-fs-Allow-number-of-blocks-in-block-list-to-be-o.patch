@@ -1,0 +1,68 @@
+From 0c2aaec01d0b05becae5b7387ae568bcc3d71ff9 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Sun, 21 Mar 2021 13:09:10 -0500
+Subject: [PATCH 017/261] kern/fs: Allow number of blocks in block list to be
+ optional, defaulting length to device length
+
+This is primarily useful to do something like "loopback newdev (dev)8+" to
+create a device that skips the first 4 KiB, which may contain a container
+header, e.g. a non-standard RAID1 header, that GRUB does not recognize. This
+would allow that container data to be potentially accessed up to the end of
+container, which may be necessary for some layouts that store data at the
+end. There is currently not a good way to programmatically get the number
+of sectors on a disk to set the appropriate length of the blocklist.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ docs/grub.texi      | 10 ++++++----
+ grub-core/kern/fs.c |  6 +++++-
+ 2 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/docs/grub.texi b/docs/grub.texi
+index f8b4b3b21..f6c7f46b3 100644
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -3036,16 +3036,18 @@ snapshot name is omitted.
+ 
+ A block list is used for specifying a file that doesn't appear in the
+ filesystem, like a chainloader. The syntax is
+-@code{[@var{offset}]+@var{length}[,[@var{offset}]+@var{length}]@dots{}}.
++@code{[@var{offset}]+[@var{length}][,[@var{offset}]+[@var{length}]]@dots{}}.
+ Here is an example:
+ 
+ @example
+-@code{0+100,200+1,300+300}
++@code{0+100,200+1,300+300,800+}
+ @end example
+ 
+ This represents that GRUB should read blocks 0 through 99, block 200,
+-and blocks 300 through 599. If you omit an offset, then GRUB assumes
+-the offset is zero.
++blocks 300 through 599, and blocks 800 until the end of the device.
++If you omit an offset, then GRUB assumes the offset is zero. If the
++length is omitted, then GRUB assumes the block list extends until the
++end of the device.
+ 
+ Like the file name syntax (@pxref{File name syntax}), if a blocklist
+ does not contain a device name, then GRUB uses GRUB's @dfn{root
+diff --git a/grub-core/kern/fs.c b/grub-core/kern/fs.c
+index c698295bc..e0d7e16a2 100644
+--- a/grub-core/kern/fs.c
++++ b/grub-core/kern/fs.c
+@@ -173,7 +173,11 @@ grub_fs_blocklist_open (grub_file_t file, const char *name)
+ 	}
+ 
+       p++;
+-      blocks[i].length = grub_strtoul (p, &p, 0);
++      if (*p == '\0' || *p == ',')
++        blocks[i].length = max_sectors - blocks[i].offset;
++      else
++        blocks[i].length = grub_strtoul (p, &p, 0);
++
+       if (grub_errno != GRUB_ERR_NONE
+ 	  || blocks[i].length == 0
+ 	  || (*p && *p != ',' && ! grub_isspace (*p)))
+-- 
+2.36.1
+

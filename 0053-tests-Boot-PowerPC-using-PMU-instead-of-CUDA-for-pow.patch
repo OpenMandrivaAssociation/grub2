@@ -1,0 +1,49 @@
+From ad59a3519a71077735cd1eebb9380dce44062fd0 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Tue, 12 Oct 2021 18:29:50 +1100
+Subject: [PATCH 053/261] tests: Boot PowerPC using PMU instead of CUDA for
+ power management
+
+A recent refactoring of CUDA command code has exposed a bug in OpenBIOS [1]
+which was causing system powerdown and system reset to fail, thus causing
+the QEMU instance to hang. This in turn caused the grub-shell command to
+timeout causing it to return an error code when the test actually completed
+successfully.
+
+Since it could be a while before the patch fixing this issue in OpenBIOS
+filters down to the average distro, switch to PMU to allow powerdowns and
+reboots to work as expected.
+
+[1] https://gitlab.com/qemu-project/qemu/-/issues/624
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Signed-off-by: Daniel Axtens <dja@axtens.net>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/util/grub-shell.in | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tests/util/grub-shell.in b/tests/util/grub-shell.in
+index 93e9f5148..33590baeb 100644
+--- a/tests/util/grub-shell.in
++++ b/tests/util/grub-shell.in
+@@ -84,6 +84,7 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ 	serial_null="-serial null"
+ 	netbootext=elf
+ 	trim=1
++	qemuopts="-M mac99,via=pmu $qemuopts"
+ 	;;
+ 
+     sparc64-ieee1275)
+@@ -231,7 +232,7 @@ for option in "$@"; do
+ 	qemu=qemu-system-ppc64
+ 	serial_port=ieee1275/hvterm
+ 	serial_null=
+-	qemuopts="$qemuopts -M pseries -no-reboot"
++	qemuopts="$(echo $qemuopts | sed -E 's/-M [^ ]+//') -M pseries -no-reboot"
+ 	trim=1
+ 	pseries=y
+ 	    ;;
+-- 
+2.36.1
+

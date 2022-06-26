@@ -1,0 +1,197 @@
+From 955a370ccff1060235248ce642601fc81ec73897 Mon Sep 17 00:00:00 2001
+From: Elyes Haouas <ehaouas@noos.fr>
+Date: Fri, 4 Mar 2022 07:42:12 +0100
+Subject: [PATCH 140/261] tests: Remove trailing whitespaces
+
+Signed-off-by: Elyes Haouas <ehaouas@noos.fr>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/tests/cmdline_cat_test.c |  8 ++++----
+ grub-core/tests/gfxterm_menu.c     |  6 +++---
+ grub-core/tests/shift_test.c       |  2 +-
+ grub-core/tests/signature_test.c   | 12 ++++++------
+ grub-core/tests/video_checksum.c   | 12 ++++++------
+ 5 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/grub-core/tests/cmdline_cat_test.c b/grub-core/tests/cmdline_cat_test.c
+index baea7688a..4748d1bb0 100644
+--- a/grub-core/tests/cmdline_cat_test.c
++++ b/grub-core/tests/cmdline_cat_test.c
+@@ -60,7 +60,7 @@ get_test_txt (grub_size_t *sz)
+   return grub_strdup (testfile);
+ }
+ 
+-struct grub_procfs_entry test_txt = 
++struct grub_procfs_entry test_txt =
+ {
+   .name = "test.txt",
+   .get_contents = get_test_txt
+@@ -91,14 +91,14 @@ cmdline_cat_test (void)
+     }
+ 
+   grub_procfs_register ("test.txt", &test_txt);
+-  
++
+   for (i = 0; i < GRUB_TEST_VIDEO_SMALL_N_MODES; i++)
+     {
+       grub_video_capture_start (&grub_test_video_modes[i],
+ 				grub_video_fbstd_colors,
+ 				grub_test_video_modes[i].number_of_colors);
+-      grub_terminal_input_fake_sequence ((int []) 
+-					 {  'c', 'a', 't', ' ', 
++      grub_terminal_input_fake_sequence ((int [])
++					 {  'c', 'a', 't', ' ',
+ 					     '(', 'p', 'r', 'o', 'c', ')',
+ 					     '/', 't', 'e', 's', 't', '.',
+ 					     't', 'x', 't', '\n',
+diff --git a/grub-core/tests/gfxterm_menu.c b/grub-core/tests/gfxterm_menu.c
+index 12836fb96..ea4352703 100644
+--- a/grub-core/tests/gfxterm_menu.c
++++ b/grub-core/tests/gfxterm_menu.c
+@@ -63,7 +63,7 @@ get_test_cfg (grub_size_t *sz)
+   return grub_strdup (testfile);
+ }
+ 
+-struct grub_procfs_entry test_cfg = 
++struct grub_procfs_entry test_cfg =
+ {
+   .name = "test.cfg",
+   .get_contents = get_test_cfg
+@@ -73,7 +73,7 @@ struct
+ {
+   const char *name;
+   const char *var;
+-  const char *val;  
++  const char *val;
+ } tests[] =
+   {
+     { "gfxterm_menu", NULL, NULL },
+@@ -121,7 +121,7 @@ gfxterm_menu (void)
+     }
+ 
+   grub_procfs_register ("test.cfg", &test_cfg);
+-  
++
+   for (j = 0; j < ARRAY_SIZE (tests); j++)
+     for (i = 0; i < GRUB_TEST_VIDEO_SMALL_N_MODES; i++)
+       {
+diff --git a/grub-core/tests/shift_test.c b/grub-core/tests/shift_test.c
+index 4120f520a..3d0110a06 100644
+--- a/grub-core/tests/shift_test.c
++++ b/grub-core/tests/shift_test.c
+@@ -99,7 +99,7 @@ arithmetic_right_shift64 (grub_uint64_t v, int s)
+   if (get_bit64 (v, 63))
+     for (i -= s; i < 64; i++)
+ 	r = set_bit64 (r, i);
+-    
++
+   return r;
+ }
+ 
+diff --git a/grub-core/tests/signature_test.c b/grub-core/tests/signature_test.c
+index aa49393a4..07a913a62 100644
+--- a/grub-core/tests/signature_test.c
++++ b/grub-core/tests/signature_test.c
+@@ -40,7 +40,7 @@ get_hi_dsa_sig (grub_size_t *sz)
+   return ret;
+ }
+ 
+-static struct grub_procfs_entry hi_dsa_sig_entry = 
++static struct grub_procfs_entry hi_dsa_sig_entry =
+ {
+   .name = "hi_dsa.sig",
+   .get_contents = get_hi_dsa_sig
+@@ -57,7 +57,7 @@ get_hi_dsa_pub (grub_size_t *sz)
+   return ret;
+ }
+ 
+-static struct grub_procfs_entry hi_dsa_pub_entry = 
++static struct grub_procfs_entry hi_dsa_pub_entry =
+ {
+   .name = "hi_dsa.pub",
+   .get_contents = get_hi_dsa_pub
+@@ -74,7 +74,7 @@ get_hi_rsa_sig (grub_size_t *sz)
+   return ret;
+ }
+ 
+-static struct grub_procfs_entry hi_rsa_sig_entry = 
++static struct grub_procfs_entry hi_rsa_sig_entry =
+ {
+   .name = "hi_rsa.sig",
+   .get_contents = get_hi_rsa_sig
+@@ -91,7 +91,7 @@ get_hi_rsa_pub (grub_size_t *sz)
+   return ret;
+ }
+ 
+-static struct grub_procfs_entry hi_rsa_pub_entry = 
++static struct grub_procfs_entry hi_rsa_pub_entry =
+ {
+   .name = "hi_rsa.pub",
+   .get_contents = get_hi_rsa_pub
+@@ -104,7 +104,7 @@ get_hi (grub_size_t *sz)
+   return grub_strdup ("hi\n");
+ }
+ 
+-struct grub_procfs_entry hi = 
++struct grub_procfs_entry hi =
+ {
+   .name = "hi",
+   .get_contents = get_hi
+@@ -117,7 +117,7 @@ get_hj (grub_size_t *sz)
+   return grub_strdup ("hj\n");
+ }
+ 
+-struct grub_procfs_entry hj = 
++struct grub_procfs_entry hj =
+ {
+   .name = "hj",
+   .get_contents = get_hj
+diff --git a/grub-core/tests/video_checksum.c b/grub-core/tests/video_checksum.c
+index 44d081069..39053e0eb 100644
+--- a/grub-core/tests/video_checksum.c
++++ b/grub-core/tests/video_checksum.c
+@@ -499,9 +499,9 @@ write_time (void)
+ 
+   cur = grub_util_get_cpu_time_ms ();
+   grub_snprintf (buf, sizeof (buf), "%s_%dx%dx%s:%d: %" PRIuGRUB_UINT64_T " ms\n",
+-		 basename, 			
++		 basename,
+ 		 capt_mode_info.width,
+-		 capt_mode_info.height, 
++		 capt_mode_info.height,
+ 		 grub_video_checksum_get_modename (), ctr,
+ 		 cur - prev);
+   prev = cur;
+@@ -605,9 +605,9 @@ checksum (void)
+   if (!checksums || ctr >= nchk)
+     {
+       grub_test_assert (0, "Unexpected checksum %s_%dx%dx%s:%d: 0x%x",
+-			basename, 			
++			basename,
+ 			capt_mode_info.width,
+-			capt_mode_info.height, 
++			capt_mode_info.height,
+ 			grub_video_checksum_get_modename (), ctr, crc);
+     }
+   else if (crc != checksums[ctr])
+@@ -628,7 +628,7 @@ checksum (void)
+     }
+ #endif
+ #ifdef GRUB_MACHINE_EMU
+-  char *name = grub_xasprintf ("%s_%dx%dx%s_%d.bmp", basename, 
++  char *name = grub_xasprintf ("%s_%dx%dx%s_%d.bmp", basename,
+ 			       capt_mode_info.width,
+ 			       capt_mode_info.height,
+ 			       grub_video_checksum_get_modename (),
+@@ -785,7 +785,7 @@ grub_test_use_gfxterm (void)
+     }
+ 
+   if (gfxterm->init (gfxterm))
+-    { 
++    {
+       grub_test_assert (0, "terminal `%s' failed: %s", "gfxterm", grub_errmsg);
+       return 1;
+     }
+-- 
+2.36.1
+

@@ -1,0 +1,40 @@
+From b314807a0eb1ee5d00712d647b62266650786600 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Tue, 12 Oct 2021 19:39:56 -0500
+Subject: [PATCH 034/261] tests: When checking squashfs fstime, use superblock
+ last modified time
+
+Currently, the filesystem timestamp check in grub-fs-tester uses the
+squashfs image file's last modified timestamp and checks to see if that
+time stamp is within 3 seconds of the superblock timestamp as determined by
+grub. The image file's timestamp could be more than 3 seconds off if
+mksquashfs takes more than 3 seconds to generate the image, as is the case
+on a virtual machine. Instead use squashfs tools to get the filesystem
+timestamp directly.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/util/grub-fs-tester.in | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/tests/util/grub-fs-tester.in b/tests/util/grub-fs-tester.in
+index a28e07295..cba94233d 100644
+--- a/tests/util/grub-fs-tester.in
++++ b/tests/util/grub-fs-tester.in
+@@ -1356,6 +1356,12 @@ for LOGSECSIZE in $(range "$MINLOGSECSIZE" "$MAXLOGSECSIZE" 1); do
+ 			# With some abstractions like mdraid flushing to disk
+ 			# may be delayed for a long time.
+ 			FSTIME="$UMOUNT_TIME";;
++		    xsquash*)
++			# Creating the squash image may take more than a few
++			# seconds. Use the more accurate timestamp from the
++			# superblock.
++			FSTIME="$(unsquashfs -s "${FSIMAGEP}0.img" | grep ^Creation | awk '{print $6 " " $7 " " $8 " " $9 " " $10; }')"
++			FSTIME="$(date -d "$FSTIME" -u '+%Y-%m-%d %H:%M:%S')";;
+ 		    *)
+ 			FSTIME="$(TZ=UTC ls --time-style="+%Y-%m-%d_%H:%M:%S" -l -d "${FSIMAGEP}0.img"|awk '{print $6; }'|sed 's,_, ,g')";;
+ 		esac
+-- 
+2.36.1
+

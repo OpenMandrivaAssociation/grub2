@@ -1,0 +1,54 @@
+From 509ccd22fb2fdcacc1de1e74543226ef77d7077b Mon Sep 17 00:00:00 2001
+From: Elyes Haouas <ehaouas@noos.fr>
+Date: Fri, 4 Mar 2022 07:42:00 +0100
+Subject: [PATCH 128/261] gfxmenu: Remove trailing whitespaces
+
+Signed-off-by: Elyes Haouas <ehaouas@noos.fr>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/gettext/gettext.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/grub-core/gettext/gettext.c b/grub-core/gettext/gettext.c
+index 4d02e62c1..7a1c14e4f 100644
+--- a/grub-core/gettext/gettext.c
++++ b/grub-core/gettext/gettext.c
+@@ -51,7 +51,7 @@ struct header
+   grub_uint32_t offset_translation;
+ };
+ 
+-struct string_descriptor 
++struct string_descriptor
+ {
+   grub_uint32_t length;
+   grub_uint32_t offset;
+@@ -206,7 +206,7 @@ grub_gettext_translate_real (struct grub_gettext_context *ctx,
+ 	    }
+ 	  grub_error_pop ();
+ 	  depth--;
+-	  return ret;      
++	  return ret;
+ 	}
+     }
+ 
+@@ -235,7 +235,7 @@ grub_gettext_translate_real (struct grub_gettext_context *ctx,
+ 	    }
+ 	  grub_error_pop ();
+ 	  depth--;
+-	  return ret;      
++	  return ret;
+ 	}
+     }
+ 
+@@ -519,7 +519,7 @@ GRUB_MOD_INIT (gettext)
+   grub_register_command_p1 ("gettext", grub_cmd_translate,
+ 			    N_("STRING"),
+ 			    /* TRANSLATORS: It refers to passing the string through gettext.
+-			       So it's "translate" in the same meaning as in what you're 
++			       So it's "translate" in the same meaning as in what you're
+ 			       doing now.
+ 			     */
+ 			    N_("Translates the string with the current settings."));
+-- 
+2.36.1
+

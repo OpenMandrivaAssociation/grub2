@@ -1,0 +1,78 @@
+From 1769cb478a294bd2c1c6ac4ee22e86ec999d37e4 Mon Sep 17 00:00:00 2001
+From: Daniel Kiper <daniel.kiper@oracle.com>
+Date: Thu, 10 Mar 2022 18:49:35 +0100
+Subject: [PATCH 150/261] conf/i386-cygwin-img-ld: Do not discard .data and
+ .edata sections
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+$ ./configure --target=i686-w64-mingw32 --with-platform=efi --host=i686-w64-mingw32
+
+[...]
+
+checking if __bss_start is defined by the compiler... no
+checking if edata is defined by the compiler... no
+checking if _edata is defined by the compiler... no
+configure: error: none of __bss_start, edata or _edata is defined
+
+This happens on machines with quite recent ld due to an error:
+
+  `edata' referenced in section `.text' of /tmp/cc72w9E4.o: defined in discarded section `.data' of conftest.exe
+  collect2: error: ld returned 1 exit status
+
+So, we have to tell linker to not discard .data and .edata sections.
+The trick comes from ld documentation:
+
+  3.6.7 Output Section Discarding
+
+  The linker will not normally create output sections with no contents.
+  This is for convenience when referring to input sections that may or may
+  not be present in any of the input files. For example:
+
+  .foo : { *(.foo) }
+
+  will only create a ‘.foo’ section in the output file if there is a
+  ‘.foo’ section in at least one input file, and if the input sections are
+  not all empty. Other link script directives that allocate space in an
+  output section will also create the output section. So too will
+  assignments to dot even if the assignment does not create space, except
+  for ‘. = 0’, ‘. = . + 0’, ‘. = sym’, ‘. = . + sym’ and ‘. = ALIGN (. !=
+  0, expr, 1)’ when ‘sym’ is an absolute symbol of value 0 defined in the
+  script. This allows you to force output of an empty section with ‘. = .’.
+
+This change does not impact generated binaries because the
+conf/i386-cygwin-img-ld.sc linker script is used only when
+you run configure.
+
+Signed-off-by: Daniel Kiper <daniel.kiper@oracle.com>
+Reviewed-by: Robbie Harwood <rharwood@redhat.com>
+---
+ conf/i386-cygwin-img-ld.sc | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/conf/i386-cygwin-img-ld.sc b/conf/i386-cygwin-img-ld.sc
+index 3ac26fcce..578da91b0 100644
+--- a/conf/i386-cygwin-img-ld.sc
++++ b/conf/i386-cygwin-img-ld.sc
+@@ -14,6 +14,8 @@ SECTIONS
+   {
+     __data_start__ = . ;
+     *(.data)
++    /* Do not discard this section. */
++    . = . ;
+     __data_end__ = . ;
+     __rdata_start__ = . ;
+     *(.rdata)
+@@ -34,6 +36,8 @@ SECTIONS
+   .edata :
+   {
+     *(.edata)
++    /* Do not discard this section. */
++    . = . ;
+     end = . ;
+     _end = . ;
+     __end = . ;
+-- 
+2.36.1
+

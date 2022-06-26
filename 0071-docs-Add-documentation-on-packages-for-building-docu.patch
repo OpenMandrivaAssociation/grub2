@@ -1,0 +1,42 @@
+From c8f116bfe1c34ca87d0b5505217364b432c34645 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Fri, 5 Nov 2021 14:12:58 -0500
+Subject: [PATCH 071/261] docs: Add documentation on packages for building
+ documentation
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ INSTALL | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/INSTALL b/INSTALL
+index 8a2b617f3..a64f63723 100644
+--- a/INSTALL
++++ b/INSTALL
+@@ -90,6 +90,10 @@ Note that `make check' will run and many tests may complete successfully
+ with only a subset of these prerequisites. However, some tests may be
+ skipped or fail due to missing prerequisites.
+ 
++To build the documentation you'll need:
++* texinfo, for the info and html documentation
++* texlive, for building the dvi and pdf documentation (optional)
++
+ Configuring the GRUB
+ ====================
+ 
+@@ -146,7 +150,10 @@ The simplest way to compile this package is:
+   8. Type `make install' to install the programs and any data files and
+      documentation.
+ 
+-  9. You can remove the program binaries and object files from the
++  9. Type `make html' or `make pdf' to generate the html or pdf
++     documentation.  Note, these are not built by default.
++
++ 10. You can remove the program binaries and object files from the
+      source code directory by typing `make clean'.  To also remove the
+      files that `configure' created (so you can compile the package for
+      a different kind of computer), type `make distclean'.  There is
+-- 
+2.36.1
+

@@ -1,7 +1,7 @@
-diff -Naur grub-2.02-20160210/util/grub.d/30_os-prober.in grub-2.02-20160210.tpg/util/grub.d/30_os-prober.in
---- grub-2.02-20160210/util/grub.d/30_os-prober.in	2016-02-03 17:34:55.000000000 +0000
-+++ grub-2.02-20160210.tpg/util/grub.d/30_os-prober.in	2016-02-11 01:21:28.245330006 +0000
-@@ -136,7 +136,10 @@
+diff -up grub-2.06/util/grub.d/30_os-prober.in.10~ grub-2.06/util/grub.d/30_os-prober.in
+--- grub-2.06/util/grub.d/30_os-prober.in.10~	2021-04-12 16:39:21.000000000 +0200
++++ grub-2.06/util/grub.d/30_os-prober.in	2022-06-26 18:04:49.839521714 +0200
+@@ -142,7 +142,10 @@ for OS in ${OSPROBED} ; do
    fi
  
    # os-prober returns text string followed by optional counter
@@ -13,7 +13,7 @@ diff -Naur grub-2.02-20160210/util/grub.d/30_os-prober.in grub-2.02-20160210.tpg
  
    gettext_printf "Found %s on %s\n" "${LONGNAME}" "${DEVICE}" >&2
  
-@@ -145,7 +148,7 @@
+@@ -151,7 +154,7 @@ for OS in ${OSPROBED} ; do
  
  	  onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
        cat << EOF
@@ -22,7 +22,7 @@ diff -Naur grub-2.02-20160210/util/grub.d/30_os-prober.in grub-2.02-20160210.tpg
  EOF
        save_default_entry | grub_add_tab
        prepare_grub_to_access_device ${DEVICE} | grub_add_tab
-@@ -177,7 +180,7 @@
+@@ -183,7 +186,7 @@ EOF
  	DEVICE=${DEVICE%@*}
  	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
        cat << EOF
@@ -31,16 +31,16 @@ diff -Naur grub-2.02-20160210/util/grub.d/30_os-prober.in grub-2.02-20160210.tpg
  EOF
        save_default_entry | sed -e "s/^/\t/"
        prepare_grub_to_access_device ${DEVICE} | sed -e "s/^/\t/"
-@@ -233,7 +236,7 @@
+@@ -247,7 +250,7 @@ EOF
  
- 	if [ "x$is_top_level" = xtrue ] && [ "x${GRUB_DISABLE_SUBMENU}" != xy ]; then
+ 	if [ "x$is_top_level" = xtrue ] && [ "x${GRUB_DISABLE_SUBMENU}" != xtrue ]; then
              cat << EOF
 -menuentry '$(echo "$OS $onstr" | grub_quote)' $CLASS --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-simple-$boot_device_id' {
-+menuentry '$(echo "$OS" | grub_quote)' --class ${CLASS} --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-simple-$boot_device_id' {
++menuentry '$(echo "$OS" | grub_quote)' --class $CLASS --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-simple-$boot_device_id' {
  EOF
  	    save_default_entry | grub_add_tab
  	    printf '%s\n' "${prepare_boot_cache}"
-@@ -253,7 +256,7 @@
+@@ -267,7 +270,7 @@ EOF
  	fi
  	title="${LLABEL} $onstr"
          cat << EOF

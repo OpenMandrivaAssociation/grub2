@@ -1,0 +1,850 @@
+From 8ff08468d3a644de1c4e2fed7717451660159f34 Mon Sep 17 00:00:00 2001
+From: Elyes Haouas <ehaouas@noos.fr>
+Date: Fri, 4 Mar 2022 07:42:07 +0100
+Subject: [PATCH 135/261] normal: Remove trailing whitespaces
+
+Signed-off-by: Elyes Haouas <ehaouas@noos.fr>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/normal/auth.c       |  2 +-
+ grub-core/normal/charset.c    | 56 ++++++++++++++---------------
+ grub-core/normal/cmdline.c    |  2 +-
+ grub-core/normal/context.c    |  4 +--
+ grub-core/normal/crypto.c     | 20 +++++------
+ grub-core/normal/main.c       | 10 +++---
+ grub-core/normal/menu_entry.c | 14 ++++----
+ grub-core/normal/menu_text.c  | 24 ++++++-------
+ grub-core/normal/misc.c       |  2 +-
+ grub-core/normal/term.c       | 66 +++++++++++++++++------------------
+ 10 files changed, 100 insertions(+), 100 deletions(-)
+
+diff --git a/grub-core/normal/auth.c b/grub-core/normal/auth.c
+index 6be678c0d..517fc623f 100644
+--- a/grub-core/normal/auth.c
++++ b/grub-core/normal/auth.c
+@@ -162,7 +162,7 @@ grub_username_get (char buf[], unsigned buf_size)
+ 
+   while (1)
+     {
+-      key = grub_getkey (); 
++      key = grub_getkey ();
+       if (key == '\n' || key == '\r')
+ 	break;
+ 
+diff --git a/grub-core/normal/charset.c b/grub-core/normal/charset.c
+index 4dfcc3107..7778f1a99 100644
+--- a/grub-core/normal/charset.c
++++ b/grub-core/normal/charset.c
+@@ -17,7 +17,7 @@
+  */
+ 
+ /*
+-  Current problems with Unicode rendering: 
++  Current problems with Unicode rendering:
+   - B and BN bidi type characters (ignored)
+   - Mc type characters with combining class 0 (poorly combined)
+   - Mn type characters with combining class 0 (poorly combined)
+@@ -142,7 +142,7 @@ grub_get_num_of_utf8_bytes (const grub_uint32_t *src, grub_size_t size)
+   while (remaining--)
+     {
+       grub_uint32_t code = *ptr++;
+-      
++
+       if (code <= 0x007F)
+ 	cnt++;
+       else if (code <= 0x07FF)
+@@ -205,7 +205,7 @@ grub_utf8_to_ucs4_alloc (const char *msg, grub_uint32_t **unicode_msg,
+   grub_size_t msg_len = grub_strlen (msg);
+ 
+   *unicode_msg = grub_calloc (msg_len, sizeof (grub_uint32_t));
+- 
++
+   if (!*unicode_msg)
+     return -1;
+ 
+@@ -408,11 +408,11 @@ is_type_after (enum grub_comb_type a, enum grub_comb_type b)
+ {
+   /* Shadda is numerically higher than most of Arabic diacritics but has
+      to be rendered before them.  */
+-  if (a == GRUB_UNICODE_COMB_ARABIC_SHADDA 
++  if (a == GRUB_UNICODE_COMB_ARABIC_SHADDA
+       && b <= GRUB_UNICODE_COMB_ARABIC_KASRA
+       && b >= GRUB_UNICODE_COMB_ARABIC_FATHATAN)
+     return 0;
+-  if (b == GRUB_UNICODE_COMB_ARABIC_SHADDA 
++  if (b == GRUB_UNICODE_COMB_ARABIC_SHADDA
+       && a <= GRUB_UNICODE_COMB_ARABIC_KASRA
+       && a >= GRUB_UNICODE_COMB_ARABIC_FATHATAN)
+     return 1;
+@@ -441,7 +441,7 @@ grub_unicode_aglomerate_comb (const grub_uint32_t *in, grub_size_t inlen,
+ 
+   for (ptr = in; ptr < in + inlen; ptr++)
+     {
+-      /* Variation selectors >= 17 are outside of BMP and SMP. 
++      /* Variation selectors >= 17 are outside of BMP and SMP.
+ 	 Handle variation selectors first to avoid potentially costly lookups.
+       */
+       if (*ptr >= GRUB_UNICODE_VARIATION_SELECTOR_1
+@@ -458,7 +458,7 @@ grub_unicode_aglomerate_comb (const grub_uint32_t *in, grub_size_t inlen,
+ 	    out->variant = *ptr - GRUB_UNICODE_VARIATION_SELECTOR_17 + 17;
+ 	  continue;
+ 	}
+-	
++
+       enum grub_comb_type comb_type;
+       comb_type = grub_unicode_get_comb_type (*ptr);
+       if (comb_type)
+@@ -598,7 +598,7 @@ bidi_line_wrap (struct grub_unicode_glyph *visual_out,
+   for (k = 0; k <= visual_len; k++)
+     {
+       grub_ssize_t last_width = 0;
+- 
++
+       if (pos && k != visual_len)
+ 	{
+ 	  pos[visual[k].orig_pos].x = line_width;
+@@ -624,9 +624,9 @@ bidi_line_wrap (struct grub_unicode_glyph *visual_out,
+ 	  last_space_width = line_width;
+ 	}
+ 
+-      if (((grub_ssize_t) maxwidth > 0 
++      if (((grub_ssize_t) maxwidth > 0
+ 	   && line_width > (grub_ssize_t) maxwidth) || k == visual_len)
+-	{	  
++	{
+ 	  unsigned min_odd_level = 0xffffffff;
+ 	  unsigned max_level = 0;
+ 	  unsigned kk = k;
+@@ -660,7 +660,7 @@ bidi_line_wrap (struct grub_unicode_glyph *visual_out,
+ 	  }
+ 
+ 	  {
+-	    unsigned j;	  
++	    unsigned j;
+ 	    /* FIXME: can be optimized.  */
+ 	    for (j = max_level; j > min_odd_level - 1; j--)
+ 	      {
+@@ -677,7 +677,7 @@ bidi_line_wrap (struct grub_unicode_glyph *visual_out,
+ 		  }
+ 	      }
+ 	  }
+-	  
++
+ 	  {
+ 	    unsigned i;
+ 	    for (i = line_start; i < kk; i++)
+@@ -689,10 +689,10 @@ bidi_line_wrap (struct grub_unicode_glyph *visual_out,
+ 		  {
+ 		    int left, right;
+ 		    left = visual[i].attributes
+-		      & (GRUB_UNICODE_GLYPH_ATTRIBUTE_LEFT_JOINED 
++		      & (GRUB_UNICODE_GLYPH_ATTRIBUTE_LEFT_JOINED
+ 			 | GRUB_UNICODE_GLYPH_ATTRIBUTE_LEFT_JOINED_EXPLICIT);
+ 		    right = visual[i].attributes
+-		      & (GRUB_UNICODE_GLYPH_ATTRIBUTE_RIGHT_JOINED 
++		      & (GRUB_UNICODE_GLYPH_ATTRIBUTE_RIGHT_JOINED
+ 			 | GRUB_UNICODE_GLYPH_ATTRIBUTE_RIGHT_JOINED_EXPLICIT);
+ 		    visual[i].attributes &= ~GRUB_UNICODE_GLYPH_ATTRIBUTES_JOIN;
+ 		    left <<= GRUB_UNICODE_GLYPH_ATTRIBUTES_JOIN_LEFT_TO_RIGHT_SHIFT;
+@@ -757,7 +757,7 @@ bidi_line_wrap (struct grub_unicode_glyph *visual_out,
+ 		    || join_type == GRUB_JOIN_TYPE_CAUSING)
+ 		  right_join = 1;
+ 	      }
+-	  }		
++	  }
+ 
+ 	  grub_memcpy (outptr, &visual[line_start],
+ 		       (kk - line_start) * sizeof (visual[0]));
+@@ -863,7 +863,7 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
+     base_level = 1;
+   else
+     base_level = 0;
+-  
++
+   cur_level = base_level;
+   cur_override = OVERRIDE_NEUTRAL;
+   {
+@@ -894,7 +894,7 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
+ 	      {
+ 		visual[visual_len - 1].attributes
+ 		  |= GRUB_UNICODE_GLYPH_ATTRIBUTE_RIGHT_JOINED_EXPLICIT;
+-		visual[visual_len - 1].attributes 
++		visual[visual_len - 1].attributes
+ 		  &= ~GRUB_UNICODE_GLYPH_ATTRIBUTE_RIGHT_JOINED;
+ 	      }
+ 	    zwj_propagate_to_previous = 0;
+@@ -907,7 +907,7 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
+ 	if (*lptr >= GRUB_UNICODE_TAG_START && *lptr <= GRUB_UNICODE_TAG_END)
+ 	  continue;
+ 
+-	p = grub_unicode_aglomerate_comb (lptr, logical + logical_len - lptr, 
++	p = grub_unicode_aglomerate_comb (lptr, logical + logical_len - lptr,
+ 					  &visual[visual_len]);
+ 	visual[visual_len].orig_pos = lptr - logical;
+ 	type = get_bidi_type (visual[visual_len].base);
+@@ -944,7 +944,7 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
+ 		    |= GRUB_UNICODE_GLYPH_ATTRIBUTE_LEFT_JOINED_EXPLICIT
+ 		    | GRUB_UNICODE_GLYPH_ATTRIBUTE_LEFT_JOINED;
+ 		}
+-	      
++
+ 	      if (join_state == NOJOIN)
+ 		{
+ 		  visual[visual_len].attributes
+@@ -958,7 +958,7 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
+ 
+ 	      visual[visual_len].bidi_level = cur_level;
+ 	      if (cur_override != OVERRIDE_NEUTRAL)
+-		visual[visual_len].bidi_type = 
++		visual[visual_len].bidi_type =
+ 		  (cur_override == OVERRIDE_L) ? GRUB_BIDI_TYPE_L
+ 		  : GRUB_BIDI_TYPE_R;
+ 	      else
+@@ -1009,7 +1009,7 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
+ 		  break;
+ 		case GRUB_BIDI_TYPE_ES:
+ 		  if (last_type == GRUB_BIDI_TYPE_EN
+-		      && i + 1 < run_end 
++		      && i + 1 < run_end
+ 		      && visual[i + 1].bidi_type == GRUB_BIDI_TYPE_EN)
+ 		    visual[i].bidi_type = GRUB_BIDI_TYPE_EN;
+ 		  else
+@@ -1037,19 +1037,19 @@ grub_bidi_line_logical_to_visual (const grub_uint32_t *logical,
+ 			   && visual[i].bidi_type == GRUB_BIDI_TYPE_ET; i++)
+ 		      visual[i].bidi_type = GRUB_BIDI_TYPE_ON;
+ 		    i--;
+-		    break;		
++		    break;
+ 		  }
+ 		  break;
+ 		case GRUB_BIDI_TYPE_CS:
+ 		  if (last_type == GRUB_BIDI_TYPE_EN
+-		      && i + 1 < run_end 
++		      && i + 1 < run_end
+ 		      && visual[i + 1].bidi_type == GRUB_BIDI_TYPE_EN)
+ 		    {
+ 		      visual[i].bidi_type = GRUB_BIDI_TYPE_EN;
+ 		      break;
+ 		    }
+ 		  if (last_type == GRUB_BIDI_TYPE_AN
+-		      && i + 1 < run_end 
++		      && i + 1 < run_end
+ 		      && (visual[i + 1].bidi_type == GRUB_BIDI_TYPE_AN
+ 			  || (visual[i + 1].bidi_type == GRUB_BIDI_TYPE_EN
+ 			      && last_strong_type == GRUB_BIDI_TYPE_AL)))
+@@ -1263,7 +1263,7 @@ grub_unicode_shape_code (grub_uint32_t in, grub_uint8_t attr)
+ }
+ 
+ const grub_uint32_t *
+-grub_unicode_get_comb_start (const grub_uint32_t *str, 
++grub_unicode_get_comb_start (const grub_uint32_t *str,
+ 			     const grub_uint32_t *cur)
+ {
+   const grub_uint32_t *ptr;
+@@ -1276,7 +1276,7 @@ grub_unicode_get_comb_start (const grub_uint32_t *str,
+       if (*ptr >= GRUB_UNICODE_VARIATION_SELECTOR_17
+ 	  && *ptr <= GRUB_UNICODE_VARIATION_SELECTOR_256)
+ 	continue;
+-	
++
+       enum grub_comb_type comb_type;
+       comb_type = grub_unicode_get_comb_type (*ptr);
+       if (comb_type)
+@@ -1287,7 +1287,7 @@ grub_unicode_get_comb_start (const grub_uint32_t *str,
+ }
+ 
+ const grub_uint32_t *
+-grub_unicode_get_comb_end (const grub_uint32_t *end, 
++grub_unicode_get_comb_end (const grub_uint32_t *end,
+ 			   const grub_uint32_t *cur)
+ {
+   const grub_uint32_t *ptr;
+@@ -1300,7 +1300,7 @@ grub_unicode_get_comb_end (const grub_uint32_t *end,
+       if (*ptr >= GRUB_UNICODE_VARIATION_SELECTOR_17
+ 	  && *ptr <= GRUB_UNICODE_VARIATION_SELECTOR_256)
+ 	continue;
+-	
++
+       enum grub_comb_type comb_type;
+       comb_type = grub_unicode_get_comb_type (*ptr);
+       if (comb_type)
+diff --git a/grub-core/normal/cmdline.c b/grub-core/normal/cmdline.c
+index de03fe63b..61f098244 100644
+--- a/grub-core/normal/cmdline.c
++++ b/grub-core/normal/cmdline.c
+@@ -167,7 +167,7 @@ print_completion (const char *item, grub_completion_type_t type, int count)
+   if (count == 0)
+     {
+       /* If this is the first time, print a label.  */
+-      
++
+       grub_puts ("");
+       switch (type)
+ 	{
+diff --git a/grub-core/normal/context.c b/grub-core/normal/context.c
+index ee53d4a68..ba185e915 100644
+--- a/grub-core/normal/context.c
++++ b/grub-core/normal/context.c
+@@ -168,11 +168,11 @@ grub_env_extractor_close (int source)
+     {
+       grub_menu_t menu2;
+       menu2 = grub_env_get_menu ();
+-      
++
+       last = &menu2->entry_list;
+       while (*last)
+ 	last = &(*last)->next;
+-      
++
+       *last = menu->entry_list;
+       menu2->size += menu->size;
+     }
+diff --git a/grub-core/normal/crypto.c b/grub-core/normal/crypto.c
+index d01e6f271..09b98dd86 100644
+--- a/grub-core/normal/crypto.c
++++ b/grub-core/normal/crypto.c
+@@ -33,7 +33,7 @@ struct load_spec
+ 
+ static struct load_spec *crypto_specs = NULL;
+ 
+-static void 
++static void
+ grub_crypto_autoload (const char *name)
+ {
+   struct load_spec *cur;
+@@ -57,7 +57,7 @@ grub_crypto_autoload (const char *name)
+   depth--;
+ }
+ 
+-static void 
++static void
+ grub_crypto_spec_free (void)
+ {
+   struct load_spec *cur, *next;
+@@ -85,7 +85,7 @@ read_crypto_list (const char *prefix)
+       grub_errno = GRUB_ERR_NONE;
+       return;
+     }
+-  
++
+   filename = grub_xasprintf ("%s/" GRUB_TARGET_CPU "-" GRUB_PLATFORM
+ 			     "/crypto.lst", prefix);
+   if (!filename)
+@@ -109,12 +109,12 @@ read_crypto_list (const char *prefix)
+     {
+       char *p, *name;
+       struct load_spec *cur;
+-      
++
+       buf = grub_file_getline (file);
+-	
++
+       if (! buf)
+ 	break;
+-      
++
+       name = buf;
+       while (grub_isspace (name[0]))
+ 	name++;
+@@ -122,7 +122,7 @@ read_crypto_list (const char *prefix)
+       p = grub_strchr (name, ':');
+       if (! p)
+ 	continue;
+-      
++
+       *p = '\0';
+       p++;
+       while (*p == ' ' || *p == '\t')
+@@ -134,7 +134,7 @@ read_crypto_list (const char *prefix)
+ 	  grub_errno = GRUB_ERR_NONE;
+ 	  continue;
+ 	}
+-      
++
+       cur->name = grub_strdup (name);
+       if (! cur->name)
+ 	{
+@@ -142,7 +142,7 @@ read_crypto_list (const char *prefix)
+ 	  grub_free (cur);
+ 	  continue;
+ 	}
+-	
++
+       cur->modname = grub_strdup (p);
+       if (! cur->modname)
+ 	{
+@@ -154,7 +154,7 @@ read_crypto_list (const char *prefix)
+       cur->next = crypto_specs;
+       crypto_specs = cur;
+     }
+-  
++
+   grub_file_close (file);
+ 
+   grub_errno = GRUB_ERR_NONE;
+diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
+index c4ebe9e22..cb0e8e7fd 100644
+--- a/grub-core/normal/main.c
++++ b/grub-core/normal/main.c
+@@ -206,17 +206,17 @@ grub_normal_init_page (struct grub_term_output *term,
+   char *msg_formatted;
+   grub_uint32_t *unicode_msg;
+   grub_uint32_t *last_position;
+- 
++
+   grub_term_cls (term);
+ 
+   msg_formatted = grub_xasprintf (_("GNU GRUB  version %s"), PACKAGE_VERSION);
+   if (!msg_formatted)
+     return;
+- 
++
+   msg_len = grub_utf8_to_ucs4_alloc (msg_formatted,
+   				     &unicode_msg, &last_position);
+   grub_free (msg_formatted);
+- 
++
+   if (msg_len < 0)
+     {
+       return;
+@@ -399,7 +399,7 @@ grub_normal_reader_init (int nested)
+     grub_putcode ('\n', term);
+   }
+   grub_free (msg_formatted);
+- 
++
+   return 0;
+ }
+ 
+@@ -431,7 +431,7 @@ grub_normal_read_line_real (char **line, int cont, int nested)
+ 	  return grub_errno;
+ 	}
+     }
+- 
++
+ }
+ 
+ static grub_err_t
+diff --git a/grub-core/normal/menu_entry.c b/grub-core/normal/menu_entry.c
+index 50eef918c..ade56be2b 100644
+--- a/grub-core/normal/menu_entry.c
++++ b/grub-core/normal/menu_entry.c
+@@ -333,7 +333,7 @@ update_screen (struct screen *screen, struct per_term_screen *term_screen,
+       while (y < term_screen->geo.num_entries);
+ 
+       /* Draw up and down arrows.  */
+-      
++
+       if (term_screen->geo.num_entries == 1)
+ 	{
+ 	  if (up || down)
+@@ -361,12 +361,12 @@ update_screen (struct screen *screen, struct per_term_screen *term_screen,
+       for (i = 0; i < screen->line; i++)
+ 	y += get_logical_num_lines (screen->lines + i, term_screen);
+       if (cpos >= &(screen->lines[screen->line].pos[term_screen - screen->terms])[0])
+-	grub_term_gotoxy (term_screen->term, 
++	grub_term_gotoxy (term_screen->term,
+ 			  (struct grub_term_coordinate) { cpos->x + term_screen->geo.first_entry_x,
+ 			      cpos->y + y
+ 			      + term_screen->geo.first_entry_y });
+       else
+-	grub_term_gotoxy (term_screen->term, 
++	grub_term_gotoxy (term_screen->term,
+ 			  (struct grub_term_coordinate) { term_screen->geo.first_entry_x,
+ 			      y + term_screen->geo.first_entry_y });
+ 
+@@ -659,14 +659,14 @@ backward_char (struct screen *screen, int update)
+       linep = screen->lines + screen->line;
+ 
+       screen->column--;
+-      screen->column = grub_unicode_get_comb_start (linep->buf, 
++      screen->column = grub_unicode_get_comb_start (linep->buf,
+ 						    linep->buf + screen->column)
+ 	- linep->buf;
+ 
+       grub_unicode_aglomerate_comb (screen->lines[screen->line].buf + screen->column,
+ 				    screen->lines[screen->line].len - screen->column,
+ 				    &glyph);
+-      screen->column = grub_unicode_get_comb_start (linep->buf, 
++      screen->column = grub_unicode_get_comb_start (linep->buf,
+ 						    linep->buf + screen->column)
+ 	- linep->buf;
+ 
+@@ -1028,12 +1028,12 @@ complete (struct screen *screen, int continuous, int update)
+     return 1;
+ 
+   insert = grub_normal_do_completion (u8, &restore, store_completion);
+-  
++
+   if (completion_buffer.buf)
+     {
+       buflen = grub_strlen (completion_buffer.buf);
+       ucs4 = grub_calloc (buflen + 1, sizeof (grub_uint32_t));
+-      
++
+       if (!ucs4)
+ 	{
+ 	  grub_print_error ();
+diff --git a/grub-core/normal/menu_text.c b/grub-core/normal/menu_text.c
+index 18240e76c..b1321eb26 100644
+--- a/grub-core/normal/menu_text.c
++++ b/grub-core/normal/menu_text.c
+@@ -35,8 +35,8 @@ struct menu_viewer_data
+ {
+   int first, offset;
+   struct grub_term_screen_geometry geo;
+-  enum { 
+-    TIMEOUT_UNKNOWN, 
++  enum {
++    TIMEOUT_UNKNOWN,
+     TIMEOUT_NORMAL,
+     TIMEOUT_TERSE,
+     TIMEOUT_TERSE_NO_MARGIN
+@@ -79,13 +79,13 @@ grub_print_message_indented_real (const char *msg, int margin_left,
+   int ret = 0;
+ 
+   unicode_msg = grub_calloc (msg_len, sizeof (grub_uint32_t));
+- 
++
+   if (!unicode_msg)
+     return 0;
+ 
+   msg_len = grub_utf8_to_ucs4 (unicode_msg, msg_len,
+ 			       (grub_uint8_t *) msg, -1, 0);
+-  
++
+   last_position = unicode_msg + msg_len;
+   *last_position = 0;
+ 
+@@ -193,7 +193,7 @@ command-line or ESC to discard edits and return to the GRUB menu."),
+ 	       "`e' to edit the commands before booting "
+ 	       "or `c' for a command-line."),
+ 	     STANDARD_MARGIN, STANDARD_MARGIN, term, dry_run);
+-	}	
++	}
+     }
+   return ret;
+ }
+@@ -233,7 +233,7 @@ print_entry (int y, int highlight, grub_menu_entry_t entry,
+ 			   ? GRUB_TERM_COLOR_HIGHLIGHT
+ 			   : GRUB_TERM_COLOR_NORMAL);
+ 
+-  grub_term_gotoxy (data->term, (struct grub_term_coordinate) { 
++  grub_term_gotoxy (data->term, (struct grub_term_coordinate) {
+       data->geo.first_entry_x, y });
+ 
+   for (i = 0; i < len; i++)
+@@ -253,7 +253,7 @@ print_entry (int y, int highlight, grub_menu_entry_t entry,
+ 
+   grub_term_setcolorstate (data->term, GRUB_TERM_COLOR_NORMAL);
+   grub_term_gotoxy (data->term,
+-		    (struct grub_term_coordinate) { 
++		    (struct grub_term_coordinate) {
+ 		      grub_term_cursor_x (&data->geo), y });
+ 
+   grub_term_normal_color = old_color_normal;
+@@ -270,7 +270,7 @@ print_entries (grub_menu_t menu, const struct menu_viewer_data *data)
+   int i;
+ 
+   grub_term_gotoxy (data->term,
+-		    (struct grub_term_coordinate) { 
++		    (struct grub_term_coordinate) {
+ 		      data->geo.first_entry_x + data->geo.entry_width
+ 			+ data->geo.border + 1,
+ 			data->geo.first_entry_y });
+@@ -472,7 +472,7 @@ menu_text_print_timeout (int timeout, void *dataptr)
+   grub_free (msg_translated);
+ 
+   grub_term_gotoxy (data->term,
+-		    (struct grub_term_coordinate) { 
++		    (struct grub_term_coordinate) {
+ 		      grub_term_cursor_x (&data->geo),
+ 			data->geo.first_entry_y + data->offset });
+   grub_term_refresh (data->term);
+@@ -537,7 +537,7 @@ menu_text_clear_timeout (void *dataptr)
+   if (data->geo.num_entries <= 5 && !data->geo.border)
+     {
+       grub_term_gotoxy (data->term,
+-			(struct grub_term_coordinate) { 
++			(struct grub_term_coordinate) {
+ 			  data->geo.first_entry_x + data->geo.entry_width
+ 			    + data->geo.border + 1,
+ 			    data->geo.first_entry_y + data->geo.num_entries - 1
+@@ -555,8 +555,8 @@ menu_text_clear_timeout (void *dataptr)
+   grub_term_refresh (data->term);
+ }
+ 
+-grub_err_t 
+-grub_menu_try_text (struct grub_term_output *term, 
++grub_err_t
++grub_menu_try_text (struct grub_term_output *term,
+ 		    int entry, grub_menu_t menu, int nested)
+ {
+   struct menu_viewer_data *data;
+diff --git a/grub-core/normal/misc.c b/grub-core/normal/misc.c
+index f7e9e3ac4..66f988042 100644
+--- a/grub-core/normal/misc.c
++++ b/grub-core/normal/misc.c
+@@ -39,7 +39,7 @@ static const char *grub_human_sizes[3][6] =
+     /* TRANSLATORS: that's the list of binary unit prefixes.  */
+     {    "",     N_("K"),     N_("M"),     N_("G"),     N_("T"),     N_("P") },
+     /* TRANSLATORS: that's the list of binary unit prefixes.  */
+-    { N_("B/s"), N_("KiB/s"), N_("MiB/s"), N_("GiB/s"), N_("TiB/s"), N_("PiB/s"),  },    
++    { N_("B/s"), N_("KiB/s"), N_("MiB/s"), N_("GiB/s"), N_("TiB/s"), N_("PiB/s"),  },
+   };
+ 
+ const char *
+diff --git a/grub-core/normal/term.c b/grub-core/normal/term.c
+index cc8c173b6..c073eb489 100644
+--- a/grub-core/normal/term.c
++++ b/grub-core/normal/term.c
+@@ -99,7 +99,7 @@ print_more (void)
+   grub_setcolorstate (GRUB_TERM_COLOR_NORMAL);
+ 
+   grub_free (unicode_str);
+-  
++
+   key = grub_getkey ();
+ 
+   /* Remove the message.  */
+@@ -184,28 +184,28 @@ map_code (grub_uint32_t in, struct grub_term_output *term)
+ 	{
+ 	case GRUB_UNICODE_LEFTARROW:
+ 	  return '<';
+-		
++
+ 	case GRUB_UNICODE_UPARROW:
+ 	  return '^';
+-	  
++
+ 	case GRUB_UNICODE_RIGHTARROW:
+ 	  return '>';
+-		
++
+ 	case GRUB_UNICODE_DOWNARROW:
+ 	  return 'v';
+-		  
++
+ 	case GRUB_UNICODE_HLINE:
+ 	  return '-';
+-		  
++
+ 	case GRUB_UNICODE_VLINE:
+ 	  return '|';
+-		  
++
+ 	case GRUB_UNICODE_CORNER_UL:
+ 	case GRUB_UNICODE_CORNER_UR:
+ 	case GRUB_UNICODE_CORNER_LL:
+ 	case GRUB_UNICODE_CORNER_LR:
+ 	  return '+';
+-		
++
+ 	}
+       return '?';
+     }
+@@ -260,7 +260,7 @@ grub_term_save_pos (void)
+   struct grub_term_output *cur;
+   unsigned cnt = 0;
+   struct grub_term_coordinate *ret, *ptr;
+-  
++
+   FOR_ACTIVE_TERM_OUTPUTS(cur)
+     cnt++;
+ 
+@@ -291,7 +291,7 @@ grub_term_restore_pos (struct grub_term_coordinate *pos)
+   }
+ }
+ 
+-static void 
++static void
+ grub_terminal_autoload_free (void)
+ {
+   struct grub_term_autoload *cur, *next;
+@@ -322,7 +322,7 @@ read_terminal_list (const char *prefix)
+       grub_errno = GRUB_ERR_NONE;
+       return;
+     }
+-  
++
+   filename = grub_xasprintf ("%s/" GRUB_TARGET_CPU "-" GRUB_PLATFORM
+ 			     "/terminal.lst", prefix);
+   if (!filename)
+@@ -347,9 +347,9 @@ read_terminal_list (const char *prefix)
+       char *p, *name;
+       struct grub_term_autoload *cur;
+       struct grub_term_autoload **target = NULL;
+-      
++
+       buf = grub_file_getline (file);
+-	
++
+       if (! buf)
+ 	break;
+ 
+@@ -369,9 +369,9 @@ read_terminal_list (const char *prefix)
+ 	}
+       if (!target)
+ 	continue;
+-      
++
+       name = p + 1;
+-            
++
+       p = grub_strchr (name, ':');
+       if (! p)
+ 	continue;
+@@ -387,7 +387,7 @@ read_terminal_list (const char *prefix)
+ 	  grub_errno = GRUB_ERR_NONE;
+ 	  continue;
+ 	}
+-      
++
+       cur->name = grub_strdup (name);
+       if (! cur->name)
+ 	{
+@@ -395,7 +395,7 @@ read_terminal_list (const char *prefix)
+ 	  grub_free (cur);
+ 	  continue;
+ 	}
+-	
++
+       cur->modname = grub_strdup (p);
+       if (! cur->modname)
+ 	{
+@@ -407,7 +407,7 @@ read_terminal_list (const char *prefix)
+       cur->next = *target;
+       *target = cur;
+     }
+-  
++
+   grub_file_close (file);
+ 
+   grub_errno = GRUB_ERR_NONE;
+@@ -451,7 +451,7 @@ putglyph (const struct grub_unicode_glyph *c, struct grub_term_output *term,
+     }
+ 
+   if ((term->flags & GRUB_TERM_CODE_TYPE_MASK)
+-      == GRUB_TERM_CODE_TYPE_UTF8_LOGICAL 
++      == GRUB_TERM_CODE_TYPE_UTF8_LOGICAL
+       || (term->flags & GRUB_TERM_CODE_TYPE_MASK)
+       == GRUB_TERM_CODE_TYPE_UTF8_VISUAL)
+     {
+@@ -461,7 +461,7 @@ putglyph (const struct grub_unicode_glyph *c, struct grub_term_output *term,
+ 	{
+ 	  grub_uint8_t u8[20], *ptr;
+ 	  grub_uint32_t code;
+-	      
++
+ 	  if (i == -1)
+ 	    {
+ 	      code = c->base;
+@@ -534,7 +534,7 @@ get_maxwidth (struct grub_term_output *term,
+     .ncomb = 0,
+   };
+   return (grub_term_width (term)
+-	  - grub_term_getcharwidth (term, &space_glyph) 
++	  - grub_term_getcharwidth (term, &space_glyph)
+ 	  * (margin_left + margin_right) - 1);
+ }
+ 
+@@ -643,7 +643,7 @@ print_ucs4_terminal (const grub_uint32_t * str,
+ 
+ 	  if (line_width > max_width && last_space > line_start)
+ 	    ptr = last_space;
+-	  else if (line_width > max_width 
++	  else if (line_width > max_width
+ 		   && line_start == str && line_width - lastspacewidth < max_width - 5)
+ 	    {
+ 	      ptr = str;
+@@ -659,7 +659,7 @@ print_ucs4_terminal (const grub_uint32_t * str,
+ 	      for (ptr2 = line_start; ptr2 < ptr; ptr2++)
+ 		{
+ 		  /* Skip combining characters on non-UTF8 terminals.  */
+-		  if ((term->flags & GRUB_TERM_CODE_TYPE_MASK) 
++		  if ((term->flags & GRUB_TERM_CODE_TYPE_MASK)
+ 		      != GRUB_TERM_CODE_TYPE_UTF8_LOGICAL
+ 		      && grub_unicode_get_comb_type (*ptr2)
+ 		      != GRUB_UNICODE_COMB_NONE)
+@@ -677,7 +677,7 @@ print_ucs4_terminal (const grub_uint32_t * str,
+ 	      if (state != &local_state && ++state->num_lines
+ 		  >= (grub_ssize_t) grub_term_height (term) - 2)
+ 		{
+-		  state->backlog_ucs4 = (ptr == last_space || *ptr == '\n') 
++		  state->backlog_ucs4 = (ptr == last_space || *ptr == '\n')
+ 		    ? ptr + 1 : ptr;
+ 		  state->backlog_len = last_position - state->backlog_ucs4;
+ 		  state->backlog_fixed_tab = fixed_tab;
+@@ -735,7 +735,7 @@ print_ucs4_terminal (const grub_uint32_t * str,
+       for (ptr2 = line_start; ptr2 < last_position; ptr2++)
+ 	{
+ 	  /* Skip combining characters on non-UTF8 terminals.  */
+-	  if ((term->flags & GRUB_TERM_CODE_TYPE_MASK) 
++	  if ((term->flags & GRUB_TERM_CODE_TYPE_MASK)
+ 	      != GRUB_TERM_CODE_TYPE_UTF8_LOGICAL
+ 	      && grub_unicode_get_comb_type (*ptr2)
+ 	      != GRUB_UNICODE_COMB_NONE)
+@@ -888,7 +888,7 @@ print_ucs4_real (const grub_uint32_t * str,
+ 	state = find_term_state (term);
+ 
+       xy = term->getxy (term);
+-      
++
+       if (xy.x < margin_left)
+ 	{
+ 	  if (!contchar)
+@@ -899,9 +899,9 @@ print_ucs4_real (const grub_uint32_t * str,
+ 	}
+     }
+ 
+-  if ((term->flags & GRUB_TERM_CODE_TYPE_MASK) 
++  if ((term->flags & GRUB_TERM_CODE_TYPE_MASK)
+       == GRUB_TERM_CODE_TYPE_VISUAL_GLYPHS
+-      || (term->flags & GRUB_TERM_CODE_TYPE_MASK) 
++      || (term->flags & GRUB_TERM_CODE_TYPE_MASK)
+       == GRUB_TERM_CODE_TYPE_UTF8_VISUAL)
+     {
+       grub_ssize_t visual_len;
+@@ -913,10 +913,10 @@ print_ucs4_real (const grub_uint32_t * str,
+ 
+       visual_len = grub_bidi_logical_to_visual (str, last_position - str,
+ 						&visual, getcharwidth, term,
+-						get_maxwidth (term, 
++						get_maxwidth (term,
+ 							      margin_left,
+ 							      margin_right),
+-						dry_run ? 0 : get_startwidth (term, 
++						dry_run ? 0 : get_startwidth (term,
+ 									      margin_left),
+ 						contchar, pos, !!contchar);
+       if (visual_len < 0)
+@@ -935,7 +935,7 @@ print_ucs4_real (const grub_uint32_t * str,
+ 	    if (vptr->base == '\n')
+ 	      max_lines--;
+ 
+-	  visual_len_show = vptr - visual_show;	  
++	  visual_len_show = vptr - visual_show;
+ 	}
+       else
+ 	visual_len_show = visual + visual_len - visual_show;
+@@ -1014,7 +1014,7 @@ grub_xnputs (const char *str, grub_size_t msg_len)
+   grub_error_push ();
+ 
+   unicode_str = grub_calloc (msg_len, sizeof (grub_uint32_t));
+- 
++
+   grub_error_pop ();
+ 
+   if (!unicode_str)
+@@ -1085,7 +1085,7 @@ grub_cls (void)
+ {
+   struct grub_term_output *term;
+ 
+-  FOR_ACTIVE_TERM_OUTPUTS(term)  
++  FOR_ACTIVE_TERM_OUTPUTS(term)
+   {
+     if ((term->flags & GRUB_TERM_DUMB) || (grub_env_get ("debug")))
+       {
+-- 
+2.36.1
+

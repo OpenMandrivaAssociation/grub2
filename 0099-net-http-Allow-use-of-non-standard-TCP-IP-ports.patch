@@ -1,0 +1,128 @@
+From ac8a37dda0eabdd80506bebe4fb9a5a9fd227935 Mon Sep 17 00:00:00 2001
+From: Stephen Balousek <sbalousek@wickedloop.com>
+Date: Sun, 16 Jan 2022 15:46:08 -0700
+Subject: [PATCH 099/261] net/http: Allow use of non-standard TCP/IP ports
+
+Allow the use of HTTP servers listening on ports other 80. This is done
+with an extension to the http notation:
+
+  (http[,server[,port]])
+
+ - or -
+
+  (http[,server[:port]])
+
+Signed-off-by: Stephen Balousek <sbalousek@wickedloop.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ docs/grub.texi       | 33 +++++++++++++++++++++++++++++++++
+ grub-core/net/http.c | 40 ++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 71 insertions(+), 2 deletions(-)
+
+diff --git a/docs/grub.texi b/docs/grub.texi
+index 851b7b093..caba8befb 100644
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -3011,6 +3011,39 @@ environment variable @samp{net_default_server} is used.
+ Before using the network drive, you must initialize the network.
+ @xref{Network}, for more information.
+ 
++For the @samp{http} network protocol, @code{@var{server}} may specify a
++port number other than the default value of @samp{80}. The server name
++and port number are separated by either @samp{,} or @samp{:}.
++For IPv6 addresses, the server name and port number may only be separated
++by @samp{,}.
++
++@itemize @bullet
++@item
++@code{(http,@var{server},@var{port})}
++
++@item
++@code{(http,@var{server}:@var{port})}
++@end itemize
++
++These examples all reference an @samp{http} server at address
++@samp{192.0.2.1} listening on the non-standard port of @samp{3000}.
++In these examples, the DNS name @samp{grub.example.com} is resolved
++to @samp{192.0.2.1}.
++
++@example
++(http,grub.example.com,3000)
++(http,grub.example.com:3000)
++(http,192.0.2.1,3000)
++(http,192.0.2.1:3000)
++@end example
++
++Referencing an @samp{http} server over IPv6 on the non-standard
++port of @samp{3000} would look like this:
++
++@example
++(http,2001:db8::1,3000)
++@end example
++
+ If you boot GRUB from a CD-ROM, @samp{(cd)} is available. @xref{Making
+ a GRUB bootable CD-ROM}, for details.
+ 
+diff --git a/grub-core/net/http.c b/grub-core/net/http.c
+index b616cf40b..69e533b7e 100644
+--- a/grub-core/net/http.c
++++ b/grub-core/net/http.c
+@@ -312,6 +312,10 @@ http_establish (struct grub_file *file, grub_off_t offset, int initial)
+   int i;
+   struct grub_net_buff *nb;
+   grub_err_t err;
++  char *server_name;
++  char *port_string;
++  const char *port_string_end;
++  unsigned long port_number;
+ 
+   nb = grub_netbuff_alloc (GRUB_NET_TCP_RESERVE_SIZE
+ 			   + sizeof ("GET ") - 1
+@@ -390,10 +394,42 @@ http_establish (struct grub_file *file, grub_off_t offset, int initial)
+   grub_netbuff_put (nb, 2);
+   grub_memcpy (ptr, "\r\n", 2);
+ 
+-  data->sock = grub_net_tcp_open (file->device->net->server,
+-				  HTTP_PORT, http_receive,
++  port_string = grub_strrchr (file->device->net->server, ',');
++  if (port_string == NULL)
++    {
++      /* If ",port" is not found in the http server string, look for ":port". */
++      port_string = grub_strrchr (file->device->net->server, ':');
++      /* For IPv6 addresses, the ":port" syntax is not supported and ",port" must be used. */
++      if (port_string != NULL && grub_strchr (file->device->net->server, ':') != port_string)
++	  port_string = NULL;
++    }
++  if (port_string != NULL)
++    {
++      port_number = grub_strtoul (port_string + 1, &port_string_end, 10);
++      if (*(port_string + 1) == '\0' || *port_string_end != '\0')
++	  return grub_error (GRUB_ERR_BAD_NUMBER, N_("non-numeric or invalid port number `%s'"), port_string + 1);
++      if (port_number == 0 || port_number > 65535)
++	  return grub_error (GRUB_ERR_OUT_OF_RANGE, N_("port number `%s' not in the range of 1 to 65535"), port_string + 1);
++
++      server_name = grub_strdup (file->device->net->server);
++      if (server_name == NULL)
++	  return grub_errno;
++      server_name[port_string - file->device->net->server] = '\0';
++    }
++  else
++    {
++      port_number = HTTP_PORT;
++      server_name = file->device->net->server;
++    }
++
++  data->sock = grub_net_tcp_open (server_name,
++				  port_number, http_receive,
+ 				  http_err, NULL,
+ 				  file);
++
++  if (server_name != file->device->net->server)
++      grub_free (server_name);
++
+   if (!data->sock)
+     {
+       grub_netbuff_free (nb);
+-- 
+2.36.1
+

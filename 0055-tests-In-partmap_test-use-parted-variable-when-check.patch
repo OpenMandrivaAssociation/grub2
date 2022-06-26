@@ -1,0 +1,30 @@
+From f9d1c2601afc46d7165a52231d418d9db80717c3 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Thu, 14 Oct 2021 15:58:08 -0500
+Subject: [PATCH 055/261] tests: In partmap_test, use ${parted} variable when
+ checking for binary
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/partmap_test.in | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tests/partmap_test.in b/tests/partmap_test.in
+index bc2be78aa..a73c473b0 100644
+--- a/tests/partmap_test.in
++++ b/tests/partmap_test.in
+@@ -96,8 +96,8 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ 	;;
+ esac
+ 
+-if ! which parted >/dev/null 2>&1; then
+-   echo "parted not installed; cannot test partmap"
++if ! which ${parted} >/dev/null 2>&1; then
++   echo "${parted} not installed; cannot test partmap"
+    exit 99
+ fi
+ 
+-- 
+2.36.1
+

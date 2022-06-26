@@ -1,0 +1,31 @@
+From 50a2a039052a98e114113c31519a8afd1d4b1ae0 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Fri, 17 Sep 2021 23:04:01 +0000
+Subject: [PATCH 048/261] tests: Skip HFS test only when mac_roman module is
+ not loaded and not loadable
+
+Allow the HFS tests to not be skipped if the mac_roman modules is loaded in
+the kernel, but not accessible to modprobe.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/hfs_test.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/hfs_test.in b/tests/hfs_test.in
+index d7ec56bef..5b0c5e33e 100644
+--- a/tests/hfs_test.in
++++ b/tests/hfs_test.in
+@@ -15,7 +15,7 @@ if ! which mkfs.hfs >/dev/null 2>&1; then
+    exit 77
+ fi
+ 
+-if ! modprobe mac-roman; then
++if ! grep -q mac_roman /proc/modules && ! modprobe mac_roman; then
+    echo "no mac-roman support; cannot test HFS."
+    exit 77
+ fi
+-- 
+2.36.1
+

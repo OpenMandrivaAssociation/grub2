@@ -1,0 +1,52 @@
+From 15f2f328e9d74ce48f7ec9dd192a622972b6919a Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Wed, 12 Jan 2022 20:19:03 -0600
+Subject: [PATCH 100/261] conf/Makefile.common: Order alphabetically variables
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ conf/Makefile.common | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/conf/Makefile.common b/conf/Makefile.common
+index 2a1a886f6..f0bb6e160 100644
+--- a/conf/Makefile.common
++++ b/conf/Makefile.common
+@@ -102,24 +102,24 @@ MODULE_FILES =
+ MARKER_FILES =
+ KERNEL_HEADER_FILES =
+ 
+-man_MANS =
+-noinst_DATA =
+-pkgdata_DATA =
+ bin_SCRIPTS =
+-sbin_SCRIPTS =
+ bin_PROGRAMS =
+-platform_DATA =
+-sbin_PROGRAMS =
+ check_SCRIPTS =
+-dist_grubconf_DATA =
+ check_PROGRAMS =
++dist_grubconf_DATA =
++dist_noinst_DATA =
++grubconf_SCRIPTS =
++man_MANS =
++noinst_DATA =
+ noinst_SCRIPTS =
+ noinst_PROGRAMS =
+-grubconf_SCRIPTS =
+ noinst_LIBRARIES =
+-dist_noinst_DATA =
++pkgdata_DATA =
++platform_DATA =
+ platform_SCRIPTS =
+ platform_PROGRAMS =
++sbin_SCRIPTS =
++sbin_PROGRAMS =
+ 
+ TESTS =
+ EXTRA_DIST =
+-- 
+2.36.1
+

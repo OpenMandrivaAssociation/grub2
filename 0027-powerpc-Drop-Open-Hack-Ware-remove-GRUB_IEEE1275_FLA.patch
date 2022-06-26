@@ -1,0 +1,77 @@
+From 935bf8fa02552e140c4811eb87fb6b77bd512c62 Mon Sep 17 00:00:00 2001
+From: Daniel Axtens <dja@axtens.net>
+Date: Mon, 6 Sep 2021 15:46:14 +1000
+Subject: [PATCH 027/261] powerpc: Drop Open Hack'Ware - remove
+ GRUB_IEEE1275_FLAG_CANNOT_INTERPRET
+
+Open Hack'Ware was the only user.
+
+Signed-off-by: Daniel Axtens <dja@axtens.net>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/kern/ieee1275/ieee1275.c     |  3 ---
+ grub-core/net/drivers/ieee1275/ofnet.c | 12 ------------
+ include/grub/ieee1275/ieee1275.h       |  3 ---
+ 3 files changed, 18 deletions(-)
+
+diff --git a/grub-core/kern/ieee1275/ieee1275.c b/grub-core/kern/ieee1275/ieee1275.c
+index 86f81a3c4..b7cf09c64 100644
+--- a/grub-core/kern/ieee1275/ieee1275.c
++++ b/grub-core/kern/ieee1275/ieee1275.c
+@@ -398,9 +398,6 @@ grub_ieee1275_interpret (const char *command, grub_ieee1275_cell_t *catch)
+   }
+   args;
+ 
+-  if (grub_ieee1275_test_flag (GRUB_IEEE1275_FLAG_CANNOT_INTERPRET))
+-    return -1;
+-
+   INIT_IEEE1275_COMMON (&args.common, "interpret", 1, 1);
+   args.command = (grub_ieee1275_cell_t) command;
+ 
+diff --git a/grub-core/net/drivers/ieee1275/ofnet.c b/grub-core/net/drivers/ieee1275/ofnet.c
+index ac4e62a95..8f0386602 100644
+--- a/grub-core/net/drivers/ieee1275/ofnet.c
++++ b/grub-core/net/drivers/ieee1275/ofnet.c
+@@ -321,12 +321,6 @@ grub_ieee1275_alloc_mem (grub_size_t len)
+   }
+   args;
+ 
+-  if (grub_ieee1275_test_flag (GRUB_IEEE1275_FLAG_CANNOT_INTERPRET))
+-    {
+-      grub_error (GRUB_ERR_UNKNOWN_COMMAND, N_("interpret is not supported"));
+-      return NULL;
+-    }
+-
+   INIT_IEEE1275_COMMON (&args.common, "interpret", 2, 2);
+   args.len = len;
+   args.method = (grub_ieee1275_cell_t) "alloc-mem";
+@@ -354,12 +348,6 @@ grub_ieee1275_free_mem (void *addr, grub_size_t len)
+   }
+   args;
+ 
+-  if (grub_ieee1275_test_flag (GRUB_IEEE1275_FLAG_CANNOT_INTERPRET))
+-    {
+-      grub_error (GRUB_ERR_UNKNOWN_COMMAND, N_("interpret is not supported"));
+-      return grub_errno;
+-    }
+-
+   INIT_IEEE1275_COMMON (&args.common, "interpret", 3, 1);
+   args.addr = (grub_ieee1275_cell_t)addr;
+   args.len = len;
+diff --git a/include/grub/ieee1275/ieee1275.h b/include/grub/ieee1275/ieee1275.h
+index 8a1206195..8bf7b10a0 100644
+--- a/include/grub/ieee1275/ieee1275.h
++++ b/include/grub/ieee1275/ieee1275.h
+@@ -105,9 +105,6 @@ enum grub_ieee1275_flag
+   /* OLPC / XO firmware hangs when accessing USB devices.  */
+   GRUB_IEEE1275_FLAG_OFDISK_SDCARD_ONLY,
+ 
+-  /* Open Hack'Ware stops when grub_ieee1275_interpret is used.  */
+-  GRUB_IEEE1275_FLAG_CANNOT_INTERPRET,
+-
+   /* Open Hack'Ware don't support the ANSI sequence.  */
+   GRUB_IEEE1275_FLAG_NO_ANSI,
+ 
+-- 
+2.36.1
+

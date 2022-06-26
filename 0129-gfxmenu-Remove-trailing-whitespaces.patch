@@ -1,0 +1,156 @@
+From a2f71c73b0b83c5b55fa4828ee8dcf18b6a085f3 Mon Sep 17 00:00:00 2001
+From: Elyes Haouas <ehaouas@noos.fr>
+Date: Fri, 4 Mar 2022 07:42:01 +0100
+Subject: [PATCH 129/261] gfxmenu: Remove trailing whitespaces
+
+Signed-off-by: Elyes Haouas <ehaouas@noos.fr>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/gfxmenu/gfxmenu.c               | 2 +-
+ grub-core/gfxmenu/gui_circular_progress.c | 2 +-
+ grub-core/gfxmenu/gui_label.c             | 2 +-
+ grub-core/gfxmenu/gui_list.c              | 4 ++--
+ grub-core/gfxmenu/gui_progress_bar.c      | 4 ++--
+ grub-core/gfxmenu/theme_loader.c          | 2 +-
+ grub-core/gfxmenu/view.c                  | 8 ++++----
+ 7 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/grub-core/gfxmenu/gfxmenu.c b/grub-core/gfxmenu/gfxmenu.c
+index 8a17dda2c..72b39f90f 100644
+--- a/grub-core/gfxmenu/gfxmenu.c
++++ b/grub-core/gfxmenu/gfxmenu.c
+@@ -42,7 +42,7 @@ GRUB_MOD_LICENSE ("GPLv3+");
+ 
+ static grub_gfxmenu_view_t cached_view;
+ 
+-static void 
++static void
+ grub_gfxmenu_viewer_fini (void *data __attribute__ ((unused)))
+ {
+ }
+diff --git a/grub-core/gfxmenu/gui_circular_progress.c b/grub-core/gfxmenu/gui_circular_progress.c
+index 7578bfbec..db1edb8f4 100644
+--- a/grub-core/gfxmenu/gui_circular_progress.c
++++ b/grub-core/gfxmenu/gui_circular_progress.c
+@@ -220,7 +220,7 @@ static void
+ circprog_set_state (void *vself, int visible, int start,
+ 		    int current, int end)
+ {
+-  circular_progress_t self = vself;  
++  circular_progress_t self = vself;
+   self->visible = visible;
+   self->start = start;
+   self->value = current;
+diff --git a/grub-core/gfxmenu/gui_label.c b/grub-core/gfxmenu/gui_label.c
+index 1c190542a..ffd50223c 100644
+--- a/grub-core/gfxmenu/gui_label.c
++++ b/grub-core/gfxmenu/gui_label.c
+@@ -160,7 +160,7 @@ static void
+ label_set_state (void *vself, int visible, int start __attribute__ ((unused)),
+ 		 int current, int end __attribute__ ((unused)))
+ {
+-  grub_gui_label_t self = vself;  
++  grub_gui_label_t self = vself;
+   self->value = -current;
+   self->visible = visible;
+   grub_free (self->text);
+diff --git a/grub-core/gfxmenu/gui_list.c b/grub-core/gfxmenu/gui_list.c
+index df334a6c5..2ccd4345f 100644
+--- a/grub-core/gfxmenu/gui_list.c
++++ b/grub-core/gfxmenu/gui_list.c
+@@ -118,7 +118,7 @@ get_num_shown_items (list_impl_t self)
+   int boxpad = self->item_padding;
+   int item_vspace = self->item_spacing;
+   int item_height = self->item_height;
+-  
++
+   grub_gfxmenu_box_t box = self->menu_box;
+   int box_top_pad = box->get_top_pad (box);
+   int box_bottom_pad = box->get_bottom_pad (box);
+@@ -353,7 +353,7 @@ draw_menu (list_impl_t self, int num_shown_items)
+ 
+   grub_video_get_viewport (&oviewport.x, &oviewport.y,
+ 			   &oviewport.width, &oviewport.height);
+-  grub_video_set_viewport (oviewport.x + boxpad, 
++  grub_video_set_viewport (oviewport.x + boxpad,
+ 			   oviewport.y + boxpad,
+ 			   oviewport.width - 2 * boxpad,
+ 			   oviewport.height - 2 * boxpad);
+diff --git a/grub-core/gfxmenu/gui_progress_bar.c b/grub-core/gfxmenu/gui_progress_bar.c
+index ace85a125..c4cd1859b 100644
+--- a/grub-core/gfxmenu/gui_progress_bar.c
++++ b/grub-core/gfxmenu/gui_progress_bar.c
+@@ -320,7 +320,7 @@ static void
+ progress_bar_set_state (void *vself, int visible, int start,
+ 			int current, int end)
+ {
+-  grub_gui_progress_bar_t self = vself;  
++  grub_gui_progress_bar_t self = vself;
+   self->visible = visible;
+   self->start = start;
+   self->value = current;
+@@ -335,7 +335,7 @@ progress_bar_set_property (void *vself, const char *name, const char *value)
+     {
+       grub_free (self->template);
+       if (grub_strcmp (value, "@TIMEOUT_NOTIFICATION_LONG@") == 0)
+-	value 
++	value
+ 	  = _("The highlighted entry will be executed automatically in %ds.");
+       else if (grub_strcmp (value, "@TIMEOUT_NOTIFICATION_MIDDLE@") == 0)
+ 	/* TRANSLATORS:  's' stands for seconds.
+diff --git a/grub-core/gfxmenu/theme_loader.c b/grub-core/gfxmenu/theme_loader.c
+index eae83086b..9eabf501a 100644
+--- a/grub-core/gfxmenu/theme_loader.c
++++ b/grub-core/gfxmenu/theme_loader.c
+@@ -419,7 +419,7 @@ read_expression (struct parsebuf *p)
+   skip_whitespace (p);
+   if (peek_char (p) == '"')
+     {
+-      /* Read as a quoted string.  
++      /* Read as a quoted string.
+          The quotation marks are not included in the expression value.  */
+       /* Skip opening quotation mark.  */
+       read_char (p);
+diff --git a/grub-core/gfxmenu/view.c b/grub-core/gfxmenu/view.c
+index ad5e82b81..6358004b2 100644
+--- a/grub-core/gfxmenu/view.c
++++ b/grub-core/gfxmenu/view.c
+@@ -218,7 +218,7 @@ redraw_timeouts (struct grub_gfxmenu_view *view)
+     }
+ }
+ 
+-void 
++void
+ grub_gfxmenu_print_timeout (int timeout, void *data)
+ {
+   struct grub_gfxmenu_view *view = data;
+@@ -233,7 +233,7 @@ grub_gfxmenu_print_timeout (int timeout, void *data)
+     redraw_timeouts (view);
+ }
+ 
+-void 
++void
+ grub_gfxmenu_clear_timeout (void *data)
+ {
+   struct grub_gfxmenu_view *view = data;
+@@ -401,7 +401,7 @@ grub_gfxmenu_redraw_menu (grub_gfxmenu_view_t view)
+     }
+ }
+ 
+-void 
++void
+ grub_gfxmenu_set_chosen_entry (int entry, void *data)
+ {
+   grub_gfxmenu_view_t view = data;
+@@ -423,7 +423,7 @@ grub_gfxmenu_draw_terminal_box (void)
+ 
+   term_box->set_content_size (term_box, term_view->terminal_rect.width,
+ 			      term_view->terminal_rect.height);
+-  
++
+   term_box->draw (term_box,
+ 		  term_view->terminal_rect.x - term_box->get_left_pad (term_box),
+ 		  term_view->terminal_rect.y - term_box->get_top_pad (term_box));
+-- 
+2.36.1
+

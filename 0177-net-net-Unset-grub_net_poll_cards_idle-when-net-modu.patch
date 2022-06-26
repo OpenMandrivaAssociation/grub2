@@ -1,0 +1,30 @@
+From c1428350438a0f76e238785d9d1d16f7f1b3d85f Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Fri, 18 Mar 2022 01:51:31 -0500
+Subject: [PATCH 177/261] net/net: Unset grub_net_poll_cards_idle when net
+ module has been unloaded
+
+This looks like it was a copy/paste error. If the net module is unloaded,
+grub_net_poll_cards_idle should be NULL so that GRUB does not try to call
+a function which now doesn't exist.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/net/net.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/grub-core/net/net.c b/grub-core/net/net.c
+index 1b0e34601..3eac83d16 100644
+--- a/grub-core/net/net.c
++++ b/grub-core/net/net.c
+@@ -1948,5 +1948,5 @@ GRUB_MOD_FINI(net)
+   grub_net_open = NULL;
+   grub_net_fini_hw (0);
+   grub_loader_unregister_preboot_hook (fini_hnd);
+-  grub_net_poll_cards_idle = grub_net_poll_cards_idle_real;
++  grub_net_poll_cards_idle = NULL;
+ }
+-- 
+2.36.1
+
