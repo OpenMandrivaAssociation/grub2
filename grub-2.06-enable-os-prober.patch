@@ -1,0 +1,16 @@
+diff -up grub-2.06/pc/grub-mkconfig.omv~ grub-2.06/pc/grub-mkconfig
+diff -up grub-2.06/util/grub-mkconfig.in.omv~ grub-2.06/util/grub-mkconfig.in
+--- grub-2.06/util/grub-mkconfig.in.omv~	2022-06-26 20:57:21.872655509 +0200
++++ grub-2.06/util/grub-mkconfig.in	2022-06-26 20:59:33.056893480 +0200
+@@ -140,8 +140,9 @@ GRUB_DEVICE_PARTUUID="`${grub_probe} --d
+ GRUB_DEVICE_BOOT="`${grub_probe} --target=device /boot`"
+ GRUB_DEVICE_BOOT_UUID="`${grub_probe} --device ${GRUB_DEVICE_BOOT} --target=fs_uuid 2> /dev/null`" || true
+ 
+-# Disable os-prober by default due to security reasons.
+-GRUB_DISABLE_OS_PROBER="true"
++# Enable os-prober by default due to usability reasons.
++# You can't do anything harmful unless you're root already...
++GRUB_DISABLE_OS_PROBER="false"
+ 
+ # Filesystem for the device containing our userland.  Used for stuff like
+ # choosing Hurd filesystem module.

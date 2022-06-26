@@ -23,7 +23,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.06
-Release:	1
+Release:	2
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -55,6 +55,7 @@ Patch2:		grub2-custom-color.patch
 Patch3:		grub2-read-cfg.patch
 Patch4:		grub2-symlink-is-garbage.patch
 Patch5:		grub-2.04-workaround-llvm-bug-48528.patch
+Patch6:		grub-2.06-enable-os-prober.patch
 # (crazy) replaces:
 # grub-2.00.Linux.remove.patch
 # grub-2.00-add-recovery_option.patch
