@@ -607,12 +607,6 @@ for i in grub2-efi-*; do
 	mv $i $GENERICNAME
 done
 cd -
-cd %{buildroot}%{_sbindir}
-for i in grub2-efi-*; do
-	GENERICNAME="$(printf "%s\n" $i |sed -e 's,-efi,,')"
-	mv $i $GENERICNAME
-done
-cd -
 %endif
 
 # (crazy) all this is strange , figure bc we do the same from other package(s)
@@ -622,7 +616,7 @@ install -m755 %{SOURCE2} -D %{buildroot}%{_sysconfdir}/default/grub
 sed -e 's#TMP_DISTRO#%{distribution}#' -i %{buildroot}%{_sysconfdir}/default/grub
 
 #Add more useful update-grub2 script
-install -m755 %{SOURCE9} -D %{buildroot}%{_sbindir}
+install -m755 %{SOURCE9} -D %{buildroot}%{_bindir}
 
 install -d %{buildroot}/boot/%{name}/themes/
 
@@ -636,8 +630,8 @@ cp -f %{buildroot}%{_localedir}/en@quot/LC_MESSAGES/grub.mo %{buildroot}%{_local
 find %{buildroot}%{libdir32}/grub/*-%{platform} -name "*.module" -delete || :
 find %{buildroot}%{libdir32}/grub/%{_arch}-efi/ -name "*.module" -delete || :
 
-rm -f %{buildroot}%{_sbindir}/%{name}-sparc64-setup
-rm -f %{buildroot}%{_sbindir}/%{name}-ofpathname
+rm -f %{buildroot}%{_bindir}/%{name}-sparc64-setup
+rm -f %{buildroot}%{_bindir}/%{name}-ofpathname
 
 %find_lang grub
 
@@ -678,15 +672,15 @@ if [ -e %{_sysconfdir}/default/grub ]; then
 	sed -i -e "s#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" scsi_mod.use_blk_mq=1 #" %{_sysconfdir}/default/grub
     fi
 # (tpg) regenerate grub2 at the end
-    %{_sbindir}/update-grub2
+    %{_bindir}/update-grub2
 fi
 
 
 %transfiletriggerin -p <lua> -- /boot/ /boot/grub2/themes/
-os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
+os.execute("%{_bindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 
 %transfiletriggerpostun -p <lua> -- /boot/ /boot/grub2/themes/
-os.execute("%{_sbindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
+os.execute("%{_bindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 
 ------------------------------------------------------------------------
 
