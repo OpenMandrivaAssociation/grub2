@@ -1,0 +1,39 @@
+diff -up grub-2.06/util/grub.d/10_linux.in.omv~ grub-2.06/util/grub.d/10_linux.in
+--- grub-2.06/util/grub.d/10_linux.in.omv~	2022-08-29 19:27:55.992110158 +0200
++++ grub-2.06/util/grub.d/10_linux.in	2022-08-29 19:49:54.918447070 +0200
+@@ -113,11 +113,15 @@ linux_entry ()
+   if [ x$type != xsimple ] ; then
+       case $type in
+           recovery)
+-              title_r="(recovery mode)"
++              title_r="$(gettext_printf "(recovery mode)")"
+               title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
+               title="${title_} ${title_r}" ;;
+           console)
+-              title_c="(console mode)"
++              title_c="$(gettext_printf "(console mode)")"
++              title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
++              title="${title_} ${title_c}" ;;
++          fast)
++              title_c="$(gettext_printf "(fast but insecure mode)")"
+               title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
+               title="${title_} ${title_c}" ;;
+           *)
+@@ -325,6 +329,8 @@ while [ "x$list" != "x" ] ; do
+               "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
+   linux_entry "${OS}" "${version}" console \
+ 		"${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} plymouth.enable=0 systemd.unit=multi-user.target"
++  linux_entry "${OS}" "${version}" fast \
++		"${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} mitigations=off"
+   if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
+     linux_entry "${OS}" "${version}" recovery \
+                 "${GRUB_CMDLINE_LINUX_RECOVERY} ${GRUB_CMDLINE_LINUX_RECOVERY}"
+@@ -426,6 +432,8 @@ while [ "x$listc" != "x" ] ; do
+               "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
+   linux_entry "${OS}" "${version}" console \
+ 		"${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} plymouth.enable=0 systemd.unit=multi-user.target"
++  linux_entry "${OS}" "${version}" fast \
++		"${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} mitigations=off"
+   if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
+     linux_entry "${OS}" "${version}" recovery \
+                 "single ${GRUB_CMDLINE_LINUX_RECOVERY}"

@@ -23,7 +23,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.06
-Release:	2
+Release:	3
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -342,6 +342,10 @@ Patch1257:	0258-fs-f2fs-Do-not-copy-file-names-that-are-too-long.patch
 Patch1258:	0259-fs-btrfs-Fix-several-fuzz-issues-with-invalid-dir-it.patch
 Patch1259:	0260-fs-btrfs-Fix-more-ASAN-and-SEGV-issues-found-with-fu.patch
 Patch1260:	0261-fs-btrfs-Fix-more-fuzz-issues-related-to-chunks.patch
+Patch1261:	0291-fs-fat-Don-t-error-when-mtime-is-0.patch
+
+# Additional OpenMandriva patches that need to be applied after upstream patches
+Patch2000:	grub-2.06-add-mitigations-off-mode.patch
 
 BuildRequires:	efi-srpm-macros
 BuildRequires:	autogen
