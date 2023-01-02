@@ -557,11 +557,11 @@ cd efi
 %make_build ascii.h widthspec.h
 %make_build -C grub-core
 
-%define grub_modules_default all_video boot btrfs cat chain configfile cryptodisk echo efifwsetup efinet ext2 f2fs fat font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep squash4 syslinuxcfg test tftp video xfs zstd
+%define grub_modules_default all_video boot btrfs cat gettext chain configfile cryptodisk echo efifwsetup efinet ext2 f2fs fat font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep squash4 syslinuxcfg test tftp video xfs zstd
 
 %ifarch aarch64
 %define grubefiarch arm64-efi
-%define grub_modules %{grub_modules_default}
+%define grub_modules %{grub_modules_default} efi_gop
 %else
 %define grubefiarch %{_arch}-efi
 %define grub_modules multiboot multiboot2 %{grub_modules_default}
@@ -608,8 +608,8 @@ install -m755 efi/grub.efi -D %{buildroot}/%{efi_esp_dir}/grub.efi
 %if "%{platform}" == "efi"
 cd %{buildroot}%{_bindir}
 for i in grub2-efi-*; do
-	GENERICNAME="$(printf "%s\n" $i |sed -e 's,-efi,,')"
-	mv $i $GENERICNAME
+    GENERICNAME="$(printf "%s\n" $i |sed -e 's,-efi,,')"
+    mv $i $GENERICNAME
 done
 cd -
 %endif
@@ -681,10 +681,10 @@ if [ -e %{_sysconfdir}/default/grub ]; then
 fi
 
 
-%transfiletriggerin -p <lua> -- /boot/ /boot/grub2/themes/
+%transfiletriggerin -p <lua> -- /boot /boot/grub2/themes /etc/os-release /etc/grub.d /usr/sbin/os-prober
 os.execute("%{_bindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 
-%transfiletriggerpostun -p <lua> -- /boot/ /boot/grub2/themes/
+%transfiletriggerpostun -p <lua> -- /lib/modules /boot/grub2/themes
 os.execute("%{_bindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 
 ------------------------------------------------------------------------
