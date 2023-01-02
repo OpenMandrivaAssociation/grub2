@@ -23,7 +23,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.06
-Release:	3
+Release:	4
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -346,6 +346,8 @@ Patch1261:	0291-fs-fat-Don-t-error-when-mtime-is-0.patch
 
 # Additional OpenMandriva patches that need to be applied after upstream patches
 Patch2000:	grub-2.06-add-mitigations-off-mode.patch
+# (tpg) fix for broken 0256-fs-f2fs-Do-not-read-past-the-end-of-nat-journal-entr.patch
+Patch2001:	grub-2.06-fix-check-for-NAT_JOURNAL_ENTRIES-in-f2fs.patch
 
 BuildRequires:	efi-srpm-macros
 BuildRequires:	autogen

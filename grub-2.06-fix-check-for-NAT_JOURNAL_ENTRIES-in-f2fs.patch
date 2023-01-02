@@ -1,0 +1,12 @@
+diff -Naur grub-2.06/grub-core/fs/f2fs.c grub-2.06.tpg/grub-core/fs/f2fs.c
+--- grub-2.06/grub-core/fs/f2fs.c	2023-01-02 15:25:29.660926591 +0000
++++ grub-2.06.tpg/grub-core/fs/f2fs.c	2023-01-02 15:26:41.560660103 +0000
+@@ -650,7 +650,7 @@
+   grub_uint16_t n = grub_le_to_cpu16 (data->nat_j.n_nats);
+   grub_uint16_t i;
+ 
+-  if (n >= NAT_JOURNAL_ENTRIES)
++  if (n > NAT_JOURNAL_ENTRIES)
+     return grub_error (GRUB_ERR_BAD_FS,
+                        "invalid number of nat journal entries");
+ 
