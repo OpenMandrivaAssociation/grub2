@@ -1,0 +1,37 @@
+From 459f028cd36555b117e3c0d5ae952190b7968c19 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Tue, 11 Jul 2023 12:07:29 -0500
+Subject: [PATCH 06/57] docs: Add missing assumption
+
+Also reword a prior sentence to be more clear.
+
+Fixes: 5a3d2b4742df (docs: Add debugging chapter to development documentation)
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Oskari Pirhonen <xxc3ncoredxx@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ docs/grub-dev.texi | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/docs/grub-dev.texi b/docs/grub-dev.texi
+index 0834ca562..a695b02f0 100644
+--- a/docs/grub-dev.texi
++++ b/docs/grub-dev.texi
+@@ -660,10 +660,11 @@ GDB is started from the @file{grub-core} directory in the GRUB2 build
+ directory. GRUB2 developers have made this more simple by including a GDB
+ script which does much of the setup. This file is at @file{grub-core/gdb_grub}
+ in the build directory and is also installed via @command{make install}.
+-If not building GRUB, the distribution may have a package which installs
++When using a pre-built GRUB, the distribution may have a package which installs
+ this GDB script along with debug symbol binaries, such as Debian's
+ @samp{grub-pc-dbg} package. The GDB script is intended to be used
+-like so, assuming:
++like so, assuming that @samp{/path/to/script} is the path to the directory
++containing the gdb_grub script and debug symbol files:
+ 
+ @example
+ cd $(dirname /path/to/script/gdb_grub)
+-- 
+2.42.0
+

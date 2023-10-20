@@ -1,0 +1,36 @@
+From 3c42272105ad307bfe6eeaacc4ee9d98be00537f Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Tue, 22 Aug 2023 13:26:28 -0500
+Subject: [PATCH 25/57] docs: Use @ref instead of @xref
+
+The @xref command is meant to be used at the beginning of a sentence
+because its expansion creates a "See " prefix on all output formats, and
+on older makeinfo versions is strict about enforcing a "." or "," after
+the command. The @ref command has no such restriction and is just the
+link, which allows more control over output. This also fixes an issue
+where there was a repeated "see" in the output.
+
+Reported-by: Olaf Hering <olaf@aepfle.de>
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+Tested-by: Olaf Hering <olaf@aepfle.de>
+---
+ docs/grub.texi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/docs/grub.texi b/docs/grub.texi
+index be2261670..975e521d1 100644
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -956,7 +956,7 @@ information.
+ @subsection Kexec with grub2-emu
+ 
+ GRUB can be run in userspace by invoking the grub2-emu tool. It will
+-read all configuration scripts as if booting directly (see @xref{Loading
++read all configuration scripts as if booting directly (see @ref{Loading
+ an operating system directly}). With the @code{--kexec} flag, and
+ kexec(8) support from the operating system, the @command{linux} command
+ will directly boot the target image. For systems that lack working
+-- 
+2.42.0
+

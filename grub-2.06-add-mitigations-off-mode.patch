@@ -1,7 +1,7 @@
-diff -up grub-2.06/util/grub.d/10_linux.in.omv~ grub-2.06/util/grub.d/10_linux.in
---- grub-2.06/util/grub.d/10_linux.in.omv~	2022-08-29 19:27:55.992110158 +0200
-+++ grub-2.06/util/grub.d/10_linux.in	2022-08-29 19:49:54.918447070 +0200
-@@ -113,11 +113,15 @@ linux_entry ()
+diff -up grub-2.12-rc1/util/grub.d/10_linux.in.77~ grub-2.12-rc1/util/grub.d/10_linux.in
+--- grub-2.12-rc1/util/grub.d/10_linux.in.77~	2023-10-20 21:54:36.784661790 +0200
++++ grub-2.12-rc1/util/grub.d/10_linux.in	2023-10-20 21:55:41.214350234 +0200
+@@ -111,11 +111,15 @@ linux_entry ()
    if [ x$type != xsimple ] ; then
        case $type in
            recovery)
@@ -19,21 +19,12 @@ diff -up grub-2.06/util/grub.d/10_linux.in.omv~ grub-2.06/util/grub.d/10_linux.i
                title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
                title="${title_} ${title_c}" ;;
            *)
-@@ -325,6 +329,8 @@ while [ "x$list" != "x" ] ; do
+@@ -332,6 +336,8 @@ for linux in ${reverse_sorted_list}; do
                "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
    linux_entry "${OS}" "${version}" console \
- 		"${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} plymouth.enable=0 systemd.unit=multi-user.target"
+               "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} plymouth.enable=0 systemd.unit=multi-user.target"
 +  linux_entry "${OS}" "${version}" fast \
-+		"${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} mitigations=off"
++              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} mitigations=off"
    if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
      linux_entry "${OS}" "${version}" recovery \
                  "${GRUB_CMDLINE_LINUX_RECOVERY} ${GRUB_CMDLINE_LINUX_RECOVERY}"
-@@ -426,6 +432,8 @@ while [ "x$listc" != "x" ] ; do
-               "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
-   linux_entry "${OS}" "${version}" console \
- 		"${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} plymouth.enable=0 systemd.unit=multi-user.target"
-+  linux_entry "${OS}" "${version}" fast \
-+		"${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} mitigations=off"
-   if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
-     linux_entry "${OS}" "${version}" recovery \
-                 "single ${GRUB_CMDLINE_LINUX_RECOVERY}"

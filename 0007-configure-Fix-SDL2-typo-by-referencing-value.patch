@@ -1,0 +1,39 @@
+From eba6bdcd3ad938a5f189a56f06e20150ed3d084a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Micha=C5=82=20Grzelak?= <mchl.grzlk@gmail.com>
+Date: Wed, 19 Jul 2023 00:48:21 +0200
+Subject: [PATCH 07/57] configure: Fix SDL2 typo by referencing value
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+During configuration of SDL2, variable enable_grub_emu_sdl2 is checked
+whether to throw an error message. However, error could not happen
+because two unequal strings were compared. Fix this by referencing
+value of enable_grub_emu_sdl2, not name.
+
+Fixes: 17d6ac1a7 (emu: Add SDL2 support)
+
+Signed-off-by: Michał Grzelak <mchl.grzlk@gmail.com>
+Reviewed-by: Julian Andres Klode <julian.klode@canonical.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 01500ffdf..27c5918fa 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1609,7 +1609,7 @@ if test "$platform" = emu; then
+             AC_SUBST(HAVE_SDL2)],
+             [grub_emu_sdl2_excuse="libSDL2 libraries are required to build \`grub-emu' with SDL2 support"])
+   [fi]
+-  if test x"enable_grub_emu_sdl2" = xyes && test x"$grub_emu_sdl2_excuse" != x ; then
++  if test x"$enable_grub_emu_sdl2" = xyes && test x"$grub_emu_sdl2_excuse" != x ; then
+     AC_MSG_ERROR([SDL2 support for grub-emu was explicitly requested but can't be compiled ($grub_emu_sdl2_excuse)])
+   fi
+   if test x"$grub_emu_sdl2_excuse" = x ; then
+-- 
+2.42.0
+

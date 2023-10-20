@@ -1,0 +1,51 @@
+From cab04dcda34a9419c7367279c2f309d4becde184 Mon Sep 17 00:00:00 2001
+From: ValdikSS <iam@valdikss.org.ru>
+Date: Fri, 6 Oct 2023 20:13:51 +0300
+Subject: [PATCH 55/57] kern/i386/pc/init: Flush cache only on VIA C3 and
+ earlier
+
+The code flushes the cache on VIA processors unconditionally which
+is excessive. Check for cpuid family and execute wbinvd only on C3
+and earlier.
+
+Fixes: https://savannah.gnu.org/bugs/?45149
+Fixes: 25492a0f0 (Add wbinvd around bios call.)
+
+Signed-off-by: ValdikSS <iam@valdikss.org.ru>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/kern/i386/pc/init.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/grub-core/kern/i386/pc/init.c b/grub-core/kern/i386/pc/init.c
+index 27bc68b8a..326d491c5 100644
+--- a/grub-core/kern/i386/pc/init.c
++++ b/grub-core/kern/i386/pc/init.c
+@@ -191,7 +191,7 @@ extern grub_uint16_t grub_bios_via_workaround1, grub_bios_via_workaround2;
+ static void
+ grub_via_workaround_init (void)
+ {
+-  grub_uint32_t manufacturer[3], max_cpuid;
++  grub_uint32_t manufacturer[3], max_cpuid, proc_info;
+   if (! grub_cpu_is_cpuid_supported ())
+     return;
+ 
+@@ -200,6 +200,15 @@ grub_via_workaround_init (void)
+   if (grub_memcmp (manufacturer, "CentaurHauls", 12) != 0)
+     return;
+ 
++  if (max_cpuid > 0)
++    {
++      grub_cpuid (1, proc_info, /* Don't care. */ manufacturer[0],
++                  manufacturer[2], manufacturer[1]);
++      /* Check model, apply only to VIA C3 and lower. */
++      if (((proc_info & 0xf0) >> 4 | (proc_info & 0xf0000) >> 12) > 10)
++        return;
++    }
++
+   grub_bios_via_workaround1 = 0x090f;
+   grub_bios_via_workaround2 = 0x090f;
+   asm volatile ("wbinvd");
+-- 
+2.42.0
+

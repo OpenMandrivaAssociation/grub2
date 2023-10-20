@@ -1,0 +1,40 @@
+From 42a831d7462ec3a114156d56ef8a03e1d47f19e7 Mon Sep 17 00:00:00 2001
+From: Vladimir Serbinenko <phcoder@gmail.com>
+Date: Mon, 3 Jul 2023 19:41:27 +0200
+Subject: [PATCH 28/57] ZFS: support inode type embed into its ID
+
+This is a speedup used in some ZFS version. This trips GRUB and makes it
+unable to access directories. Just skip it for now and revisit
+if we ever need this speedup.
+
+Signed-off-by: Vladimir Serbinenko <phcoder@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/fs/zfs/zfs.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/grub-core/fs/zfs/zfs.c b/grub-core/fs/zfs/zfs.c
+index 0e195db97..d6a321f08 100644
+--- a/grub-core/fs/zfs/zfs.c
++++ b/grub-core/fs/zfs/zfs.c
+@@ -73,6 +73,8 @@ GRUB_MOD_LICENSE ("GPLv3+");
+ #define	DATA_TYPE_NVLIST	19
+ #define	DATA_TYPE_NVLIST_ARRAY	20
+ 
++#define DNODE_NUM_MASK 0xffffffffffffULL
++
+ #ifndef GRUB_UTIL
+ static grub_dl_t my_mod;
+ #endif
+@@ -2669,6 +2671,8 @@ dnode_get (dnode_end_t * mdn, grub_uint64_t objnum, grub_uint8_t type,
+   grub_err_t err;
+   grub_zfs_endian_t endian;
+ 
++  objnum &= DNODE_NUM_MASK;
++
+   blksz = grub_zfs_to_cpu16 (mdn->dn.dn_datablkszsec,
+ 			     mdn->endian) << SPA_MINBLOCKSHIFT;
+   epbs = zfs_log2 (blksz) - DNODE_SHIFT;
+-- 
+2.42.0
+

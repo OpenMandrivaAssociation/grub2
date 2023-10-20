@@ -1,0 +1,39 @@
+From cf58eca2a2f55a8086a7cbd37c5b6435c168548a Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Thu, 31 Aug 2023 23:50:56 -0500
+Subject: [PATCH 52/57] tests/util/grub-shell: Enable RNG device to better test
+ stack smashing
+
+In certain firmwares, e.g. OVMF, the RNG protocol is not enabled unless
+there is an RNG device. When not enabled, GRUB fails to initialize the
+stack guard with random bytes. For testing, this is not a big issue, but
+there have been bugs found in the initialization. So turn this on for EFI
+platforms to catch any regressions.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/util/grub-shell.in | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/tests/util/grub-shell.in b/tests/util/grub-shell.in
+index 715e1c2e6..496e1bab3 100644
+--- a/tests/util/grub-shell.in
++++ b/tests/util/grub-shell.in
+@@ -225,6 +225,13 @@ case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
+ 	console=console;;
+ esac
+ 
++case "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" in
++    # Only add the RNG device for EFI platforms because we currently only
++    # support Stack Smashing protection on EFI.
++    *-efi)
++	qemuopts="$qemuopts -device virtio-rng-pci" ;;
++esac
++
+ timeout=${GRUB_SHELL_DEFAULT_TIMEOUT:-60}
+ mkimage_extra_arg=
+ debug=${GRUB_SHELL_DEFAULT_DEBUG:-$GRUB_TEST_DEFAULT_DEBUG}
+-- 
+2.42.0
+

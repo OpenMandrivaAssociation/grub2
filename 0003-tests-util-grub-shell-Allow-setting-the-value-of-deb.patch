@@ -1,0 +1,31 @@
+From e1b97d7c37cd8896dfd0c08f59eae27984c6765f Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Mon, 10 Jul 2023 22:01:18 -0500
+Subject: [PATCH 03/57] tests/util/grub-shell: Allow setting the value of debug
+ regardless of its previous state
+
+This allows an invocation of grub-shell to set the value of debug regardless
+of the global default environment variable GRUB_SHELL_DEFAULT_DEBUG.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/util/grub-shell.in | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tests/util/grub-shell.in b/tests/util/grub-shell.in
+index 9669b7227..e066105de 100644
+--- a/tests/util/grub-shell.in
++++ b/tests/util/grub-shell.in
+@@ -248,6 +248,8 @@ for option in "$@"; do
+ 	trim=0 ;;
+     --debug)
+         debug=$((debug+1)) ;;
++    --debug=*)
++        debug=$((`echo "$option" | sed -e 's/--debug=//'`)) ;;
+     --modules=*)
+ 	ms=`echo "$option" | sed -e 's/--modules=//' -e 's/,/ /g'`
+ 	modules="$modules $ms" ;;
+-- 
+2.42.0
+

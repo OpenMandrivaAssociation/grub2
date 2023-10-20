@@ -1,0 +1,53 @@
+From 4fdcb339bbcfbf5c234c764c83813ab8de9c9657 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Mon, 14 Aug 2023 01:20:29 -0500
+Subject: [PATCH 17/57] commands/ls: Print "????????????" if unable to get file
+ size
+
+In long list mode, if the file can not be opened, the file is not printed.
+Instead, print the file but print the size as "????????????".
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/commands/ls.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/grub-core/commands/ls.c b/grub-core/commands/ls.c
+index c746eae0c..6a1c7f5d3 100644
+--- a/grub-core/commands/ls.c
++++ b/grub-core/commands/ls.c
+@@ -131,20 +131,20 @@ print_files_long (const char *filename, const struct grub_dirhook_info *info,
+ 	 should be reported as directories.  */
+       file = grub_file_open (pathname, GRUB_FILE_TYPE_GET_SIZE
+ 			     | GRUB_FILE_TYPE_NO_DECOMPRESS);
+-      if (! file)
++      if (file)
+ 	{
+-	  grub_errno = 0;
+-	  grub_free (pathname);
+-	  return 0;
++	  if (! ctx->human)
++	    grub_printf ("%-12llu", (unsigned long long) file->size);
++	  else
++	    grub_printf ("%-12s", grub_get_human_size (file->size,
++						   GRUB_HUMAN_SIZE_SHORT));
++	  grub_file_close (file);
+ 	}
+-
+-      if (! ctx->human)
+-	grub_printf ("%-12llu", (unsigned long long) file->size);
+       else
+-	grub_printf ("%-12s", grub_get_human_size (file->size,
+-						   GRUB_HUMAN_SIZE_SHORT));
+-      grub_file_close (file);
++	grub_xputs ("????????????");
++
+       grub_free (pathname);
++      grub_errno = GRUB_ERR_NONE;
+     }
+   else
+     grub_printf ("%-12s", _("DIR"));
+-- 
+2.42.0
+

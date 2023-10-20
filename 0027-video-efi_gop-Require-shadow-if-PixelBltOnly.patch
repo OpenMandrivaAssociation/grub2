@@ -1,0 +1,37 @@
+From 34a3adff822a6d136430e631d0a93448b27fac4e Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Date: Mon, 28 Aug 2023 23:50:09 +0200
+Subject: [PATCH 27/57] video/efi_gop: Require shadow if PixelBltOnly
+
+If the EFI graphics pixel format is PixelBltOnly, we cannot write directly
+to the frame buffer. We need the shadow frame buffer which we copy via
+the BitBlt operation to the hardware.
+
+If the pixel format is PixelBltOnly and allocation of the shadow frame
+buffer fails, we must raise an error to signal that the EFI GOP protocol
+is not usable.
+
+Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/video/efi_gop.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/grub-core/video/efi_gop.c b/grub-core/video/efi_gop.c
+index 7247aeea7..9452f5e58 100644
+--- a/grub-core/video/efi_gop.c
++++ b/grub-core/video/efi_gop.c
+@@ -480,6 +480,10 @@ grub_video_gop_setup (unsigned int width, unsigned int height,
+   if (!buffer)
+     {
+       grub_dprintf ("video", "GOP: couldn't allocate shadow\n");
++
++      if (info->pixel_format == GRUB_EFI_GOT_BLT_ONLY)
++        return grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("out of memory"));
++
+       grub_errno = 0;
+       grub_video_gop_fill_mode_info (gop->mode->mode, info,
+ 				     &framebuffer.mode_info);
+-- 
+2.42.0
+

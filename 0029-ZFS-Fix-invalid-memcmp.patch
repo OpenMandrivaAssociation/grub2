@@ -1,0 +1,32 @@
+From 96446ce14e2d1fe9f5b36ec4ac45a2efd92a40d1 Mon Sep 17 00:00:00 2001
+From: Vladimir Serbinenko <phcoder@gmail.com>
+Date: Thu, 6 Jul 2023 17:12:09 +0200
+Subject: [PATCH 29/57] ZFS: Fix invalid memcmp
+
+We ended up comparing over unset values as we had dnode_phys on one side
+and dnode on another
+
+Signed-off-by: Vladimir Serbinenko <phcoder@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/fs/zfs/zfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/grub-core/fs/zfs/zfs.c b/grub-core/fs/zfs/zfs.c
+index d6a321f08..bd49ddb9e 100644
+--- a/grub-core/fs/zfs/zfs.c
++++ b/grub-core/fs/zfs/zfs.c
+@@ -2684,8 +2684,8 @@ dnode_get (dnode_end_t * mdn, grub_uint64_t objnum, grub_uint8_t type,
+   blkid = objnum >> epbs;
+   idx = objnum & ((1 << epbs) - 1);
+ 
+-  if (data->dnode_buf != NULL && grub_memcmp (data->dnode_mdn, mdn,
+-					      sizeof (*mdn)) == 0
++  if (data->dnode_buf != NULL && grub_memcmp (data->dnode_mdn, &mdn->dn,
++					      sizeof (mdn->dn)) == 0
+       && objnum >= data->dnode_start && objnum < data->dnode_end)
+     {
+       grub_memmove (&(buf->dn), &(data->dnode_buf)[idx], DNODE_SIZE);
+-- 
+2.42.0
+

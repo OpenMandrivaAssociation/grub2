@@ -1,0 +1,73 @@
+From 28a509dd58cee75e43f19e38ff4c5787048aecb9 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Fri, 22 Sep 2023 14:34:18 -0500
+Subject: [PATCH 39/57] util/grub-install-common: Print usable grub-mkimage
+ command
+
+When grub-install is run with the verbose option, it will print a log
+message indicating the grub-mkimage command and arguments used.
+GRUB no longer calls the grub-mkimage binary internally, however the
+command logged is a command that if run should effectively be what
+grub-install used. However, as this has changed some of the newer
+options have been incorrectly added so that the printed command fails
+when run separately. This change makes the displayed command run as
+intended.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ util/grub-install-common.c | 23 +++++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
+
+diff --git a/util/grub-install-common.c b/util/grub-install-common.c
+index f9b9201c8..ce854d86f 100644
+--- a/util/grub-install-common.c
++++ b/util/grub-install-common.c
+@@ -620,6 +620,10 @@ grub_install_make_image_wrap_file (const char *dir, const char *prefix,
+     slen += sizeof (" --memdisk ''") + grub_strlen (memdisk_path);
+   if (config_path)
+     slen += sizeof (" --config ''") + grub_strlen (config_path);
++  if (dtb)
++    slen += sizeof (" --dtb ''") + grub_strlen (dtb);
++  if (sbat)
++    slen += sizeof (" --sbat ''") + grub_strlen (sbat);
+ 
+   for (pk = pubkeys; pk < pubkeys + npubkeys; pk++)
+     slen += sizeof (" --pubkey ''") + grub_strlen (*pk);
+@@ -642,6 +646,20 @@ grub_install_make_image_wrap_file (const char *dir, const char *prefix,
+       p = grub_stpcpy (p, config_path);
+       *p++ = '\'';
+     }
++  if (dtb)
++    {
++      *p++ = ' ';
++      p = grub_stpcpy (p, "--dtb '");
++      p = grub_stpcpy (p, dtb);
++      *p++ = '\'';
++    }
++  if (sbat)
++    {
++      *p++ = ' ';
++      p = grub_stpcpy (p, "--sbat '");
++      p = grub_stpcpy (p, sbat);
++      *p++ = '\'';
++    }
+   for (pk = pubkeys; pk < pubkeys + npubkeys; pk++)
+     {
+       *p++ = ' ';
+@@ -661,11 +679,8 @@ grub_install_make_image_wrap_file (const char *dir, const char *prefix,
+   *p = '\0';
+ 
+   grub_util_info ("grub-mkimage --directory '%s' --prefix '%s' --output '%s'"
+-		  " --dtb '%s' "
+-		  "--sbat '%s' "
+-		  "--format '%s' --compression '%s'%s%s%s\n",
++		  " --format '%s' --compression '%s'%s%s%s\n",
+ 		  dir, prefix, outname,
+-		  dtb ? : "", sbat ? : "",
+ 		  mkimage_target, compnames[compression],
+ 		  note ? " --note" : "",
+ 		  disable_shim_lock ? " --disable-shim-lock" : "", s);
+-- 
+2.42.0
+

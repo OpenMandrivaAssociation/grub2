@@ -1,0 +1,105 @@
+From 1c2e1623068719941963dc34da6f927bafdbdbec Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Fri, 22 Sep 2023 14:34:17 -0500
+Subject: [PATCH 38/57] util/grub-install-common: Minor improvements to
+ printing of grub-mkimage command
+
+This is a preparatory patch to make the following patch less cluttered. The
+only visible change made here is to not print extra spaces when either or
+both --note or --disable-shim-lock are not given and to not print an extra
+space at the end of the command. The latter is done by constructing the
+trailing argument string with spaces in front of each argument rather than
+trailing. The allocation of the argument string is made precise, which has
+the benefit of saving a few bytes, but more importantly self-documenting
+what the needed allocated bytes are. Also, unneeded braces are removed from
+an if block.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ util/grub-install-common.c | 32 +++++++++++++++-----------------
+ 1 file changed, 15 insertions(+), 17 deletions(-)
+
+diff --git a/util/grub-install-common.c b/util/grub-install-common.c
+index 52a29d1cb..f9b9201c8 100644
+--- a/util/grub-install-common.c
++++ b/util/grub-install-common.c
+@@ -617,60 +617,58 @@ grub_install_make_image_wrap_file (const char *dir, const char *prefix,
+   int dc = decompressors ();
+ 
+   if (memdisk_path)
+-    slen += 20 + grub_strlen (memdisk_path);
++    slen += sizeof (" --memdisk ''") + grub_strlen (memdisk_path);
+   if (config_path)
+-    slen += 20 + grub_strlen (config_path);
++    slen += sizeof (" --config ''") + grub_strlen (config_path);
+ 
+   for (pk = pubkeys; pk < pubkeys + npubkeys; pk++)
+-    slen += 20 + grub_strlen (*pk);
++    slen += sizeof (" --pubkey ''") + grub_strlen (*pk);
+ 
+   for (md = modules.entries; *md; md++)
+-    {
+-      slen += 10 + grub_strlen (*md);
+-    }
++    slen += sizeof (" ''") + grub_strlen (*md);
+ 
+   p = s = xmalloc (slen);
+   if (memdisk_path)
+     {
++      *p++ = ' ';
+       p = grub_stpcpy (p, "--memdisk '");
+       p = grub_stpcpy (p, memdisk_path);
+       *p++ = '\'';
+-      *p++ = ' ';
+     }
+   if (config_path)
+     {
++      *p++ = ' ';
+       p = grub_stpcpy (p, "--config '");
+       p = grub_stpcpy (p, config_path);
+       *p++ = '\'';
+-      *p++ = ' ';
+     }
+   for (pk = pubkeys; pk < pubkeys + npubkeys; pk++)
+     {
++      *p++ = ' ';
+       p = grub_stpcpy (p, "--pubkey '");
+       p = grub_stpcpy (p, *pk);
+       *p++ = '\'';
+-      *p++ = ' ';
+     }
+ 
+   for (md = modules.entries; *md; md++)
+     {
++      *p++ = ' ';
+       *p++ = '\'';
+       p = grub_stpcpy (p, *md);
+       *p++ = '\'';
+-      *p++ = ' ';
+     }
+ 
+   *p = '\0';
+ 
+-  grub_util_info ("grub-mkimage --directory '%s' --prefix '%s'"
+-		  " --output '%s' "
++  grub_util_info ("grub-mkimage --directory '%s' --prefix '%s' --output '%s'"
+ 		  " --dtb '%s' "
+ 		  "--sbat '%s' "
+-		  "--format '%s' --compression '%s' %s %s %s\n",
+-		  dir, prefix,
+-		  outname, dtb ? : "", sbat ? : "", mkimage_target,
+-		  compnames[compression], note ? "--note" : "",
+-		  disable_shim_lock ? "--disable-shim-lock" : "", s);
++		  "--format '%s' --compression '%s'%s%s%s\n",
++		  dir, prefix, outname,
++		  dtb ? : "", sbat ? : "",
++		  mkimage_target, compnames[compression],
++		  note ? " --note" : "",
++		  disable_shim_lock ? " --disable-shim-lock" : "", s);
+   free (s);
+ 
+   tgt = grub_install_get_image_target (mkimage_target);
+-- 
+2.42.0
+

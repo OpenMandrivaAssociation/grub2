@@ -1,0 +1,40 @@
+From fff2e9ee833ed640d62672110da7341593769e33 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Sat, 19 Aug 2023 01:59:17 -0500
+Subject: [PATCH 24/57] tests/util/grub-shell-luks-tester: Allow setting
+ timeout
+
+Allow using the envvar GRUB_SHELL_LUKS_TIMEOUT to change the default
+timeout. If not specified, use value of GRUB_SHELL_DEFAULT_TIMEOUT. And
+if that is not specified, fallback to original 600s timeout.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/util/grub-shell-luks-tester.in | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tests/util/grub-shell-luks-tester.in b/tests/util/grub-shell-luks-tester.in
+index 3f9d1be17..8926cbc96 100644
+--- a/tests/util/grub-shell-luks-tester.in
++++ b/tests/util/grub-shell-luks-tester.in
+@@ -38,6 +38,7 @@ keyfile_size=
+ KEYFILE_SIZE_MAX=4096
+ 
+ debug="${GRUB_SHELL_LUKS_DEFAULT_DEBUG:-$GRUB_TEST_DEFAULT_DEBUG}"
++GRUB_SHELL_LUKS_TIMEOUT=${GRUB_SHELL_LUKS_TIMEOUT:-${GRUB_SHELL_DEFAULT_TIMEOUT:-600s}}
+ 
+ # Usage: usage
+ # Print the usage.
+@@ -134,7 +135,7 @@ done
+ 
+ [ "${debug:-0}" -gt 1 ] && set -x
+ 
+-grub_shell_opts="$grub_shell_opts --timeout=600s"
++grub_shell_opts="$grub_shell_opts --timeout=${GRUB_SHELL_LUKS_TIMEOUT}"
+ 
+ if [ "${debug:-0}" -gt 2 ]; then
+     grub_shell_opts="$grub_shell_opts --qemu-opts=-nographic"
+-- 
+2.42.0
+

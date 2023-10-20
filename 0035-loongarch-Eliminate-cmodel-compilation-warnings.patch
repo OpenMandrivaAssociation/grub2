@@ -1,0 +1,34 @@
+From 3335591c6420ae373a24a4dc8f71d661b1fa3090 Mon Sep 17 00:00:00 2001
+From: Xiaotian Wu <wuxiaotian@loongson.cn>
+Date: Thu, 24 Aug 2023 21:04:01 +0800
+Subject: [PATCH 35/57] loongarch: Eliminate cmodel compilation warnings
+
+In the configure phase, the "-mcmodel=large" CFLAGS passed the test, but
+because it has not been implemented in gcc, the following warning will
+appear when compiling:
+
+  gcc: warning: 'large' is not supported, now cmodel is set to 'normal'
+
+Signed-off-by: Xiaotian Wu <wuxiaotian@loongson.cn>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ configure.ac | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 77e20ad02..da9c8d560 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1275,8 +1275,7 @@ AC_SUBST(TARGET_LDFLAGS_OLDMAGIC)
+ 
+ LDFLAGS="$TARGET_LDFLAGS"
+ 
+-if test "$target_cpu" = x86_64 || test "$target_cpu" = sparc64 || test "$target_cpu" = riscv64 \
+-  || test "$target_cpu" = loongarch64 ; then
++if test "$target_cpu" = x86_64 || test "$target_cpu" = sparc64 || test "$target_cpu" = riscv64 ; then
+   # Use large model to support 4G memory
+   AC_CACHE_CHECK([whether option -mcmodel=large works], grub_cv_cc_mcmodel, [
+     CFLAGS="$TARGET_CFLAGS -mcmodel=large"
+-- 
+2.42.0
+

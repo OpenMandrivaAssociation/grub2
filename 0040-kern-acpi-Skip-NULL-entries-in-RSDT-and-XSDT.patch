@@ -1,0 +1,61 @@
+From 48f569c78a496d3e11a4605b0999bc34fa5bc977 Mon Sep 17 00:00:00 2001
+From: Michael Chang <mchang@suse.com>
+Date: Mon, 25 Sep 2023 13:58:18 +0800
+Subject: [PATCH 40/57] kern/acpi: Skip NULL entries in RSDT and XSDT
+
+During attempts to configure a serial console, a Page Fault Exception
+and system reset were encountered, specifically on release 2.12~rc1.
+This issue was not present in prior versions and seemed to affect only
+a specific machine, potentially pointing to hardware or firmware flaw.
+
+After investigation, it was discovered that the invalid page access
+occurred during the discovery of serial MMIO ports as specified by
+ACPI's SPCR table [1]. The recent change uncovered an issue in GRUB's
+ACPI driver.
+
+In certain cases, the XSDT/RSDT root table might contain a NULL entry as
+a terminator, depending on how the tables are assembled. GRUB cannot
+blindly trust the address in the root table to be valid and should
+perform a sanity check for NULL entries. This patch introduces this
+simple check.
+
+This fix is also inspired by a related Linux kernel fix [2].
+
+[1] 7b192ec4c term/ns8250: Use ACPI SPCR table when available to configure serial
+[2] 0f929fbf0 ACPICA: Tables: Add new mechanism to skip NULL entries in RSDT and XSDT.
+
+Signed-off-by: Michael Chang <mchang@suse.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/kern/acpi.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/grub-core/kern/acpi.c b/grub-core/kern/acpi.c
+index c61115dcd..48ded4e2e 100644
+--- a/grub-core/kern/acpi.c
++++ b/grub-core/kern/acpi.c
+@@ -51,6 +51,10 @@ grub_acpi_rsdt_find_table (struct grub_acpi_table_header *rsdt, const char *sig)
+   for (; s; s--, ptr++)
+     {
+       struct grub_acpi_table_header *tbl;
++
++      /* Skip NULL entries in RSDT/XSDT. */
++      if (!ptr->val)
++	continue;
+       tbl = (struct grub_acpi_table_header *) (grub_addr_t) ptr->val;
+       if (grub_memcmp (tbl->signature, sig, 4) == 0)
+ 	return tbl;
+@@ -75,6 +79,10 @@ grub_acpi_xsdt_find_table (struct grub_acpi_table_header *xsdt, const char *sig)
+   for (; s; s--, ptr++)
+     {
+       struct grub_acpi_table_header *tbl;
++
++      /* Skip NULL entries in RSDT/XSDT. */
++      if (!ptr->val)
++	continue;
+ #if GRUB_CPU_SIZEOF_VOID_P != 8
+       if (ptr->val >> 32)
+ 	continue;
+-- 
+2.42.0
+

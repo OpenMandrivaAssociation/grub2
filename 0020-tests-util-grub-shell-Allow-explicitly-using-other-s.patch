@@ -1,0 +1,42 @@
+From 846829aca8ce3f89618e20af1abe4b84958b3fe7 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Mon, 14 Aug 2023 22:33:51 -0500
+Subject: [PATCH 20/57] tests/util/grub-shell: Allow explicitly using other
+ serial ports for output
+
+While here, move "-qemu=*" case to be next to the "--qemu-opts=*" case.
+This causes no change in logic, but is more logically located.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ tests/util/grub-shell.in | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/tests/util/grub-shell.in b/tests/util/grub-shell.in
+index 29c7e936e..715e1c2e6 100644
+--- a/tests/util/grub-shell.in
++++ b/tests/util/grub-shell.in
+@@ -259,8 +259,6 @@ for option in "$@"; do
+     --mkrescue-arg=*)
+ 	mkr=`echo "$option" | sed -e 's/--mkrescue-arg=//' -e 's/,/ /g'`
+ 	mkrescue_args="$mkrescue_args $mkr" ;;
+-    --qemu=*)
+-	qemu=`echo "$option" | sed -e 's/--qemu=//' -e 's/,/ /g'`;;
+     --pseries)
+ 	qemu=qemu-system-ppc64
+ 	serial_port=ieee1275/hvterm
+@@ -269,6 +267,10 @@ for option in "$@"; do
+ 	trim=1
+ 	pseries=y
+ 	    ;;
++    --serial=*)
++	serial_port=`echo "$option" | sed -e 's/--serial=//'`;;
++    --qemu=*)
++	qemu=`echo "$option" | sed -e 's/--qemu=//' -e 's/,/ /g'`;;
+     --qemu-opts=*)
+ 	qs=`echo "$option" | sed -e 's/--qemu-opts=//'`
+ 	qemuopts="$qemuopts $qs" ;;
+-- 
+2.42.0
+

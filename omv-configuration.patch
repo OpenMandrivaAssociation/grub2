@@ -1,7 +1,18 @@
-diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/grub.d/10_linux.in
---- grub-2.02-20180928/util/grub.d/10_linux.in	2018-09-27 14:56:45.000000000 +0200
-+++ grub-2.02-20180928-p/util/grub.d/10_linux.in	2019-02-14 15:30:56.189256816 +0100
-@@ -29,9 +29,15 @@
+diff -up grub-2.12-rc1/util/grub-mkconfig.in.8~ grub-2.12-rc1/util/grub-mkconfig.in
+--- grub-2.12-rc1/util/grub-mkconfig.in.8~	2023-10-20 21:35:15.973325028 +0200
++++ grub-2.12-rc1/util/grub-mkconfig.in	2023-10-20 21:35:15.981325100 +0200
+@@ -255,6 +255,7 @@ export GRUB_DEFAULT \
+   GRUB_SAVEDEFAULT \
+   GRUB_ENABLE_CRYPTODISK \
+   GRUB_BADRAM \
++  GRUB_CMDLINE_LINUX_RECOVERY \
+   GRUB_OS_PROBER_SKIP_LIST \
+   GRUB_DISABLE_SUBMENU
+ 
+diff -up grub-2.12-rc1/util/grub.d/10_linux.in.8~ grub-2.12-rc1/util/grub.d/10_linux.in
+--- grub-2.12-rc1/util/grub.d/10_linux.in.8~	2023-07-10 17:43:48.000000000 +0200
++++ grub-2.12-rc1/util/grub.d/10_linux.in	2023-10-20 21:39:41.448921708 +0200
+@@ -29,9 +29,15 @@ export TEXTDOMAINDIR="@localedir@"
  CLASS="--class gnu-linux --class gnu --class os"
  
  if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
@@ -19,7 +30,7 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
    CLASS="--class $(echo ${GRUB_DISTRIBUTOR} | tr 'A-Z' 'a-z' | cut -d' ' -f1|LC_ALL=C sed 's,[^[:alnum:]_],_,g') ${CLASS}"
  fi
  
-@@ -65,11 +71,20 @@
+@@ -67,11 +73,20 @@ fi
  
  case x"$GRUB_FS" in
      xbtrfs)
@@ -40,7 +51,7 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
      xzfs)
  	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || true`
  	bootfs="`make_system_path_relative_to_its_root / | sed -e "s,@$,,"`"
-@@ -89,13 +104,22 @@
+@@ -91,13 +106,22 @@ linux_entry ()
    if [ -z "$boot_device_id" ]; then
        boot_device_id="$(grub_get_device_id "${GRUB_DEVICE}")"
    fi
@@ -67,7 +78,7 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
        if [ x"$title" = x"$GRUB_ACTUAL_DEFAULT" ] || [ x"Previous Linux versions>$title" = x"$GRUB_ACTUAL_DEFAULT" ]; then
  	  replacement_title="$(echo "Advanced options for ${OS}" | sed 's,>,>>,g')>$(echo "$title" | sed 's,>,>>,g')"
  	  quoted="$(echo "$GRUB_ACTUAL_DEFAULT" | grub_quote)"
-@@ -105,7 +129,7 @@
+@@ -107,7 +131,7 @@ linux_entry ()
        echo "menuentry '$(echo "$title" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-$version-$type-$boot_device_id' {" | sed "s/^/$submenu_indentation/"
    else
        echo "menuentry '$(echo "$os" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-simple-$boot_device_id' {" | sed "s/^/$submenu_indentation/"
@@ -76,7 +87,7 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
    if [ x$type != xrecovery ] ; then
        save_default_entry | grub_add_tab
    fi
-@@ -201,7 +225,7 @@
+@@ -213,7 +237,7 @@ for linux in ${reverse_sorted_list}; do
    version=`echo $basename | sed -e "s,^[^0-9]*-,,g"`
    alt_version=`echo $version | sed -e "s,\.old$,,g"`
    linux_root_device_thisversion="${LINUX_ROOT_DEVICE}"
@@ -85,21 +96,7 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
    initrd_early=
    for i in ${GRUB_EARLY_INITRD_LINUX_STOCK} \
  	   ${GRUB_EARLY_INITRD_LINUX_CUSTOM}; do
-@@ -211,7 +235,7 @@
-   done
- 
-   initrd_real=
--  for i in "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
-+  for i in  "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
- 	   "initrd-${version}" "initramfs-${version}.img" \
- 	   "initrd.img-${alt_version}" "initrd-${alt_version}.img" \
- 	   "initrd-${alt_version}" "initramfs-${alt_version}.img" \
-@@ -266,20 +290,28 @@
-     "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
- 
-     submenu_indentation="$grub_tab"
--    
-+
+@@ -292,16 +316,25 @@ for linux in ${reverse_sorted_list}; do
      if [ -z "$boot_device_id" ]; then
  	boot_device_id="$(grub_get_device_id "${GRUB_DEVICE}")"
      fi
@@ -109,6 +106,7 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
 +    atext_c=">"
 +    atext_="$(gettext_printf "Advanced options for %s" "${OS}" | grub_quote)"
 +    atext="${atext_} ${atext_c}"
++
      # TRANSLATORS: %s is replaced with an OS name
 -    echo "submenu '$(gettext_printf "Advanced options for %s" "${OS}" | grub_quote)' \$menuentry_id_option 'gnulinux-advanced-$boot_device_id' {"
 +    echo "submenu '$atext' \$menuentry_id_option 'gnulinux-advanced-$boot_device_id' {"
@@ -118,22 +116,11 @@ diff -Naur grub-2.02-20180928/util/grub.d/10_linux.in grub-2.02-20180928-p/util/
    linux_entry "${OS}" "${version}" advanced \
                "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
 +  linux_entry "${OS}" "${version}" console \
-+		"${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} plymouth.enable=0 systemd.unit=multi-user.target"
++              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} plymouth.enable=0 systemd.unit=multi-user.target"
    if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
      linux_entry "${OS}" "${version}" recovery \
--                "single ${GRUB_CMDLINE_LINUX}"
-+                "single ${GRUB_CMDLINE_LINUX_RECOVERY}"
+-                "${GRUB_CMDLINE_LINUX_RECOVERY} ${GRUB_CMDLINE_LINUX}"
++                "${GRUB_CMDLINE_LINUX_RECOVERY} ${GRUB_CMDLINE_LINUX_RECOVERY}"
    fi
- 
-   list=`echo $list | tr ' ' '\n' | fgrep -vx "$linux" | tr '\n' ' '`
-diff -Naur grub-2.02-20180928/util/grub-mkconfig.in grub-2.02-20180928-p/util/grub-mkconfig.in
---- grub-2.02-20180928/util/grub-mkconfig.in	2018-09-27 14:56:45.000000000 +0200
-+++ grub-2.02-20180928-p/util/grub-mkconfig.in	2019-02-14 14:56:58.109276468 +0100
-@@ -237,6 +237,7 @@
-   GRUB_SAVEDEFAULT \
-   GRUB_ENABLE_CRYPTODISK \
-   GRUB_BADRAM \
-+  GRUB_CMDLINE_LINUX_RECOVERY \
-   GRUB_OS_PROBER_SKIP_LIST \
-   GRUB_DISABLE_SUBMENU
+ done
  

@@ -1,0 +1,26 @@
+From 3077b39baef99afe534b582b9024bba877786e40 Mon Sep 17 00:00:00 2001
+From: Qiumiao Zhang <zhangqiumiao1@huawei.com>
+Date: Tue, 25 Jul 2023 11:18:59 +0800
+Subject: [PATCH 08/57] util/grub-mount: Fix memory leak in fuse_getattr()
+
+Signed-off-by: Qiumiao Zhang <zhangqiumiao1@huawei.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ util/grub-mount.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/util/grub-mount.c b/util/grub-mount.c
+index 1c35b6a6e..c69889df9 100644
+--- a/util/grub-mount.c
++++ b/util/grub-mount.c
+@@ -198,6 +198,7 @@ fuse_getattr (const char *path, struct stat *st,
+   (fs->fs_dir) (dev, path2, fuse_getattr_find_file, &ctx);
+ 
+   grub_free (path2);
++  free (pathname);
+   if (!ctx.file_exists)
+     {
+       grub_errno = GRUB_ERR_NONE;
+-- 
+2.42.0
+

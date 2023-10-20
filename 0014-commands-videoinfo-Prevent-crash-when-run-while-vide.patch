@@ -1,0 +1,49 @@
+From 1de58326994b0045ccfb28017d05fc1ddecdb92d Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Fri, 11 Aug 2023 16:30:04 -0500
+Subject: [PATCH 14/57] commands/videoinfo: Prevent crash when run while video
+ driver already active
+
+The videoinfo command will initialize all non-active video adapters. Video
+drivers tend to zero out the global framebuffer object on initialization.
+This is not a problem when there is no active video adapter. However, when
+there is, then outputting to the video adapter will cause a crash because
+methods in the framebuffer object are reinitialized. For example, this
+command sequence will cause a crash.
+
+  terminal_output --append gfxterm; videoinfo
+
+When running in a QEMU headless with GRUB built for the x86_64-efi target,
+the first command initializes the Bochs video adapter, which, among
+other things, sets the set_page() member function. Then when videoinfo is
+run, all non-Bochs video adapters will be initialized, each one wiping
+the framebuffer and thus setting set_page to NULL. Soon after the videoinfo
+command finishes there will be a call to grub_refresh(), which will
+ultimately call the framebuffer's set_page which will be NULL and cause
+a crash when called.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/commands/videoinfo.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/grub-core/commands/videoinfo.c b/grub-core/commands/videoinfo.c
+index 5eb969748..205ba78c9 100644
+--- a/grub-core/commands/videoinfo.c
++++ b/grub-core/commands/videoinfo.c
+@@ -191,6 +191,11 @@ grub_cmd_videoinfo (grub_command_t cmd __attribute__ ((unused)),
+ 	  /* Don't worry about errors.  */
+ 	  grub_errno = GRUB_ERR_NONE;
+       }
++    else if (id != GRUB_VIDEO_DRIVER_NONE)
++      {
++	grub_puts_ (N_("  A video driver is active, cannot initialize this driver until it is deactivated\n"));
++	continue;
++      }
+     else
+       {
+ 	if (adapter->init ())
+-- 
+2.42.0
+

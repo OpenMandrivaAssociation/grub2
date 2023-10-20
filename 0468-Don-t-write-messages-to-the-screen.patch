@@ -1,6 +1,6 @@
-diff -up grub-2.06/grub-core/boot/i386/pc/boot.S.12~ grub-2.06/grub-core/boot/i386/pc/boot.S
---- grub-2.06/grub-core/boot/i386/pc/boot.S.12~	2018-11-24 18:13:02.000000000 +0100
-+++ grub-2.06/grub-core/boot/i386/pc/boot.S	2022-06-26 18:05:16.779233677 +0200
+diff -up grub-2.12-rc1/grub-core/boot/i386/pc/boot.S.12~ grub-2.12-rc1/grub-core/boot/i386/pc/boot.S
+--- grub-2.12-rc1/grub-core/boot/i386/pc/boot.S.12~	2023-07-10 17:43:48.000000000 +0200
++++ grub-2.12-rc1/grub-core/boot/i386/pc/boot.S	2023-10-20 21:40:06.399274336 +0200
 @@ -249,9 +249,6 @@ real_start:
  	/* save drive reference first thing! */
  	pushw	%dx
@@ -11,9 +11,9 @@ diff -up grub-2.06/grub-core/boot/i386/pc/boot.S.12~ grub-2.06/grub-core/boot/i3
  	/* set %si to the disk address packet */
  	movw	$disk_address_packet, %si
  
-diff -up grub-2.06/grub-core/boot/i386/pc/diskboot.S.12~ grub-2.06/grub-core/boot/i386/pc/diskboot.S
---- grub-2.06/grub-core/boot/i386/pc/diskboot.S.12~	2018-11-24 18:13:02.000000000 +0100
-+++ grub-2.06/grub-core/boot/i386/pc/diskboot.S	2022-06-26 18:05:16.779233677 +0200
+diff -up grub-2.12-rc1/grub-core/boot/i386/pc/diskboot.S.12~ grub-2.12-rc1/grub-core/boot/i386/pc/diskboot.S
+--- grub-2.12-rc1/grub-core/boot/i386/pc/diskboot.S.12~	2023-07-10 17:43:48.000000000 +0200
++++ grub-2.12-rc1/grub-core/boot/i386/pc/diskboot.S	2023-10-20 21:40:06.399274336 +0200
 @@ -50,11 +50,6 @@ _start:
  	/* save drive reference first thing! */
  	pushw	%dx
@@ -26,9 +26,9 @@ diff -up grub-2.06/grub-core/boot/i386/pc/diskboot.S.12~ grub-2.06/grub-core/boo
  	/* this sets up for the first run through "bootloop" */
  	movw	$LOCAL(firstlist), %di
  
-diff -up grub-2.06/grub-core/gettext/gettext.c.12~ grub-2.06/grub-core/gettext/gettext.c
---- grub-2.06/grub-core/gettext/gettext.c.12~	2018-11-24 18:13:02.000000000 +0100
-+++ grub-2.06/grub-core/gettext/gettext.c	2022-06-26 18:05:16.779233677 +0200
+diff -up grub-2.12-rc1/grub-core/gettext/gettext.c.12~ grub-2.12-rc1/grub-core/gettext/gettext.c
+--- grub-2.12-rc1/grub-core/gettext/gettext.c.12~	2023-07-10 17:43:48.000000000 +0200
++++ grub-2.12-rc1/grub-core/gettext/gettext.c	2023-10-20 21:41:24.811351600 +0200
 @@ -434,16 +434,12 @@ static char *
  grub_gettext_env_write_lang (struct grub_env_var *var
  			     __attribute__ ((unused)), const char *val)
@@ -53,7 +53,7 @@ diff -up grub-2.06/grub-core/gettext/gettext.c.12~ grub-2.06/grub-core/gettext/g
  {
 -  grub_err_t err;
 +  grub_err_t __attribute__((__unused__)) err;
-   err = grub_gettext_init_ext (&main_context, grub_env_get ("lang"), 
+   err = grub_gettext_init_ext (&main_context, grub_env_get ("lang"),
  			       grub_env_get ("locale_dir"),
  			       val);
 -  if (err)
@@ -107,43 +107,34 @@ diff -up grub-2.06/grub-core/gettext/gettext.c.12~ grub-2.06/grub-core/gettext/g
  
    grub_register_variable_hook ("locale_dir", NULL, read_main);
    grub_register_variable_hook ("secondary_locale_dir", NULL, read_secondary);
-diff -up grub-2.06/grub-core/kern/main.c.12~ grub-2.06/grub-core/kern/main.c
---- grub-2.06/grub-core/kern/main.c.12~	2022-06-26 18:05:16.779233677 +0200
-+++ grub-2.06/grub-core/kern/main.c	2022-06-26 18:09:34.353086342 +0200
-@@ -270,11 +270,6 @@ grub_main (void)
- 
-   grub_boot_time ("After machine init.");
- 
--  /* Hello.  */
--  grub_setcolorstate (GRUB_TERM_COLOR_HIGHLIGHT);
--  grub_printf ("Welcome to GRUB!\n\n");
--  grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
--
-   /* Init verifiers API. */
-   grub_verifiers_init ();
- 
-diff -up grub-2.06/grub-core/normal/menu.c.12~ grub-2.06/grub-core/normal/menu.c
---- grub-2.06/grub-core/normal/menu.c.12~	2020-04-21 22:13:44.000000000 +0200
-+++ grub-2.06/grub-core/normal/menu.c	2022-06-26 18:05:16.779233677 +0200
-@@ -807,12 +807,14 @@ run_menu (grub_menu_t menu, int nested,
+diff -up grub-2.12-rc1/grub-core/kern/main.c.12~ grub-2.12-rc1/grub-core/kern/main.c
+diff -up grub-2.12-rc1/grub-core/normal/menu.c.12~ grub-2.12-rc1/grub-core/normal/menu.c
+--- grub-2.12-rc1/grub-core/normal/menu.c.12~	2023-10-20 21:40:06.400274350 +0200
++++ grub-2.12-rc1/grub-core/normal/menu.c	2023-10-20 21:43:11.000745119 +0200
+@@ -814,16 +814,18 @@ run_menu (grub_menu_t menu, int nested,
  
  /* Callback invoked immediately before a menu entry is executed.  */
  static void
--notify_booting (grub_menu_entry_t entry,
-+notify_booting (grub_menu_entry_t __attribute__((unused)) entry,
- 		void *userdata __attribute__((unused)))
+-notify_booting (grub_menu_entry_t entry, void *userdata)
++notify_booting (grub_menu_entry_t entry __attribute__((__unused__)), void *userdata)
  {
+-  int *notify_boot = userdata;
++  int * __attribute__((__unused__)) notify_boot = userdata;
+ 
 +#if 0
-   grub_printf ("  ");
-   grub_printf_ (N_("Booting `%s'"), entry->title);
-   grub_printf ("\n\n");
+   if (*notify_boot)
+     {
+       grub_printf ("  ");
+       grub_printf_ (N_("Booting `%s'"), entry->title);
+       grub_printf ("\n\n");
+     }
 +#endif
  }
  
  /* Callback invoked when a default menu entry executed because of a timeout
-diff -up grub-2.06/grub-core/normal/menu_entry.c.12~ grub-2.06/grub-core/normal/menu_entry.c
---- grub-2.06/grub-core/normal/menu_entry.c.12~	2020-07-29 16:55:47.000000000 +0200
-+++ grub-2.06/grub-core/normal/menu_entry.c	2022-06-26 18:05:16.779233677 +0200
+diff -up grub-2.12-rc1/grub-core/normal/menu_entry.c.12~ grub-2.12-rc1/grub-core/normal/menu_entry.c
+--- grub-2.12-rc1/grub-core/normal/menu_entry.c.12~	2023-07-10 17:43:48.000000000 +0200
++++ grub-2.12-rc1/grub-core/normal/menu_entry.c	2023-10-20 21:40:06.400274350 +0200
 @@ -1176,9 +1176,6 @@ run (struct screen *screen)
    char *dummy[1] = { NULL };
  

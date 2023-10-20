@@ -1,0 +1,35 @@
+From 14c95e57fddb6c826bee7755232de62efc8eb45b Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Fri, 18 Aug 2023 12:15:27 -0500
+Subject: [PATCH 22/57] kern/misc: Make grub_vsnprintf() C99/POSIX conformant
+
+To comply with C99 and POSIX standards, snprintf() should return the
+number of bytes that would be written to the string (excluding the
+terminating NUL byte) if the buffer size was big enough. Before this
+change, the return value was the minimum of the standard return and the
+length of the buffer. Rarely is the return value of grub_snprintf() or
+grub_vsnprintf() used with current code, and the few places where it is
+used do not need to be changed.
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/kern/misc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
+index 2890aad49..b57249acb 100644
+--- a/grub-core/kern/misc.c
++++ b/grub-core/kern/misc.c
+@@ -1201,7 +1201,7 @@ grub_vsnprintf (char *str, grub_size_t n, const char *fmt, va_list ap)
+ 
+   free_printf_args (&args);
+ 
+-  return ret < n ? ret : n;
++  return ret;
+ }
+ 
+ int
+-- 
+2.42.0
+
