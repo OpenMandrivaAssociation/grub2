@@ -168,6 +168,7 @@ BuildRequires:	rsync
 BuildRequires:	texinfo
 BuildRequires:	texlive-tex.bin
 BuildRequires:	glibc-static-devel
+BuildRequires:	locales-extra-charsets
 BuildRequires:	gettext-devel
 BuildRequires:	lzo-devel
 BuildRequires:	pkgconfig(devmapper)
