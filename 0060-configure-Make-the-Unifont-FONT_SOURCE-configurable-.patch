@@ -1,0 +1,65 @@
+From 2d6631d2afef9ca7a4da54f59e7c88c307bce351 Mon Sep 17 00:00:00 2001
+From: Mads Kiilerich <mads@kiilerich.com>
+Date: Thu, 19 Oct 2023 15:22:51 +0200
+Subject: [PATCH 60/62] configure: Make the Unifont FONT_SOURCE configurable
+ with --with-unifont=FILE
+
+Font might be located in different location, the default font might
+not be available on all systems or other font might be preferred.
+
+Signed-off-by: Mads Kiilerich <mads@kiilerich.com>
+Signed-off-by: Richard Marko <srk@48.io>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ configure.ac | 33 ++++++++++++++++++++-------------
+ 1 file changed, 20 insertions(+), 13 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index da9c8d560..7b8c3698c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1832,21 +1832,28 @@ fi
+ 
+ AC_SUBST([DJVU_FONT_SOURCE])
+ 
+-FONT_SOURCE=
+-
+-for ext in pcf pcf.gz bdf bdf.gz ttf ttf.gz; do
+-  for dir in . /usr/src /usr/share/fonts/X11/misc /usr/share/fonts/unifont /usr/share/fonts/uni /usr/share/fonts/truetype/unifont /usr/share/fonts/misc; do
+-    if test -f "$dir/unifont.$ext"; then
+-      md5="$(md5sum "$dir/unifont.$ext"|awk '{ print $1; }')"
+-      # PCF and BDF from version 6.3 isn't hanled properly by libfreetype.
+-      if test "$md5" = 0a54834d2788c83886a3e1785a6a1e61 || test "$md5" = 28f2565c7a41d8d407e2551159385edb || test "$md5" = dae5e588461b3b92b87b6ffee734f936 || test "$md5" = 4a3d687aa5bb329ed05f4263a1016791 ; then
+-        continue
++AC_ARG_WITH([unifont],
++            AS_HELP_STRING([--with-unifont=FILE],
++                           [set the unifont source [[guessed]]]))
++
++if test "x$with_unifont" = x; then
++  # search in well-known directories
++  for ext in pcf pcf.gz bdf bdf.gz ttf ttf.gz; do
++    for dir in . /usr/src /usr/share/fonts/X11/misc /usr/share/fonts/unifont /usr/share/fonts/uni /usr/share/fonts/truetype/unifont /usr/share/fonts/misc; do
++      if test -f "$dir/unifont.$ext"; then
++        md5="$(md5sum "$dir/unifont.$ext"|awk '{ print $1; }')"
++        # PCF and BDF from version 6.3 isn't hanled properly by libfreetype.
++        if test "$md5" = 0a54834d2788c83886a3e1785a6a1e61 || test "$md5" = 28f2565c7a41d8d407e2551159385edb || test "$md5" = dae5e588461b3b92b87b6ffee734f936 || test "$md5" = 4a3d687aa5bb329ed05f4263a1016791 ; then
++          continue
++        fi
++        FONT_SOURCE="$dir/unifont.$ext"
++        break 2
+       fi
+-      FONT_SOURCE="$dir/unifont.$ext"
+-      break 2
+-    fi
++    done
+   done
+-done
++else
++  FONT_SOURCE="$with_unifont"
++fi
+ 
+ if test x"$enable_build_grub_mkfont" = xno ; then
+   FONT_SOURCE=
+-- 
+2.42.0
+

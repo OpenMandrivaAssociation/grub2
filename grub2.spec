@@ -24,7 +24,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.12
-Release:	%{?beta:0.%{beta}.}2
+Release:	%{?beta:0.%{beta}.}3
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -69,7 +69,6 @@ Patch6:		grub-2.06-enable-os-prober.patch
 # Ok @bero .. ( also use this patch for OMV things touchting /grub.d/ and so on )
 # In addition console boot support got added ( https://issues.openmandriva.org/show_bug.cgi?id=2402 )
 Patch7:		omv-configuration.patch
-Patch8:		grub-2.00-fix-dejavu-font.patch
 Patch9:		grub2-2.00-class-via-os-prober.patch
 Patch10:	grub-2.00-autoreconf-sucks.patch
 Patch11:	0468-Don-t-write-messages-to-the-screen.patch
@@ -151,6 +150,11 @@ Patch1053: 0054-fs-btrfs-Zero-file-data-not-backed-by-extents.patch
 Patch1054: 0055-kern-i386-pc-init-Flush-cache-only-on-VIA-C3-and-ear.patch
 Patch1055: 0056-disk-i386-pc-biosdisk-Read-up-to-63-sectors-in-LBA-m.patch
 Patch1056: 0057-Revert-zfsinfo-Correct-a-check-for-error-allocating-.patch
+Patch1057: 0058-fs-xfs-Incorrect-short-form-directory-data-boundary-.patch
+Patch1058: 0059-fs-xfs-Fix-XFS-directory-extent-parsing.patch
+Patch1059: 0060-configure-Make-the-Unifont-FONT_SOURCE-configurable-.patch
+Patch1060: 0061-configure-Make-the-DJVU_FONT_SOURCE-configurable-wit.patch
+Patch1061: 0062-util-grub-mount-Check-file-path-sanity.patch
 
 # Additional OpenMandriva patches that need to be applied after upstream patches
 Patch2000:	grub-2.06-add-mitigations-off-mode.patch
@@ -315,6 +319,7 @@ cd %{platform}
 	LDFLAGS="" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=%{platform} \
+	--with-dejavufont=%{_datadir}/fonts/TTF/dejavu/DejaVuSans.ttf \
 	--enable-nls \
 %ifarch %{x86_64}
 	--enable-efiemu \
@@ -347,6 +352,7 @@ cd efi
 	LDFLAGS="" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=efi \
+	--with-dejavufont=%{_datadir}/fonts/TTF/dejavu/DejaVuSans.ttf \
 	--enable-nls \
 	--program-transform-name=s,grub,%{name}-efi, \
 	--libdir=%{libdir32} \
@@ -491,7 +497,14 @@ os.execute("%{_bindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 %transfiletriggerpostun -p <lua> -- /lib/modules /boot/grub2/themes
 os.execute("%{_bindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 
-------------------------------------------------------------------------
+%post
+# Only run update-grub2 if we aren't installing to a chroot environment...
+# better not to mess with the bootloader in chroot!
+if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
+	%{_sbindir}/update-grub2
+fi
+
+# ------------------------------------------------------------------------
 
 %files  -f grub.lang
 %{libdir32}/grub/*-%{platform}
