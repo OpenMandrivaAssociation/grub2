@@ -93,7 +93,7 @@ Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 
 # Patches from upstream
 # [Selected from running git format-patch grub-2.12-rc1 in master branch]
-# [currently none]
+Patch1000:	0009-util-bash-completion-Load-scripts-on-demand.patch
 
 # Additional OpenMandriva patches that need to be applied after upstream patches
 Patch2000:	grub-2.06-add-mitigations-off-mode.patch
@@ -468,12 +468,12 @@ fi
 %{_sbindir}/%{name}-reboot
 %{_sbindir}/%{name}-set-default
 %{_datadir}/grub
+%{_datadir}/bash-completion/completions/*
 %exclude %{_datadir}/grub/themes/*
 %attr(0700,root,root) %dir %{_sysconfdir}/grub.d
 %{_sysconfdir}/grub.d/README
 %config %{_sysconfdir}/grub.d/??_*
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/default/grub
-%{_sysconfdir}/bash_completion.d/grub
 %dir /boot/%{name}
 %dir /boot/%{name}/themes
 # Actually, this is replaced by update-grub from scriptlets,
