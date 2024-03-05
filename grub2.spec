@@ -15,7 +15,7 @@
 %endif
 
 %define snapshot %{nil}
-%define beta rc1
+#define beta rc1
 
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
@@ -24,7 +24,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.12
-Release:	%{?beta:0.%{beta}.}3
+Release:	%{?beta:0.%{beta}.}1
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		http://www.gnu.org/software/grub/
@@ -93,68 +93,7 @@ Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 
 # Patches from upstream
 # [Selected from running git format-patch grub-2.12-rc1 in master branch]
-Patch1000: 0001-tests-util-grub-shell-Add-verbose-to-grub-mkrescue-w.patch
-Patch1001: 0002-tests-util-grub-shell-Allow-setting-default-timeout-.patch
-Patch1002: 0003-tests-util-grub-shell-Allow-setting-the-value-of-deb.patch
-Patch1003: 0004-tests-util-grub-shell-luks-tester-Allow-GRUB_SHELL_L.patch
-Patch1004: 0005-util-grub.d-25_bli.in-Fix-shebang-on-unmerged-usr.patch
-Patch1005: 0006-docs-Add-missing-assumption.patch
-Patch1006: 0007-configure-Fix-SDL2-typo-by-referencing-value.patch
-Patch1007: 0008-util-grub-mount-Fix-memory-leak-in-fuse_getattr.patch
-Patch1008: 0009-docs-Group-usage-of-user-space-utilities-into-single.patch
-Patch1009: 0010-docs-Document-hexdump-command.patch
-Patch1010: 0011-docs-A-note-to-cat-that-hexdump-should-be-used-for-b.patch
-Patch1011: 0012-term-ns8250-spcr-Continue-processing-SPCR-table-even.patch
-Patch1012: 0013-docs-Improve-initrd-documentation.patch
-Patch1013: 0014-commands-videoinfo-Prevent-crash-when-run-while-vide.patch
-Patch1014: 0015-fs-archelp-If-path-given-to-grub_archelp_dir-is-not-.patch
-Patch1015: 0016-commands-ls-Send-correct-dirname-to-print-functions.patch
-Patch1016: 0017-commands-ls-Print-if-unable-to-get-file-size.patch
-Patch1017: 0018-tests-util-grub-shell-Convert-spaces-to-TABs.patch
-Patch1018: 0019-tests-util-grub-shell-luks-tester-Do-not-remove-gene.patch
-Patch1019: 0020-tests-util-grub-shell-Allow-explicitly-using-other-s.patch
-Patch1020: 0021-tests-Add-serial_test.patch
-Patch1021: 0022-kern-misc-Make-grub_vsnprintf-C99-POSIX-conformant.patch
-Patch1022: 0023-disk-cryptodisk-Fix-missing-change-when-updating-to-.patch
-Patch1023: 0024-tests-util-grub-shell-luks-tester-Allow-setting-time.patch
-Patch1024: 0025-docs-Use-ref-instead-of-xref.patch
-Patch1025: 0026-docs-Add-menu-to-prevent-older-makeinfo-versions-fro.patch
-Patch1026: 0027-video-efi_gop-Require-shadow-if-PixelBltOnly.patch
-Patch1027: 0028-ZFS-support-inode-type-embed-into-its-ID.patch
-Patch1028: 0029-ZFS-Fix-invalid-memcmp.patch
-Patch1029: 0030-ZFS-Don-t-iterate-over-null-objsets.patch
-Patch1030: 0031-ZFS-Check-bonustype-in-addition-to-dnode-type.patch
-Patch1031: 0032-loader-i386-linux-Prefer-entry-in-long-mode-when-boo.patch
-Patch1032: 0033-loader-efi-linux-Implement-x86-mixed-mode-using-lega.patch
-Patch1033: 0034-configure-Enable-fno-omit-frame-pointer-for-backtrac.patch
-Patch1034: 0035-loongarch-Eliminate-cmodel-compilation-warnings.patch
-Patch1035: 0036-templates-linux_xen-Fix-XSM-entries-generation.patch
-Patch1036: 0037-lib-i386-relocator64-Fix-64-bit-FreeBSD-boot-on-BIOS.patch
-Patch1037: 0038-util-grub-install-common-Minor-improvements-to-print.patch
-Patch1038: 0039-util-grub-install-common-Print-usable-grub-mkimage-c.patch
-Patch1039: 0040-kern-acpi-Skip-NULL-entries-in-RSDT-and-XSDT.patch
-Patch1040: 0041-fs-ntfs-Fix-an-OOB-write-when-parsing-the-ATTRIBUTE_.patch
-Patch1041: 0042-fs-ntfs-Fix-an-OOB-read-when-reading-data-from-the-r.patch
-Patch1042: 0043-fs-ntfs-Fix-an-OOB-read-when-parsing-directory-entri.patch
-Patch1043: 0044-fs-ntfs-Fix-an-OOB-read-when-parsing-bitmaps-for-ind.patch
-Patch1044: 0045-fs-ntfs-Fix-an-OOB-read-when-parsing-a-volume-label.patch
-Patch1045: 0046-fs-ntfs-Make-code-more-readable.patch
-Patch1046: 0047-commands-efi-lsefisystab-Print-the-UEFI-specificatio.patch
-Patch1047: 0048-term-serial-Ensure-proper-NULL-termination-after-gru.patch
-Patch1048: 0049-disk-cryptodisk-Optimize-luks_script_get.patch
-Patch1049: 0050-disk-cryptodisk-Add-support-for-LUKS2-in-proc-luks_s.patch
-Patch1050: 0051-kern-efi-init-Disable-stack-smashing-protection-on-g.patch
-Patch1051: 0052-tests-util-grub-shell-Enable-RNG-device-to-better-te.patch
-Patch1052: 0053-kern-ieee1275-init-Restrict-high-memory-in-presence-.patch
-Patch1053: 0054-fs-btrfs-Zero-file-data-not-backed-by-extents.patch
-Patch1054: 0055-kern-i386-pc-init-Flush-cache-only-on-VIA-C3-and-ear.patch
-Patch1055: 0056-disk-i386-pc-biosdisk-Read-up-to-63-sectors-in-LBA-m.patch
-Patch1056: 0057-Revert-zfsinfo-Correct-a-check-for-error-allocating-.patch
-Patch1057: 0058-fs-xfs-Incorrect-short-form-directory-data-boundary-.patch
-Patch1058: 0059-fs-xfs-Fix-XFS-directory-extent-parsing.patch
-Patch1059: 0060-configure-Make-the-Unifont-FONT_SOURCE-configurable-.patch
-Patch1060: 0061-configure-Make-the-DJVU_FONT_SOURCE-configurable-wit.patch
-Patch1061: 0062-util-grub-mount-Check-file-path-sanity.patch
+# [currently none]
 
 # Additional OpenMandriva patches that need to be applied after upstream patches
 Patch2000:	grub-2.06-add-mitigations-off-mode.patch
@@ -275,6 +214,7 @@ Documentation for GRUB.
 sed -i -e "s|^FONT_SOURCE=.*|FONT_SOURCE=%{SOURCE6}|g" configure configure.ac
 sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure.ac
 sed -i -e 's/-Werror//g' grub-core/Makefile.am
+touch grub-core/extra_deps.lst
 
 # (tpg) remove not needed extra modules
 rm -rf grub-extras/915resolution
