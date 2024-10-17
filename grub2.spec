@@ -27,7 +27,7 @@ Version:	2.12
 Release:	%{?beta:0.%{beta}.}1
 Group:		System/Kernel and hardware
 License:	GPLv3+
-Url:		http://www.gnu.org/software/grub/
+Url:		https://www.gnu.org/software/grub/
 %if 0%{?beta:1}
 Source0:	https://alpha.gnu.org/pub/pub/gnu/grub/grub-%{version}~%{beta}.tar.xz
 %else
