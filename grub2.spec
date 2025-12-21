@@ -98,6 +98,11 @@ Patch1000:	0009-util-bash-completion-Load-scripts-on-demand.patch
 # Additional OpenMandriva patches that need to be applied after upstream patches
 Patch2000:	grub-2.06-add-mitigations-off-mode.patch
 
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	efi-srpm-macros
 BuildRequires:	autogen
 BuildRequires:	bison
