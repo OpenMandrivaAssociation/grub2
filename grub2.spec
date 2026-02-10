@@ -122,6 +122,7 @@ BuildRequires:	gettext-devel
 BuildRequires:	lzo-devel
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	pkgconfig(fuse3)
+BuildRequires:	pkgconfig(libtasn1)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(liblzma)
 BuildRequires:	pkgconfig(libusb)
