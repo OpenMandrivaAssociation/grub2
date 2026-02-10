@@ -24,7 +24,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.14
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		https://www.gnu.org/software/grub/
@@ -233,6 +233,8 @@ export GRUB_CONTRIB=./grub-extras
 sed -i -e 's,-I m4,-I m4 --dont-fix,g' autogen.sh
 
 # (tpg) pull latest translations
+# FIXME this doesn't actually work because abf builders can't connect
+# to the outside world
 ./linguas.sh
 
 # Workaround for https://savannah.gnu.org/bugs/?57298.
@@ -245,6 +247,12 @@ for po_file in *.po ; do
     msgfmt -o ${po_file%.po}.gmo $po_file
 done
 cd ..
+
+%ifarch %{x86_64} %{ix86}
+# Break the check for -Wl,--image-base so we use -Wl,-Ttext
+# Fixes https://bugs.gentoo.org/965424
+sed -i -e 's|image-base|1m4g3-b4s3|g' configure*
+%endif
 
 #-----------------------------------------------------------------------
 %build
@@ -263,7 +271,7 @@ cd %{platform}
 # Clang causes openmandriva theme to disappear. Only black theme on non UEFI/EFI platform. Switch back to gcc (angry)
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
 	CFLAGS="-Os -fuse-ld=bfd" \
-	LDFLAGS="" \
+	LDFLAGS="-fuse-ld=bfd" \
 	TARGET_LDFLAGS="-static" \
 	--with-platform=%{platform} \
 	--with-dejavufont=%{_datadir}/fonts/TTF/dejavu/DejaVuSans.ttf \
@@ -441,6 +449,11 @@ if [ -e %{_sysconfdir}/default/grub ]; then
     %{_bindir}/update-grub2
 fi
 
+%ifarch %{x86_64} %{ix86}
+%check
+# kernel.img's text segment MUST start at 9000
+llvm-objdump -x %{buildroot}%{_prefix}/lib/grub/i386-pc/kernel.img |grep '9000 TEXT'
+%endif
 
 %transfiletriggerin -p <lua> -- /boot /boot/grub2/themes /etc/os-release /etc/grub.d /usr/sbin/os-prober
 os.execute("%{_bindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
