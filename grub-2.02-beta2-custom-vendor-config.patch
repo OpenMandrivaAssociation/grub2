@@ -1,7 +1,7 @@
-diff -up grub-2.06/util/grub-mkconfig.in.13~ grub-2.06/util/grub-mkconfig.in
---- grub-2.06/util/grub-mkconfig.in.13~	2022-06-26 18:09:50.979568295 +0200
-+++ grub-2.06/util/grub-mkconfig.in	2022-06-26 18:11:16.815276704 +0200
-@@ -170,6 +170,12 @@ if [ "x${GRUB_DISABLE_UUID}" = "xtrue" ]
+diff -up grub-2.14/util/grub-mkconfig.in.12~ grub-2.14/util/grub-mkconfig.in
+--- grub-2.14/util/grub-mkconfig.in.12~	2026-02-07 01:45:32.568119610 +0100
++++ grub-2.14/util/grub-mkconfig.in	2026-02-07 01:47:08.242166529 +0100
+@@ -171,6 +171,12 @@ if [ "x${GRUB_DISABLE_UUID}" = "xtrue" ]
    fi
  fi
  
@@ -14,11 +14,11 @@ diff -up grub-2.06/util/grub-mkconfig.in.13~ grub-2.06/util/grub-mkconfig.in
  # XXX: should this be deprecated at some point?
  if [ "x${GRUB_TERMINAL}" != "x" ] ; then
    GRUB_TERMINAL_INPUT="${GRUB_TERMINAL}"
-@@ -251,6 +257,7 @@ export GRUB_DEFAULT \
+@@ -256,6 +262,7 @@ export GRUB_DEFAULT \
    GRUB_ENABLE_CRYPTODISK \
    GRUB_BADRAM \
    GRUB_CMDLINE_LINUX_RECOVERY \
 +  GRUB_DISABLE_VENDOR_CONF \
    GRUB_OS_PROBER_SKIP_LIST \
-   GRUB_DISABLE_SUBMENU
- 
+   GRUB_DISABLE_SUBMENU \
+   GRUB_FORCE_EFI_ALL_VIDEO

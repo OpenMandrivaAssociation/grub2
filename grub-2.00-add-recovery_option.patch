@@ -1,15 +1,3 @@
-diff -Naur grub-2.00/util/grub-mkconfig.in grub-2.00.tpg/util/grub-mkconfig.in
---- grub-2.00/util/grub-mkconfig.in	2012-04-05 17:41:07.000000000 +0000
-+++ grub-2.00.tpg/util/grub-mkconfig.in	2014-02-08 00:33:53.883988357 +0000
-@@ -223,6 +223,7 @@
-   GRUB_SAVEDEFAULT \
-   GRUB_ENABLE_CRYPTODISK \
-   GRUB_BADRAM \
-+  GRUB_CMDLINE_LINUX_RECOVERY \
-   GRUB_OS_PROBER_SKIP_LIST \
-   GRUB_DISABLE_SUBMENU
-
-
 diff -Naur grub-2.00/util/grub.d/10_linux.in grub-2.00.tpg/util/grub.d/10_linux.in
 --- grub-2.00/util/grub.d/10_linux.in	2012-04-18 21:24:38.000000000 +0000
 +++ grub-2.00.tpg/util/grub.d/10_linux.in	2014-02-08 00:49:36.880402063 +0000

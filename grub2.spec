@@ -23,7 +23,7 @@ Name:		grub2
 ## 'boot/grub' in the source , including Makefiles*
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
-Version:	2.12
+Version:	2.14
 Release:	%{?beta:0.%{beta}.}1
 Group:		System/Kernel and hardware
 License:	GPLv3+
@@ -93,7 +93,7 @@ Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 
 # Patches from upstream
 # [Selected from running git format-patch grub-2.12-rc1 in master branch]
-Patch1000:	0009-util-bash-completion-Load-scripts-on-demand.patch
+# [currently none]
 
 # Additional OpenMandriva patches that need to be applied after upstream patches
 Patch2000:	grub-2.06-add-mitigations-off-mode.patch
@@ -280,6 +280,8 @@ cd %{platform}
 	--enable-grub-emu-sdl \
 	--without-included-regex
 
+touch grub-core/extra_deps.lst
+
 %make_build ascii.h widthspec.h
 %make_build all
 cd -
@@ -309,10 +311,12 @@ cd efi
 	--enable-grub-emu-sdl \
 	--without-included-regex
 
+touch grub-core/extra_deps.lst
+
 %make_build ascii.h widthspec.h
 %make_build -C grub-core
 
-%define grub_modules_default all_video boot btrfs cat gettext chain configfile cryptodisk echo efifwsetup efinet ext2 f2fs fat font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep squash4 syslinuxcfg test tftp video xfs zstd
+%define grub_modules_default all_video argon2 boot btrfs cat gettext chain configfile cryptodisk echo efifwsetup efinet erofs ext2 f2fs fat font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep squash4 syslinuxcfg test tftp tpm video xfs zstd zstdio
 
 %ifarch aarch64
 %define grubefiarch arm64-efi
@@ -494,6 +498,7 @@ fi
 %{_bindir}/%{name}-mknetdir
 %{_bindir}/%{name}-mkrescue
 %{_bindir}/%{name}-mkstandalone
+%{_bindir}/%{name}-protect
 %{_bindir}/%{name}-syslinux2cfg
 %{_mandir}/man1/%{name}-*.1*
 %{_mandir}/man8/%{name}-*.8*

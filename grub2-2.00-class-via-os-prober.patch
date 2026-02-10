@@ -1,7 +1,7 @@
-diff -up grub-2.06/util/grub.d/30_os-prober.in.10~ grub-2.06/util/grub.d/30_os-prober.in
---- grub-2.06/util/grub.d/30_os-prober.in.10~	2021-04-12 16:39:21.000000000 +0200
-+++ grub-2.06/util/grub.d/30_os-prober.in	2022-06-26 18:04:49.839521714 +0200
-@@ -142,7 +142,10 @@ for OS in ${OSPROBED} ; do
+diff -up grub-2.14/util/grub.d/30_os-prober.in.9~ grub-2.14/util/grub.d/30_os-prober.in
+--- grub-2.14/util/grub.d/30_os-prober.in.9~	2025-03-05 11:50:06.000000000 +0100
++++ grub-2.14/util/grub.d/30_os-prober.in	2026-02-07 01:42:43.825123312 +0100
+@@ -153,7 +153,10 @@ for OS in ${OSPROBED} ; do
    fi
  
    # os-prober returns text string followed by optional counter
@@ -13,25 +13,25 @@ diff -up grub-2.06/util/grub.d/30_os-prober.in.10~ grub-2.06/util/grub.d/30_os-p
  
    gettext_printf "Found %s on %s\n" "${LONGNAME}" "${DEVICE}" >&2
  
-@@ -151,7 +154,7 @@ for OS in ${OSPROBED} ; do
- 
- 	  onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
+@@ -164,7 +167,7 @@ for OS in ${OSPROBED} ; do
        cat << EOF
+ # This menu entry is supported only on PC BIOS platforms.
+ if [ "\$grub_platform" = "pc" ]; then
 -menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' $CLASS --class os \$menuentry_id_option 'osprober-chain-$(grub_get_device_id "${DEVICE}")' {
-+menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class ${CLASS} --class os \$menuentry_id_option 'osprober-chain-$(grub_get_device_id "${DEVICE}")' {
++menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class $CLASS --class os \$menuentry_id_option 'osprober-chain-$(grub_get_device_id "${DEVICE}")' {
  EOF
        save_default_entry | grub_add_tab
        prepare_grub_to_access_device ${DEVICE} | grub_add_tab
-@@ -183,7 +186,7 @@ EOF
- 	DEVICE=${DEVICE%@*}
- 	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
+@@ -199,7 +202,7 @@ EOF
        cat << EOF
+ # This menu entry is supported only on EFI platforms.
+ if [ "\$grub_platform" = "efi" ]; then
 -menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' $CLASS --class os \$menuentry_id_option 'osprober-efi-$(grub_get_device_id "${DEVICE}")' {
-+menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class ${CLASS} --class os \$menuentry_id_option 'osprober-efi-$(grub_get_device_id "${DEVICE}")' {
++menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class $CLASS --class os \$menuentry_id_option 'osprober-efi-$(grub_get_device_id "${DEVICE}")' {
  EOF
        save_default_entry | sed -e "s/^/\t/"
        prepare_grub_to_access_device ${DEVICE} | sed -e "s/^/\t/"
-@@ -247,7 +250,7 @@ EOF
+@@ -264,7 +267,7 @@ EOF
  
  	if [ "x$is_top_level" = xtrue ] && [ "x${GRUB_DISABLE_SUBMENU}" != xtrue ]; then
              cat << EOF
@@ -40,7 +40,7 @@ diff -up grub-2.06/util/grub.d/30_os-prober.in.10~ grub-2.06/util/grub.d/30_os-p
  EOF
  	    save_default_entry | grub_add_tab
  	    printf '%s\n' "${prepare_boot_cache}"
-@@ -267,7 +270,7 @@ EOF
+@@ -284,7 +287,7 @@ EOF
  	fi
  	title="${LLABEL} $onstr"
          cat << EOF

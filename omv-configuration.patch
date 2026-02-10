@@ -1,17 +1,17 @@
-diff -up grub-2.12-rc1/util/grub-mkconfig.in.8~ grub-2.12-rc1/util/grub-mkconfig.in
---- grub-2.12-rc1/util/grub-mkconfig.in.8~	2023-10-20 21:35:15.973325028 +0200
-+++ grub-2.12-rc1/util/grub-mkconfig.in	2023-10-20 21:35:15.981325100 +0200
+diff -up grub-2.14/util/grub-mkconfig.in.8~ grub-2.14/util/grub-mkconfig.in
+--- grub-2.14/util/grub-mkconfig.in.8~	2026-02-07 01:36:34.762276689 +0100
++++ grub-2.14/util/grub-mkconfig.in	2026-02-07 01:37:29.010845214 +0100
 @@ -255,6 +255,7 @@ export GRUB_DEFAULT \
    GRUB_SAVEDEFAULT \
    GRUB_ENABLE_CRYPTODISK \
    GRUB_BADRAM \
 +  GRUB_CMDLINE_LINUX_RECOVERY \
    GRUB_OS_PROBER_SKIP_LIST \
-   GRUB_DISABLE_SUBMENU
- 
-diff -up grub-2.12-rc1/util/grub.d/10_linux.in.8~ grub-2.12-rc1/util/grub.d/10_linux.in
---- grub-2.12-rc1/util/grub.d/10_linux.in.8~	2023-07-10 17:43:48.000000000 +0200
-+++ grub-2.12-rc1/util/grub.d/10_linux.in	2023-10-20 21:39:41.448921708 +0200
+   GRUB_DISABLE_SUBMENU \
+   GRUB_FORCE_EFI_ALL_VIDEO
+diff -up grub-2.14/util/grub.d/10_linux.in.8~ grub-2.14/util/grub.d/10_linux.in
+--- grub-2.14/util/grub.d/10_linux.in.8~	2025-08-15 00:27:02.000000000 +0200
++++ grub-2.14/util/grub.d/10_linux.in	2026-02-07 01:40:23.388698453 +0100
 @@ -29,9 +29,15 @@ export TEXTDOMAINDIR="@localedir@"
  CLASS="--class gnu-linux --class gnu --class os"
  
@@ -34,22 +34,22 @@ diff -up grub-2.12-rc1/util/grub.d/10_linux.in.8~ grub-2.12-rc1/util/grub.d/10_l
  
  case x"$GRUB_FS" in
      xbtrfs)
-+	## (crazy) does not work with this FS
-+	GRUB_SAVEDEFAULT=false
++        ## (crazy) does not work with this FS
++        GRUB_SAVEDEFAULT=false
  	rootsubvol="`make_system_path_relative_to_its_root /`"
  	rootsubvol="${rootsubvol#/}"
  	if [ "x${rootsubvol}" != x ]; then
  	    GRUB_CMDLINE_LINUX="rootflags=subvol=${rootsubvol} ${GRUB_CMDLINE_LINUX}"
-+		if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
-+			GRUB_CMDLINE_LINUX_RECOVERY="rootflags=subvol=${rootsubvol} ${GRUB_CMDLINE_LINUX_RECOVERY}"
-+		fi
++            if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
++                GRUB_CMDLINE_LINUX_RECOVERY="rootflags=subvol=${rootsubvol} ${GRUB_CMDLINE_LINUX_RECOVERY}"
++            fi
  	fi;;
 +    xf2fs)
-+	## (crazy) does not work with this FS
-+	GRUB_SAVEDEFAULT=false
-+	;;
++        ## (crazy) does not work with this FS
++        GRUB_SAVEDEFAULT=false
++        ;;
      xzfs)
- 	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || true`
+ 	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || zdb -l ${GRUB_DEVICE} | awk -F \' '/ name/ { print $2 }'`
  	bootfs="`make_system_path_relative_to_its_root / | sed -e "s,@$,,"`"
 @@ -91,13 +106,22 @@ linux_entry ()
    if [ -z "$boot_device_id" ]; then
