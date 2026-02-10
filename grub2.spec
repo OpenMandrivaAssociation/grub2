@@ -99,6 +99,7 @@ Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 Patch2000:	grub-2.06-add-mitigations-off-mode.patch
 
 BuildRequires:	autoconf
+BuildRequires:	autoconf-archive
 BuildRequires:	automake
 BuildRequires:	libtool-base
 BuildRequires:	slibtool
