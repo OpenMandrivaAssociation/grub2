@@ -1,0 +1,30 @@
+From 935e889ab50c9dff4a9f8f60edd89e9952539574 Mon Sep 17 00:00:00 2001
+From: Nicholas Vinson <nvinson234@gmail.com>
+Date: Tue, 3 Mar 2026 21:41:17 -0500
+Subject: [PATCH 11/18] Revert "INSTALL: Add note that the GNU Autoconf Archive
+ may be needed"
+
+This reverts commit a90ccbac6 (INSTALL: Add note that the GNU Autoconf
+Archive may be needed).
+
+Signed-off-by: Nicholas Vinson <nvinson234@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ INSTALL | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/INSTALL b/INSTALL
+index 7ac1c7cc8..7e5397f58 100644
+--- a/INSTALL
++++ b/INSTALL
+@@ -56,7 +56,6 @@ need the following.
+ * Python 3 (NOTE: python 2.6 should still work, but it's not tested)
+ * Autoconf 2.64 or later
+ * Automake 1.14 or later
+-* GNU Autoconf Archive (autoconf-archive on Debian)
+ 
+ Your distro may package cross-compiling toolchains such as the following
+ incomplete list on Debian: gcc-aarch64-linux-gnu, gcc-arm-linux-gnueabihf,
+-- 
+2.53.0
+

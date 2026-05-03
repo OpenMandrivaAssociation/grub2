@@ -1,0 +1,53 @@
+From 7d0a4c07a82332ededa4d5a853060e00cb0ab9a6 Mon Sep 17 00:00:00 2001
+From: Nicholas Vinson <nvinson234@gmail.com>
+Date: Tue, 3 Mar 2026 21:41:20 -0500
+Subject: [PATCH 14/18] build: i386-cygwin-img-ld.sc -> i386-cygwin-img.lds
+
+Rename i386-cygwin-img-ld.sc to i386-cygwin-img.lds as "lds" is the
+preferred extension for linker scripts.
+
+Signed-off-by: Nicholas Vinson <nvinson234@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ conf/Makefile.extra-dist                            | 2 +-
+ conf/{i386-cygwin-img-ld.sc => i386-cygwin-img.lds} | 0
+ configure.ac                                        | 4 ++--
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+ rename conf/{i386-cygwin-img-ld.sc => i386-cygwin-img.lds} (100%)
+
+diff --git a/conf/Makefile.extra-dist b/conf/Makefile.extra-dist
+index 892df8208..393693ffc 100644
+--- a/conf/Makefile.extra-dist
++++ b/conf/Makefile.extra-dist
+@@ -16,7 +16,7 @@ EXTRA_DIST += docs/autoiso.cfg
+ EXTRA_DIST += docs/grub.cfg
+ EXTRA_DIST += docs/osdetect.cfg
+ 
+-EXTRA_DIST += conf/i386-cygwin-img-ld.sc
++EXTRA_DIST += conf/i386-cygwin-img.lds
+ EXTRA_DIST += conf/i386-pc-kernel.lds
+ 
+ EXTRA_DIST += grub-core/Makefile.core.def
+diff --git a/conf/i386-cygwin-img-ld.sc b/conf/i386-cygwin-img.lds
+similarity index 100%
+rename from conf/i386-cygwin-img-ld.sc
+rename to conf/i386-cygwin-img.lds
+diff --git a/configure.ac b/configure.ac
+index 81f7437d2..a8672eaa1 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1459,9 +1459,9 @@ if test x$grub_cv_target_cc_link_format = x-arch,i386 || test x$grub_cv_target_c
+ elif test x$grub_cv_target_cc_link_format = x-mi386pe || test x$grub_cv_target_cc_link_format = x-mi386pep ; then
+   TARGET_APPLE_LINKER=0
+   TARGET_LDFLAGS_OLDMAGIC="-Wl,-N"
+-  TARGET_IMG_LDSCRIPT='$(top_srcdir)'"/conf/i386-cygwin-img-ld.sc"
++  TARGET_IMG_LDSCRIPT='$(top_srcdir)'"/conf/i386-cygwin-img.lds"
+   TARGET_IMG_LDFLAGS="-Wl,-T${TARGET_IMG_LDSCRIPT}"
+-  TARGET_IMG_LDFLAGS_AC="-Wl,-T${srcdir}/conf/i386-cygwin-img-ld.sc"
++  TARGET_IMG_LDFLAGS_AC="-Wl,-T${srcdir}/conf/i386-cygwin-img.lds"
+   TARGET_IMG_BASE_LDOPT=
+   TARGET_IMG_BASE_LDOPT_ARG_SEP=","
+   TARGET_IMG_CFLAGS=
+-- 
+2.53.0
+

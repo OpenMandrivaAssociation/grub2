@@ -1,0 +1,44 @@
+From da3675583ac185aedc2302fccd91e0a4dbe680e1 Mon Sep 17 00:00:00 2001
+From: Leo Sandoval <lsandova@redhat.com>
+Date: Thu, 12 Mar 2026 10:30:41 -0600
+Subject: [PATCH 16/18] MAINTAINERS: Update maintainers list
+
+Based on the recent announcement [1] by Daniel Kiper to step down,
+two new maintainers are joining the project to balance the work that
+Daniel had (during 10 years!).
+
+[1] https://lists.gnu.org/archive/html/grub-devel/2026-02/msg00021.html
+
+Signed-off-by: Leo Sandoval <lsandova@redhat.com>
+Signed-off-by: Marta Lewandowska <mlewando@redhat.com>
+Signed-off-by: Daniel Kiper <daniel.kiper@oracle.com>
+Reviewed-by: Andrew Hamilton <adhamilt@gmail.com>
+---
+ MAINTAINERS | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 45e870c78..eeef70f42 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2,7 +2,8 @@ List of current GRUB maintainers and some basic information about the project
+ =============================================================================
+ 
+ Here is the list of current GRUB maintainers:
+-  - Daniel Kiper <daniel.kiper@oracle.com> and <dkiper@net-space.pl>,
++  - Leo Sandoval <lsandova@redhat.com>,
++  - Marta Lewandowska <mlewando@redhat.com>,
+   - Alex Burmashev <alexander.burmashev@oracle.com>,
+   - Vladimir 'phcoder' Serbinenko <phcoder@gmail.com>.
+ 
+@@ -25,6 +26,7 @@ Here is the list, sorted alphabetically, of past GRUB maintainers and people who
+ strongly contributed to the project:
+   - Andrei Borzenkov,
+   - Bryan Ford,
++  - Daniel Kiper,
+   - Erich Stefan Boleyn,
+   - Gordon Matzigkeit,
+   - Yoshinori K. Okuji.
+-- 
+2.53.0
+

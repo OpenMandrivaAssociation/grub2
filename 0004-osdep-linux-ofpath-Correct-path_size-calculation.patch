@@ -1,0 +1,34 @@
+From b71ae6db282fa25ca4ea6f8169161a2131ee6b9a Mon Sep 17 00:00:00 2001
+From: Nicholas Vinson <nvinson234@gmail.com>
+Date: Tue, 24 Feb 2026 19:48:40 -0500
+Subject: [PATCH 04/18] osdep/linux/ofpath: Correct path_size calculation
+
+path_size is computed in part by taking the size of the format string.
+However, the format string contains conversion specifiers. These
+conversion specifiers are included in the size calculation resulting in
+a size calculation that is larger than it needs to be. This patch
+corrects that error by removing the conversion specifiers when computing
+path_size.
+
+Signed-off-by: Nicholas Vinson <nvinson234@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/osdep/linux/ofpath.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/grub-core/osdep/linux/ofpath.c b/grub-core/osdep/linux/ofpath.c
+index 0ebfea44c..38d9bb5bf 100644
+--- a/grub-core/osdep/linux/ofpath.c
++++ b/grub-core/osdep/linux/ofpath.c
+@@ -507,7 +507,7 @@ check_sas (const char *sysfs_path, int *tgt, unsigned long int *sas_address)
+   p_len = (int) (q - sysfs_path);
+   ed_len = (int) (q - ed);
+ 
+-  path_size = (p_len + ed_len + sizeof ("%s/sas_device/%s/phy_identifier"));
++  path_size = (p_len + ed_len + sizeof ("/sas_device//phy_identifier"));
+   path = xmalloc (path_size);
+   snprintf (path, path_size, "%.*s/sas_device/%.*s/phy_identifier", p_len,
+ 	    sysfs_path, ed_len, ed);
+-- 
+2.53.0
+

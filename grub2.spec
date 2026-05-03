@@ -24,7 +24,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.14
-Release:	%{?beta:0.%{beta}.}2
+Release:	%{?beta:0.%{beta}.}3
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		https://www.gnu.org/software/grub/
@@ -93,7 +93,23 @@ Patch300:	grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 
 # Patches from upstream
 # [Selected from running git format-patch grub-2.12-rc1 in master branch]
-# [currently none]
+Patch1000:	0002-mmap-mmap-Fix-integer-overflow-in-binary-search.patch
+Patch1001:	0003-osdep-linux-ofpath-Update-strstr-calls.patch
+Patch1002:	0004-osdep-linux-ofpath-Correct-path_size-calculation.patch
+Patch1003:	0005-util-probe-Save-strrchr-ret-val-to-const-data-ptr.patch
+Patch1004:	0006-util-resolve-Save-str-r-chr-ret-val-to-const-data-pt.patch
+Patch1005:	0007-include-grub-i386-pc-int.h-Move-GRUB_MACHINE_PCBIOS-.patch
+Patch1006:	0008-build-i386-pc-Update-kernel-image-generation.patch
+Patch1007:	0009-Revert-configure-Print-a-more-helpful-error-if-autoc.patch
+Patch1008:	0010-Revert-configure-Check-linker-for-image-base-support.patch
+Patch1009:	0011-Revert-INSTALL-Add-note-that-the-GNU-Autoconf-Archiv.patch
+Patch1010:	0012-configure-Drop-Ttext-checks-for-i386-pc.patch
+Patch1011:	0013-configure-Add-image-base-check-for-non-i386.patch
+Patch1012:	0014-build-i386-cygwin-img-ld.sc-i386-cygwin-img.lds.patch
+Patch1013:	0015-conf-i386-cygwin-img.lds-Update-to-use-_grub_text_ba.patch
+Patch1014:	0016-MAINTAINERS-Update-maintainers-list.patch
+Patch1015:	0017-MAINTAINERS-Update-GRUB-git-repository-and-mailing-l.patch
+Patch1016:	0018-SECURITY-Update-security-team-members-names-fingerpr.patch
 
 # Additional OpenMandriva patches that need to be applied after upstream patches
 Patch2000:	grub-2.06-add-mitigations-off-mode.patch
@@ -101,7 +117,6 @@ Patch2000:	grub-2.06-add-mitigations-off-mode.patch
 BuildRequires:	autoconf
 BuildRequires:	autoconf-archive
 BuildRequires:	automake
-BuildRequires:	libtool-base
 BuildRequires:	slibtool
 BuildRequires:	make
 BuildRequires:	efi-srpm-macros
@@ -248,10 +263,13 @@ for po_file in *.po ; do
 done
 cd ..
 
+%if 0
+# Probably no longer needed after Patch 1006
 %ifarch %{x86_64} %{ix86}
 # Break the check for -Wl,--image-base so we use -Wl,-Ttext
 # Fixes https://bugs.gentoo.org/965424
 sed -i -e 's|image-base|1m4g3-b4s3|g' configure*
+%endif
 %endif
 
 #-----------------------------------------------------------------------

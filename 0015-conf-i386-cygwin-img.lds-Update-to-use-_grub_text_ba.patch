@@ -1,0 +1,47 @@
+From 3dce38eb196f47bdf86ab028de74be40e13f19fd Mon Sep 17 00:00:00 2001
+From: Nicholas Vinson <nvinson234@gmail.com>
+Date: Tue, 3 Mar 2026 21:41:21 -0500
+Subject: [PATCH 15/18] conf/i386-cygwin-img.lds: Update to use _grub_text_base
+ symbol
+
+This patch updates conf/i386-cygwin-img.lds to use the _grub_text_base
+symbol just like conf/i386-pc-kernel.lds. It also updates configure.ac
+to account for this change.
+
+Signed-off-by: Nicholas Vinson <nvinson234@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ conf/i386-cygwin-img.lds | 1 +
+ configure.ac             | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/conf/i386-cygwin-img.lds b/conf/i386-cygwin-img.lds
+index 578da91b0..e7ed1c523 100644
+--- a/conf/i386-cygwin-img.lds
++++ b/conf/i386-cygwin-img.lds
+@@ -2,6 +2,7 @@
+ 
+ SECTIONS
+ {
++  . = _grub_text_base;
+   .text :
+   {
+     start = . ;
+diff --git a/configure.ac b/configure.ac
+index a8672eaa1..d19fb625d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1462,8 +1462,8 @@ elif test x$grub_cv_target_cc_link_format = x-mi386pe || test x$grub_cv_target_c
+   TARGET_IMG_LDSCRIPT='$(top_srcdir)'"/conf/i386-cygwin-img.lds"
+   TARGET_IMG_LDFLAGS="-Wl,-T${TARGET_IMG_LDSCRIPT}"
+   TARGET_IMG_LDFLAGS_AC="-Wl,-T${srcdir}/conf/i386-cygwin-img.lds"
+-  TARGET_IMG_BASE_LDOPT=
+-  TARGET_IMG_BASE_LDOPT_ARG_SEP=","
++  TARGET_IMG_BASE_LDOPT="-Wl,--defsym=_grub_text_base"
++  TARGET_IMG_BASE_LDOPT_ARG_SEP="="
+   TARGET_IMG_CFLAGS=
+ else
+   TARGET_APPLE_LINKER=0
+-- 
+2.53.0
+
