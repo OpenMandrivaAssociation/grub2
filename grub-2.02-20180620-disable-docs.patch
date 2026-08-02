@@ -1,7 +1,8 @@
-diff -Naur grub-2.04/Makefile.am grub-2.04.tpg/Makefile.am
---- grub-2.04/Makefile.am	2019-10-24 08:49:04.756376834 +0000
-+++ grub-2.04.tpg/Makefile.am	2019-10-24 08:50:49.812385345 +0000
-@@ -5,7 +5,7 @@
+diff --git a/Makefile.am b/Makefile.am
+index 43635d5..e788f6d 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -5,7 +5,7 @@ SUBDIRS = grub-core/lib/gnulib .
  if COND_real_platform
  SUBDIRS += grub-core
  endif
@@ -10,10 +11,11 @@ diff -Naur grub-2.04/Makefile.am grub-2.04.tpg/Makefile.am
  
  include $(top_srcdir)/conf/Makefile.common
  include $(top_srcdir)/conf/Makefile.extra-dist
-diff -Naur grub-2.04/configure.ac grub-2.04.tpg/configure.ac
---- grub-2.04/configure.ac	2019-10-24 08:49:04.740376832 +0000
-+++ grub-2.04.tpg/configure.ac	2019-10-24 08:51:16.409387500 +0000
-@@ -2017,7 +2017,6 @@
+diff --git a/configure.ac b/configure.ac
+index 23f7886..3403316 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -2545,7 +2545,6 @@ AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([grub-core/Makefile])
  AC_CONFIG_FILES([grub-core/lib/gnulib/Makefile])
  AC_CONFIG_FILES([po/Makefile.in])

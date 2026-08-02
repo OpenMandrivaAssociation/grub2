@@ -1,6 +1,7 @@
-diff -up grub-2.06/grub-core/gfxmenu/gui_label.c.1~ grub-2.06/grub-core/gfxmenu/gui_label.c
---- grub-2.06/grub-core/gfxmenu/gui_label.c.1~	2021-03-02 15:54:20.000000000 +0100
-+++ grub-2.06/grub-core/gfxmenu/gui_label.c	2022-06-26 18:03:04.430634087 +0200
+diff --git a/grub-core/gfxmenu/gui_label.c b/grub-core/gfxmenu/gui_label.c
+index ffd5022..0597132 100644
+--- a/grub-core/gfxmenu/gui_label.c
++++ b/grub-core/gfxmenu/gui_label.c
 @@ -25,6 +25,11 @@
  #include <grub/i18n.h>
  #include <grub/color.h>
@@ -13,7 +14,7 @@ diff -up grub-2.06/grub-core/gfxmenu/gui_label.c.1~ grub-2.06/grub-core/gfxmenu/
  static const char *align_options[] =
  {
    "left",
-@@ -192,6 +197,15 @@ label_set_property (void *vself, const c
+@@ -192,6 +197,15 @@ label_set_property (void *vself, const char *name, const char *value)
  	       "or `c' for a command-line.");
  	   else if (grub_strcmp (value, "@KEYMAP_SHORT@") == 0)
  	    value = _("enter: boot, `e': options, `c': cmd-line");

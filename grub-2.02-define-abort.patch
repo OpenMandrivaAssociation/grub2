@@ -1,7 +1,8 @@
-diff -up grub-2.02-20180928/grub-core/kern/misc.c.omv~ grub-2.02-20180928/grub-core/kern/misc.c
---- grub-2.02-20180928/grub-core/kern/misc.c.omv~	2018-12-23 22:58:51.329679479 +0100
-+++ grub-2.02-20180928/grub-core/kern/misc.c	2018-12-23 22:59:00.087803621 +0100
-@@ -1098,6 +1098,15 @@ grub_abort (void)
+diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
+index 18c34b8..96bcfcf 100644
+--- a/grub-core/kern/misc.c
++++ b/grub-core/kern/misc.c
+@@ -1432,6 +1432,15 @@ grub_abort (void)
    grub_exit ();
  }
  

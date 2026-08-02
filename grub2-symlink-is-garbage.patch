@@ -1,8 +1,8 @@
 diff --git a/util/grub-mkconfig_lib.in b/util/grub-mkconfig_lib.in
-index 0f801ca..0091a37 100644
+index 0895328..b3cb763 100644
 --- a/util/grub-mkconfig_lib.in
 +++ b/util/grub-mkconfig_lib.in
-@@ -190,6 +190,9 @@ grub_file_is_not_garbage ()
+@@ -194,6 +194,9 @@ grub_file_is_not_garbage ()
        README*|*/README*)  return 1 ;; # documentation
        *.sig) return 1 ;; # signatures
      esac

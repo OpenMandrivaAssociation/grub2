@@ -1,7 +1,8 @@
-diff -Naur grub-2.00//util/grub-mkconfig.in grub-new//util/grub-mkconfig.in
---- grub-2.00//util/grub-mkconfig.in	2012-04-05 21:41:07.000000000 +0400
-+++ grub-new//util/grub-mkconfig.in	2012-07-23 18:27:18.577102974 +0400
-@@ -253,6 +253,10 @@
+diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
+index 45787a1..ba260fe 100644
+--- a/util/grub-mkconfig.in
++++ b/util/grub-mkconfig.in
+@@ -294,6 +294,10 @@ for i in "${grub_mkconfig_dir}"/* ; do
    esac
  done
  

@@ -1,6 +1,7 @@
-diff -up grub-2.12-rc1/grub-core/boot/i386/pc/boot.S.12~ grub-2.12-rc1/grub-core/boot/i386/pc/boot.S
---- grub-2.12-rc1/grub-core/boot/i386/pc/boot.S.12~	2023-07-10 17:43:48.000000000 +0200
-+++ grub-2.12-rc1/grub-core/boot/i386/pc/boot.S	2023-10-20 21:40:06.399274336 +0200
+diff --git a/grub-core/boot/i386/pc/boot.S b/grub-core/boot/i386/pc/boot.S
+index 2bd0b2d..ea167fe 100644
+--- a/grub-core/boot/i386/pc/boot.S
++++ b/grub-core/boot/i386/pc/boot.S
 @@ -249,9 +249,6 @@ real_start:
  	/* save drive reference first thing! */
  	pushw	%dx
@@ -11,9 +12,10 @@ diff -up grub-2.12-rc1/grub-core/boot/i386/pc/boot.S.12~ grub-2.12-rc1/grub-core
  	/* set %si to the disk address packet */
  	movw	$disk_address_packet, %si
  
-diff -up grub-2.12-rc1/grub-core/boot/i386/pc/diskboot.S.12~ grub-2.12-rc1/grub-core/boot/i386/pc/diskboot.S
---- grub-2.12-rc1/grub-core/boot/i386/pc/diskboot.S.12~	2023-07-10 17:43:48.000000000 +0200
-+++ grub-2.12-rc1/grub-core/boot/i386/pc/diskboot.S	2023-10-20 21:40:06.399274336 +0200
+diff --git a/grub-core/boot/i386/pc/diskboot.S b/grub-core/boot/i386/pc/diskboot.S
+index c1addc0..68d31de 100644
+--- a/grub-core/boot/i386/pc/diskboot.S
++++ b/grub-core/boot/i386/pc/diskboot.S
 @@ -50,11 +50,6 @@ _start:
  	/* save drive reference first thing! */
  	pushw	%dx
@@ -26,10 +28,11 @@ diff -up grub-2.12-rc1/grub-core/boot/i386/pc/diskboot.S.12~ grub-2.12-rc1/grub-
  	/* this sets up for the first run through "bootloop" */
  	movw	$LOCAL(firstlist), %di
  
-diff -up grub-2.12-rc1/grub-core/gettext/gettext.c.12~ grub-2.12-rc1/grub-core/gettext/gettext.c
---- grub-2.12-rc1/grub-core/gettext/gettext.c.12~	2023-07-10 17:43:48.000000000 +0200
-+++ grub-2.12-rc1/grub-core/gettext/gettext.c	2023-10-20 21:41:24.811351600 +0200
-@@ -434,16 +434,12 @@ static char *
+diff --git a/grub-core/gettext/gettext.c b/grub-core/gettext/gettext.c
+index edebed9..4263d76 100644
+--- a/grub-core/gettext/gettext.c
++++ b/grub-core/gettext/gettext.c
+@@ -439,16 +439,12 @@ static char *
  grub_gettext_env_write_lang (struct grub_env_var *var
  			     __attribute__ ((unused)), const char *val)
  {
@@ -47,7 +50,7 @@ diff -up grub-2.12-rc1/grub-core/gettext/gettext.c.12~ grub-2.12-rc1/grub-core/g
  
    return grub_strdup (val);
  }
-@@ -451,23 +447,19 @@ grub_gettext_env_write_lang (struct grub
+@@ -456,23 +452,19 @@ grub_gettext_env_write_lang (struct grub_env_var *var
  void
  grub_gettext_reread_prefix (const char *val)
  {
@@ -73,7 +76,7 @@ diff -up grub-2.12-rc1/grub-core/gettext/gettext.c.12~ grub-2.12-rc1/grub-core/g
    return grub_strdup (val);
  }
  
-@@ -475,12 +467,9 @@ static char *
+@@ -480,12 +472,9 @@ static char *
  read_secondary (struct grub_env_var *var
  		__attribute__ ((unused)), const char *val)
  {
@@ -87,7 +90,7 @@ diff -up grub-2.12-rc1/grub-core/gettext/gettext.c.12~ grub-2.12-rc1/grub-core/g
    return grub_strdup (val);
  }
  
-@@ -500,18 +489,14 @@ grub_cmd_translate (grub_command_t cmd _
+@@ -507,18 +496,14 @@ static grub_command_t cmd;
  GRUB_MOD_INIT (gettext)
  {
    const char *lang;
@@ -107,11 +110,11 @@ diff -up grub-2.12-rc1/grub-core/gettext/gettext.c.12~ grub-2.12-rc1/grub-core/g
  
    grub_register_variable_hook ("locale_dir", NULL, read_main);
    grub_register_variable_hook ("secondary_locale_dir", NULL, read_secondary);
-diff -up grub-2.12-rc1/grub-core/kern/main.c.12~ grub-2.12-rc1/grub-core/kern/main.c
-diff -up grub-2.12-rc1/grub-core/normal/menu.c.12~ grub-2.12-rc1/grub-core/normal/menu.c
---- grub-2.12-rc1/grub-core/normal/menu.c.12~	2023-10-20 21:40:06.400274350 +0200
-+++ grub-2.12-rc1/grub-core/normal/menu.c	2023-10-20 21:43:11.000745119 +0200
-@@ -814,16 +814,18 @@ run_menu (grub_menu_t menu, int nested,
+diff --git a/grub-core/normal/menu.c b/grub-core/normal/menu.c
+index b946c83..676efa4 100644
+--- a/grub-core/normal/menu.c
++++ b/grub-core/normal/menu.c
+@@ -813,16 +813,18 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot, int *notify_boot)
  
  /* Callback invoked immediately before a menu entry is executed.  */
  static void
@@ -132,9 +135,10 @@ diff -up grub-2.12-rc1/grub-core/normal/menu.c.12~ grub-2.12-rc1/grub-core/norma
  }
  
  /* Callback invoked when a default menu entry executed because of a timeout
-diff -up grub-2.12-rc1/grub-core/normal/menu_entry.c.12~ grub-2.12-rc1/grub-core/normal/menu_entry.c
---- grub-2.12-rc1/grub-core/normal/menu_entry.c.12~	2023-07-10 17:43:48.000000000 +0200
-+++ grub-2.12-rc1/grub-core/normal/menu_entry.c	2023-10-20 21:40:06.400274350 +0200
+diff --git a/grub-core/normal/menu_entry.c b/grub-core/normal/menu_entry.c
+index 8b0d17e..53b5a98 100644
+--- a/grub-core/normal/menu_entry.c
++++ b/grub-core/normal/menu_entry.c
 @@ -1176,9 +1176,6 @@ run (struct screen *screen)
    char *dummy[1] = { NULL };
  

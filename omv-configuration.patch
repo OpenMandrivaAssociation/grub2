@@ -1,17 +1,19 @@
-diff -up grub-2.12-rc1/util/grub-mkconfig.in.8~ grub-2.12-rc1/util/grub-mkconfig.in
---- grub-2.12-rc1/util/grub-mkconfig.in.8~	2023-10-20 21:35:15.973325028 +0200
-+++ grub-2.12-rc1/util/grub-mkconfig.in	2023-10-20 21:35:15.981325100 +0200
+diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
+index 8cd9a56..6f7042b 100644
+--- a/util/grub-mkconfig.in
++++ b/util/grub-mkconfig.in
 @@ -255,6 +255,7 @@ export GRUB_DEFAULT \
    GRUB_SAVEDEFAULT \
    GRUB_ENABLE_CRYPTODISK \
    GRUB_BADRAM \
 +  GRUB_CMDLINE_LINUX_RECOVERY \
    GRUB_OS_PROBER_SKIP_LIST \
-   GRUB_DISABLE_SUBMENU
- 
-diff -up grub-2.12-rc1/util/grub.d/10_linux.in.8~ grub-2.12-rc1/util/grub.d/10_linux.in
---- grub-2.12-rc1/util/grub.d/10_linux.in.8~	2023-07-10 17:43:48.000000000 +0200
-+++ grub-2.12-rc1/util/grub.d/10_linux.in	2023-10-20 21:39:41.448921708 +0200
+   GRUB_DISABLE_SUBMENU \
+   GRUB_FORCE_EFI_ALL_VIDEO
+diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
+index 07649cd..fe892f9 100644
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
 @@ -29,9 +29,15 @@ export TEXTDOMAINDIR="@localedir@"
  CLASS="--class gnu-linux --class gnu --class os"
  
@@ -49,7 +51,7 @@ diff -up grub-2.12-rc1/util/grub.d/10_linux.in.8~ grub-2.12-rc1/util/grub.d/10_l
 +	GRUB_SAVEDEFAULT=false
 +	;;
      xzfs)
- 	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || true`
+ 	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || zdb -l ${GRUB_DEVICE} | awk -F \' '/ name/ { print $2 }'`
  	bootfs="`make_system_path_relative_to_its_root / | sed -e "s,@$,,"`"
 @@ -91,13 +106,22 @@ linux_entry ()
    if [ -z "$boot_device_id" ]; then

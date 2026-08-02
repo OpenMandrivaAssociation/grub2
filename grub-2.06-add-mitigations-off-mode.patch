@@ -1,6 +1,7 @@
-diff -up grub-2.12-rc1/util/grub.d/10_linux.in.77~ grub-2.12-rc1/util/grub.d/10_linux.in
---- grub-2.12-rc1/util/grub.d/10_linux.in.77~	2023-10-20 21:54:36.784661790 +0200
-+++ grub-2.12-rc1/util/grub.d/10_linux.in	2023-10-20 21:55:41.214350234 +0200
+diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
+index fe892f9..92d7938 100644
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
 @@ -111,11 +111,15 @@ linux_entry ()
    if [ x$type != xsimple ] ; then
        case $type in

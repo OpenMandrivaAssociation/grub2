@@ -1,6 +1,7 @@
-diff -up grub-2.12-rc1/Makefile.am.19~ grub-2.12-rc1/Makefile.am
---- grub-2.12-rc1/Makefile.am.19~	2023-10-20 21:45:00.431116079 +0200
-+++ grub-2.12-rc1/Makefile.am	2023-10-20 21:45:00.466116508 +0200
+diff --git a/Makefile.am b/Makefile.am
+index e788f6d..83e4175 100644
+--- a/Makefile.am
++++ b/Makefile.am
 @@ -434,7 +434,7 @@ if COND_i386_coreboot
  FS_PAYLOAD_MODULES ?= $(shell cat grub-core/fs.lst)
  default_payload.elf: grub-mkstandalone grub-mkimage FORCE
@@ -10,10 +11,11 @@ diff -up grub-2.12-rc1/Makefile.am.19~ grub-2.12-rc1/Makefile.am
  endif
  
  endif
-diff -up grub-2.12-rc1/util/grub-install.c.19~ grub-2.12-rc1/util/grub-install.c
---- grub-2.12-rc1/util/grub-install.c.19~	2023-07-10 17:43:48.000000000 +0200
-+++ grub-2.12-rc1/util/grub-install.c	2023-10-20 21:45:00.466116508 +0200
-@@ -1694,7 +1694,7 @@ main (int argc, char *argv[])
+diff --git a/util/grub-install.c b/util/grub-install.c
+index 0602465..eb2b55c 100644
+--- a/util/grub-install.c
++++ b/util/grub-install.c
+@@ -1696,7 +1696,7 @@ main (int argc, char *argv[])
      case GRUB_INSTALL_PLATFORM_I386_IEEE1275:
      case GRUB_INSTALL_PLATFORM_POWERPC_IEEE1275:
        {
@@ -22,9 +24,10 @@ diff -up grub-2.12-rc1/util/grub-install.c.19~ grub-2.12-rc1/util/grub-install.c
  	grub_install_copy_file (imgfile, dst, 1);
  	free (dst);
        }
-diff -up grub-2.12-rc1/util/grub-mkimage.c.19~ grub-2.12-rc1/util/grub-mkimage.c
---- grub-2.12-rc1/util/grub-mkimage.c.19~	2023-07-10 17:43:48.000000000 +0200
-+++ grub-2.12-rc1/util/grub-mkimage.c	2023-10-20 21:45:00.467116521 +0200
+diff --git a/util/grub-mkimage.c b/util/grub-mkimage.c
+index fb14aa7..a4fa89f 100644
+--- a/util/grub-mkimage.c
++++ b/util/grub-mkimage.c
 @@ -69,7 +69,7 @@ static struct argp_option options[] = {
     /* TRANSLATORS: "memdisk" here isn't an identifier, it can be translated.
      "embed" is a verb (command description).  "*/
@@ -34,7 +37,7 @@ diff -up grub-2.12-rc1/util/grub-mkimage.c.19~ grub-2.12-rc1/util/grub-mkimage.c
        " but the prefix itself can be overridden by later options"), 0},
    {"dtb",  'D', N_("FILE"), 0, N_("embed FILE as a device tree (DTB)\n"), 0},
     /* TRANSLATORS: "embed" is a verb (command description).  "*/
-@@ -179,7 +179,7 @@ argp_parser (int key, char *arg, struct
+@@ -195,7 +195,7 @@ argp_parser (int key, char *arg, struct argp_state *state)
        if (arguments->prefix)
  	free (arguments->prefix);
  
@@ -43,10 +46,11 @@ diff -up grub-2.12-rc1/util/grub-mkimage.c.19~ grub-2.12-rc1/util/grub-mkimage.c
        break;
  
      case 'D':
-diff -up grub-2.12-rc1/util/grub-mkrescue.c.19~ grub-2.12-rc1/util/grub-mkrescue.c
---- grub-2.12-rc1/util/grub-mkrescue.c.19~	2023-07-10 17:43:48.000000000 +0200
-+++ grub-2.12-rc1/util/grub-mkrescue.c	2023-10-20 21:46:57.258521023 +0200
-@@ -281,14 +281,14 @@ make_image_abs (enum grub_install_plat p
+diff --git a/util/grub-mkrescue.c b/util/grub-mkrescue.c
+index e7b9078..e84d2f0 100644
+--- a/util/grub-mkrescue.c
++++ b/util/grub-mkrescue.c
+@@ -281,14 +281,14 @@ make_image_abs (enum grub_install_plat plat,
  	fprintf (load_cfg_f, "search --set=root --fs-uuid %s\n", iso_uuid);
  	break;
      }
@@ -63,7 +67,7 @@ diff -up grub-2.12-rc1/util/grub-mkrescue.c.19~ grub-2.12-rc1/util/grub-mkrescue
  				0, load_cfg,
  				mkimage_target, 0);
    grub_install_pop_module ();
-@@ -327,7 +327,7 @@ make_image_fwdisk_abs (enum grub_install
+@@ -327,7 +327,7 @@ make_image_fwdisk_abs (enum grub_install_plat plat,
    fclose (load_cfg_f);
  
    grub_install_push_module ("iso9660");
@@ -72,7 +76,7 @@ diff -up grub-2.12-rc1/util/grub-mkrescue.c.19~ grub-2.12-rc1/util/grub-mkrescue
  				0, load_cfg, mkimage_target, 0);
    grub_install_pop_module ();
    grub_util_unlink (load_cfg);
-@@ -517,7 +517,7 @@ main (int argc, char *argv[])
+@@ -521,7 +521,7 @@ main (int argc, char *argv[])
  
    iso9660_dir = grub_util_make_temporary_dir ();
    grub_util_info ("temporary iso9660 dir is `%s'", iso9660_dir);
@@ -81,7 +85,7 @@ diff -up grub-2.12-rc1/util/grub-mkrescue.c.19~ grub-2.12-rc1/util/grub-mkrescue
    grub_install_mkdir_p (boot_grub);
    romdir = grub_util_path_concat (2, boot_grub, "roms");
    grub_util_mkdir (romdir);
-@@ -617,12 +617,12 @@ main (int argc, char *argv[])
+@@ -621,12 +621,12 @@ main (int argc, char *argv[])
        grub_install_push_module ("biosdisk");
        grub_install_push_module ("iso9660");
        grub_install_make_image_wrap (source_dirs[GRUB_INSTALL_PLATFORM_I386_PC],
@@ -96,7 +100,7 @@ diff -up grub-2.12-rc1/util/grub-mkrescue.c.19~ grub-2.12-rc1/util/grub-mkrescue
        xorriso_push ("-no-emul-boot");
        xorriso_push ("-boot-load-size");
        xorriso_push ("4");
-@@ -661,7 +661,7 @@ main (int argc, char *argv[])
+@@ -665,7 +665,7 @@ main (int argc, char *argv[])
  	      fwrite (buf, 1, 512, sa);
  
  	      grub_install_make_image_wrap_file (source_dirs[GRUB_INSTALL_PLATFORM_I386_PC],
@@ -105,7 +109,7 @@ diff -up grub-2.12-rc1/util/grub-mkrescue.c.19~ grub-2.12-rc1/util/grub-mkrescue
  						 0, load_cfg,
  						 "i386-pc", 0);
  	      sz = ftello (sa);
-@@ -888,8 +888,8 @@ main (int argc, char *argv[])
+@@ -892,8 +892,8 @@ main (int argc, char *argv[])
        grub_install_copy_file (grub_chrp, bootx, 1);
        grub_install_mkdir_p (ppc_chrp);
        grub_install_copy_file (bisrc, bitgt, 1);
@@ -116,7 +120,7 @@ diff -up grub-2.12-rc1/util/grub-mkrescue.c.19~ grub-2.12-rc1/util/grub-mkrescue
        /* FIXME: add PreP */
        if (system_area == SYS_AREA_COMMON)
  	{
-@@ -938,25 +938,25 @@ main (int argc, char *argv[])
+@@ -942,25 +942,25 @@ main (int argc, char *argv[])
        xorriso_push ("-B");
        xorriso_push (",");
        xorriso_push ("--grub2-sparc-core");
@@ -149,10 +153,11 @@ diff -up grub-2.12-rc1/util/grub-mkrescue.c.19~ grub-2.12-rc1/util/grub-mkrescue
      }
  
    make_image_fwdisk (GRUB_INSTALL_PLATFORM_MIPSEL_ARC, "mipsel-arc", "arc.exe");
-diff -up grub-2.12-rc1/util/grub-mkstandalone.c.19~ grub-2.12-rc1/util/grub-mkstandalone.c
---- grub-2.12-rc1/util/grub-mkstandalone.c.19~	2023-07-10 17:43:48.000000000 +0200
-+++ grub-2.12-rc1/util/grub-mkstandalone.c	2023-10-20 21:47:30.910916237 +0200
-@@ -112,7 +112,7 @@ argp_parser (int key, char *arg, struct
+diff --git a/util/grub-mkstandalone.c b/util/grub-mkstandalone.c
+index 9009648..91a3516 100644
+--- a/util/grub-mkstandalone.c
++++ b/util/grub-mkstandalone.c
+@@ -115,7 +115,7 @@ argp_parser (int key, char *arg, struct argp_state *state)
  
  struct argp argp = {
    options, argp_parser, N_("[OPTION] SOURCE..."),
@@ -161,7 +166,7 @@ diff -up grub-2.12-rc1/util/grub-mkstandalone.c.19~ grub-2.12-rc1/util/grub-mkst
    NULL, help_filter, NULL
  };
  
-@@ -314,7 +314,7 @@ main (int argc, char *argv[])
+@@ -335,7 +335,7 @@ main (int argc, char *argv[])
    enum grub_install_plat plat = grub_install_get_target (grub_install_source_directory);
  
    char *memdisk_dir = grub_util_make_temporary_dir ();
@@ -170,7 +175,7 @@ diff -up grub-2.12-rc1/util/grub-mkstandalone.c.19~ grub-2.12-rc1/util/grub-mkst
    grub_install_copy_files (grub_install_source_directory,
  			   boot_grub, plat);
  
-@@ -354,7 +354,7 @@ main (int argc, char *argv[])
+@@ -375,7 +375,7 @@ main (int argc, char *argv[])
    grub_install_push_module ("tar");
  
    grub_install_make_image_wrap (grub_install_source_directory,

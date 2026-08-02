@@ -23,7 +23,7 @@ Name:		grub2
 ## 'boot/grub' in the source , including Makefiles*
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
-Version:	2.12
+Version:	2.14
 Release:	%{?beta:0.%{beta}.}1
 Group:		System/Kernel and hardware
 License:	GPLv3+
@@ -215,7 +215,7 @@ Documentation for GRUB.
 %endif
 
 %prep
-%autosetup -p1 -n grub-%{version}%{?beta:~%{beta}}%{?snapshot:%{snapshot}} -a12
+%autosetup -p1 -n grub-2.14 -a12
 
 sed -i -e "s|^FONT_SOURCE=.*|FONT_SOURCE=%{SOURCE6}|g" configure configure.ac
 sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure.ac
