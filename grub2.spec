@@ -296,11 +296,9 @@ cd %{platform}
 	--enable-grub-emu-sdl \
 	--without-included-regex
 
-%if %{cross_compiling}
 # make -O can swallow extra_deps.lst redirection
 mkdir -p grub-core
 touch grub-core/extra_deps.lst
-%endif
 %make_build ascii.h widthspec.h
 %make_build all
 cd -
@@ -336,10 +334,9 @@ cd efi
 	--enable-grub-emu-sdl \
 	--without-included-regex
 
-%if %{cross_compiling}
+# make -O can swallow extra_deps.lst redirection
 mkdir -p grub-core
 touch grub-core/extra_deps.lst
-%endif
 %make_build ascii.h widthspec.h
 %make_build -C grub-core
 
