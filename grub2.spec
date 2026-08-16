@@ -24,7 +24,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.14
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		https://www.gnu.org/software/grub/
@@ -123,6 +123,10 @@ BuildRequires:	lzo-devel
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	pkgconfig(fuse3)
 BuildRequires:	pkgconfig(freetype2)
+%if %{cross_compiling}
+# target grub-mkimage is run via binfmt qemu while building grub.efi
+BuildRequires:	qemu-%{_arch}-static
+%endif
 BuildRequires:	pkgconfig(liblzma)
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(ncursesw)
@@ -250,6 +254,10 @@ cd ..
 %define _disable_ld_no_undefined 1
 export GRUB_CONTRIB="$PWD/grub-extras"
 export CONFIGURE_TOP="$PWD"
+%if %{cross_compiling}
+# so the target grub-mkimage can run (binfmt qemu-user)
+export QEMU_LD_PREFIX=/usr/%{_target_platform}
+%endif
 
 #(proyvind): debugedit will fail on some binaries if linked using gold
 # https://savannah.gnu.org/bugs/?34539
@@ -260,7 +268,13 @@ export CONFIGURE_TOP="$PWD"
 mkdir -p %{platform}
 cd %{platform}
 # Clang causes openmandriva theme to disappear. Only black theme on non UEFI/EFI platform. Switch back to gcc (angry)
+%if %{cross_compiling}
+%configure CC=%{_target_platform}-gcc BUILD_CC=gcc TARGET_CC=%{_target_platform}-gcc \
+	BUILD_FREETYPE_CFLAGS="-I/usr/include/freetype2" \
+	BUILD_FREETYPE_LIBS="-lfreetype" \
+%else
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
+%endif
 	CFLAGS="-Os -fuse-ld=bfd" \
 	LDFLAGS="" \
 	TARGET_LDFLAGS="-static" \
@@ -281,6 +295,11 @@ cd %{platform}
 	--enable-grub-emu-sdl \
 	--without-included-regex
 
+%if %{cross_compiling}
+# make -O can swallow extra_deps.lst redirection
+mkdir -p grub-core
+touch grub-core/extra_deps.lst
+%endif
 %make_build ascii.h widthspec.h
 %make_build all
 cd -
@@ -292,7 +311,13 @@ cd efi
 %ifarch %{arm} %{armx}
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
 %else
+%if %{cross_compiling}
+%configure CC=%{_target_platform}-gcc BUILD_CC=gcc TARGET_CC=%{_target_platform}-gcc \
+	BUILD_FREETYPE_CFLAGS="-I/usr/include/freetype2" \
+	BUILD_FREETYPE_LIBS="-lfreetype" \
+%else
 %configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
+%endif
 %endif
 	CFLAGS="-Os -fuse-ld=bfd" \
 	LDFLAGS="" \
@@ -310,13 +335,21 @@ cd efi
 	--enable-grub-emu-sdl \
 	--without-included-regex
 
+%if %{cross_compiling}
+mkdir -p grub-core
+touch grub-core/extra_deps.lst
+%endif
 %make_build ascii.h widthspec.h
 %make_build -C grub-core
 
-%define grub_modules_default all_video boot btrfs cat gettext chain configfile cryptodisk echo efifwsetup efinet ext2 f2fs fat font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background gfxterm_menu gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep squash4 syslinuxcfg test tftp video xfs zstd
+# gfxterm_menu is a test module, not a boot module
+%define grub_modules_default all_video boot btrfs cat gettext chain configfile cryptodisk echo efifwsetup efinet ext2 f2fs fat font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep squash4 syslinuxcfg test tftp video xfs zstd
 
 %ifarch aarch64
 %define grubefiarch arm64-efi
+%define grub_modules %{grub_modules_default} efi_gop
+%elifarch riscv64
+%define grubefiarch riscv64-efi
 %define grub_modules %{grub_modules_default} efi_gop
 %else
 %define grubefiarch %{_arch}-efi
@@ -454,7 +487,7 @@ fi
 
 %files  -f grub.lang
 %{libdir32}/grub/*-%{platform}
-%ifnarch %{aarch64}
+%ifnarch %{aarch64} riscv64
 #Files here are needed for install. Moved from efi package
 %{libdir32}/grub/%{_arch}-efi/
 %endif
@@ -495,9 +528,16 @@ fi
 %{_bindir}/%{name}-mknetdir
 %{_bindir}/%{name}-mkrescue
 %{_bindir}/%{name}-mkstandalone
+%{_bindir}/%{name}-protect
 %{_bindir}/%{name}-syslinux2cfg
+%if %{cross_compiling}
+# help2man is skipped when cross-compiling
+%optional %{_mandir}/man1/%{name}-*.1*
+%optional %{_mandir}/man8/%{name}-*.8*
+%else
 %{_mandir}/man1/%{name}-*.1*
 %{_mandir}/man8/%{name}-*.8*
+%endif
 
 %ifarch %{efi}
 %files efi
