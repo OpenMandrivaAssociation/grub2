@@ -99,6 +99,7 @@ Patch1000:	0009-util-bash-completion-Load-scripts-on-demand.patch
 Patch2000:	grub-2.06-add-mitigations-off-mode.patch
 
 BuildRequires:	autoconf
+BuildRequires:	autoconf-archive
 BuildRequires:	automake
 BuildRequires:	slibtool
 BuildRequires:	libatomic-devel
