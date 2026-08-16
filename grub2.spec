@@ -124,6 +124,7 @@ BuildRequires:	lzo-devel
 BuildRequires:	pkgconfig(devmapper)
 BuildRequires:	pkgconfig(fuse3)
 BuildRequires:	pkgconfig(freetype2)
+BuildRequires:	pkgconfig(libtasn1)
 %if %{cross_compiling}
 # target grub-mkimage is run via binfmt qemu while building grub.efi
 BuildRequires:	qemu-%{_arch}-static
