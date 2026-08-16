@@ -10,7 +10,7 @@
 %define platform uboot
 %endif
 
-%ifarch aarch64 riscv64
+%ifarch %{aarch64} %{riscv64}
 %define platform efi
 %endif
 
@@ -24,7 +24,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.14
-Release:	%{?beta:0.%{beta}.}2
+Release:	%{?beta:0.%{beta}.}3
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		https://www.gnu.org/software/grub/
@@ -259,6 +259,10 @@ export CONFIGURE_TOP="$PWD"
 %if %{cross_compiling}
 # so the target grub-mkimage can run (binfmt qemu-user)
 export QEMU_LD_PREFIX=/usr/%{_target_platform}
+# Host freetype for BUILD_CC. Using the target .pc would mix native
+# headers with the cross library (or the reverse).
+_grub_host_freetype_cflags="$(PKG_CONFIG_SYSROOT_DIR= PKG_CONFIG_LIBDIR=%{_libdir}/pkgconfig:%{_datadir}/pkgconfig PKG_CONFIG_PATH= pkg-config --cflags freetype2)"
+_grub_host_freetype_libs="$(PKG_CONFIG_SYSROOT_DIR= PKG_CONFIG_LIBDIR=%{_libdir}/pkgconfig:%{_datadir}/pkgconfig PKG_CONFIG_PATH= pkg-config --libs freetype2)"
 %endif
 
 #(proyvind): debugedit will fail on some binaries if linked using gold
@@ -272,8 +276,8 @@ cd %{platform}
 # Clang causes openmandriva theme to disappear. Only black theme on non UEFI/EFI platform. Switch back to gcc (angry)
 %if %{cross_compiling}
 %configure CC=%{_target_platform}-gcc BUILD_CC=gcc TARGET_CC=%{_target_platform}-gcc \
-	BUILD_FREETYPE_CFLAGS="-I/usr/include/freetype2" \
-	BUILD_FREETYPE_LIBS="-lfreetype" \
+	BUILD_FREETYPE_CFLAGS="$_grub_host_freetype_cflags" \
+	BUILD_FREETYPE_LIBS="$_grub_host_freetype_libs" \
 %else
 %configure CC=gcc BUILD_CC=gcc TARGET_CC=gcc \
 %endif
@@ -313,8 +317,8 @@ cd efi
 %else
 %if %{cross_compiling}
 %configure CC=%{_target_platform}-gcc BUILD_CC=gcc TARGET_CC=%{_target_platform}-gcc \
-	BUILD_FREETYPE_CFLAGS="-I/usr/include/freetype2" \
-	BUILD_FREETYPE_LIBS="-lfreetype" \
+	BUILD_FREETYPE_CFLAGS="$_grub_host_freetype_cflags" \
+	BUILD_FREETYPE_LIBS="$_grub_host_freetype_libs" \
 %else
 %configure BUILD_CC=%{__cc} TARGET_CC=%{__cc} \
 %endif
@@ -344,10 +348,10 @@ touch grub-core/extra_deps.lst
 # gfxterm_menu is a test module, not a boot module
 %define grub_modules_default all_video boot btrfs cat gettext chain configfile cryptodisk echo efifwsetup efinet ext2 f2fs fat font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep squash4 syslinuxcfg test tftp video xfs zstd
 
-%ifarch aarch64
+%ifarch %{aarch64}
 %define grubefiarch arm64-efi
 %define grub_modules %{grub_modules_default} efi_gop
-%elifarch riscv64
+%elifarch %{riscv64}
 %define grubefiarch riscv64-efi
 %define grub_modules %{grub_modules_default} efi_gop
 %else
@@ -486,7 +490,7 @@ fi
 
 %files  -f grub.lang
 %{libdir32}/grub/*-%{platform}
-%ifnarch %{aarch64} riscv64
+%ifnarch %{aarch64} %{riscv64}
 #Files here are needed for install. Moved from efi package
 %{libdir32}/grub/%{_arch}-efi/
 %endif
