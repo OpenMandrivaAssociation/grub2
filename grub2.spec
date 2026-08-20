@@ -2,6 +2,11 @@
 # (tpg) disable LTO as grub2 is not designed to benefit from it
 %define _disable_lto 1
 
+%if %{cross_compiling}
+# host gdb-add-index aborts on riscv64 grub kernel.exec DWARF
+%undefine _include_gdb_index
+%endif
+
 %ifarch %{ix86} %{x86_64}
 %define platform pc
 %endif
@@ -26,7 +31,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.16
-Release:	%{?beta:0.%{beta}.}1
+Release:	%{?beta:0.%{beta}.}2
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		https://www.gnu.org/software/grub/
@@ -274,6 +279,8 @@ export CONFIGURE_TOP="$PWD"
 %if %{cross_compiling}
 # so the target grub-mkimage can run (binfmt qemu-user)
 export QEMU_LD_PREFIX=/usr/%{_target_platform}
+# target ld.so has no cache and only searches /lib by default
+export LD_LIBRARY_PATH=/usr/%{_lib}:/%{_lib}
 # Host freetype for BUILD_CC. Using the target .pc would mix native
 # headers with the cross library (or the reverse).
 _grub_host_freetype_cflags="$(PKG_CONFIG_SYSROOT_DIR= PKG_CONFIG_LIBDIR=%{_libdir}/pkgconfig:%{_datadir}/pkgconfig PKG_CONFIG_PATH= pkg-config --cflags freetype2)"
