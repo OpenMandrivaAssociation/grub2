@@ -1,26 +1,29 @@
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index fe892f9..92d7938 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -111,11 +111,15 @@ linux_entry ()
+@@ -116,13 +116,19 @@
    if [ x$type != xsimple ] ; then
        case $type in
-           recovery)
--              title_r="(recovery mode)"
-+              title_r="$(gettext_printf "(recovery mode)")"
-               title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
-               title="${title_} ${title_r}" ;;
-           console)
--              title_c="(console mode)"
-+              title_c="$(gettext_printf "(console mode)")"
-+              title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
-+              title="${title_} ${title_c}" ;;
-+          fast)
-+              title_c="$(gettext_printf "(fast but insecure mode)")"
-               title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
-               title="${title_} ${title_c}" ;;
-           *)
-@@ -332,6 +336,8 @@ for linux in ${reverse_sorted_list}; do
+ 	  recovery)
+-	      title_r="(recovery mode)"
++	      title_r="$(gettext_printf "(recovery mode)")"
+ 	      title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
+ 	      title="${title_} ${title_r}"
+ 	      allowed_user_list="$(grub_get_auth_user_list $GRUB_RECOVERY_ACCESS_LEVEL)"
+ 	      ;;
+ 	  console)
+-	      title_c="(console mode)"
++	      title_c="$(gettext_printf "(console mode)")"
++	      title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
++	      title="${title_} ${title_c}"
++	      allowed_user_list="$(grub_get_auth_user_list $GRUB_ADVANCED_ACCESS_LEVEL)"
++	      ;;
++	  fast)
++	      title_c="$(gettext_printf "(fast but insecure mode)")"
+ 	      title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
+ 	      title="${title_} ${title_c}"
+ 	      allowed_user_list="$(grub_get_auth_user_list $GRUB_ADVANCED_ACCESS_LEVEL)"
+@@ -345,6 +351,8 @@
                "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
    linux_entry "${OS}" "${version}" console \
                "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} plymouth.enable=0 systemd.unit=multi-user.target"

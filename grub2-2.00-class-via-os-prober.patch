@@ -1,8 +1,7 @@
 diff --git a/util/grub.d/30_os-prober.in b/util/grub.d/30_os-prober.in
-index 5d8d752..7721a33 100644
 --- a/util/grub.d/30_os-prober.in
 +++ b/util/grub.d/30_os-prober.in
-@@ -153,7 +153,10 @@ for OS in ${OSPROBED} ; do
+@@ -154,7 +154,10 @@
    fi
  
    # os-prober returns text string followed by optional counter
@@ -14,39 +13,39 @@ index 5d8d752..7721a33 100644
  
    gettext_printf "Found %s on %s\n" "${LONGNAME}" "${DEVICE}" >&2
  
-@@ -164,7 +167,7 @@ for OS in ${OSPROBED} ; do
+@@ -166,7 +169,7 @@
        cat << EOF
  # This menu entry is supported only on PC BIOS platforms.
  if [ "\$grub_platform" = "pc" ]; then
--menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' $CLASS --class os \$menuentry_id_option 'osprober-chain-$(grub_get_device_id "${DEVICE}")' {
-+menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class ${CLASS} --class os \$menuentry_id_option 'osprober-chain-$(grub_get_device_id "${DEVICE}")' {
+-menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' $CLASS --class os \$menuentry_id_option 'osprober-chain-$(grub_get_device_id "${DEVICE}")' ${allowed_user_list}{
++menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class ${CLASS} --class os \$menuentry_id_option 'osprober-chain-$(grub_get_device_id "${DEVICE}")' ${allowed_user_list}{
  EOF
        save_default_entry | grub_add_tab
        prepare_grub_to_access_device ${DEVICE} | grub_add_tab
-@@ -199,7 +202,7 @@ EOF
+@@ -202,7 +205,7 @@
        cat << EOF
  # This menu entry is supported only on EFI platforms.
  if [ "\$grub_platform" = "efi" ]; then
--menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' $CLASS --class os \$menuentry_id_option 'osprober-efi-$(grub_get_device_id "${DEVICE}")' {
-+menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class ${CLASS} --class os \$menuentry_id_option 'osprober-efi-$(grub_get_device_id "${DEVICE}")' {
+-menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' $CLASS --class os \$menuentry_id_option 'osprober-efi-$(grub_get_device_id "${DEVICE}")' ${allowed_user_list}{
++menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class ${CLASS} --class os \$menuentry_id_option 'osprober-efi-$(grub_get_device_id "${DEVICE}")' ${allowed_user_list}{
  EOF
        save_default_entry | sed -e "s/^/\t/"
        prepare_grub_to_access_device ${DEVICE} | sed -e "s/^/\t/"
-@@ -264,7 +267,7 @@ EOF
- 
+@@ -268,7 +271,7 @@
  	if [ "x$is_top_level" = xtrue ] && [ "x${GRUB_DISABLE_SUBMENU}" != xtrue ]; then
+             allowed_user_list="$(grub_get_auth_user_list $GRUB_SIMPLE_ACCESS_LEVEL)"
              cat << EOF
--menuentry '$(echo "$OS $onstr" | grub_quote)' $CLASS --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-simple-$boot_device_id' {
-+menuentry '$(echo "$OS" | grub_quote)' --class $CLASS --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-simple-$boot_device_id' {
+-menuentry '$(echo "$OS $onstr" | grub_quote)' $CLASS --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-simple-$boot_device_id' ${allowed_user_list}{
++menuentry '$(echo "$OS" | grub_quote)' --class $CLASS --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-simple-$boot_device_id' ${allowed_user_list}{
  EOF
  	    save_default_entry | grub_add_tab
  	    printf '%s\n' "${prepare_boot_cache}"
-@@ -284,7 +287,7 @@ EOF
- 	fi
- 	title="${LLABEL} $onstr"
+@@ -290,7 +293,7 @@
+         ## No recovery modes are included here.
+ 	allowed_user_list="$(grub_get_auth_user_list $GRUB_ADVANCED_ACCESS_LEVEL)"
          cat << EOF
--	menuentry '$(echo "$title" | grub_quote)' --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-$LKERNEL-${recovery_params}-$boot_device_id' {
-+	menuentry '$(echo "$title" | grub_quote)' --class ${CLASS} --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-$LKERNEL-${recovery_params}-$boot_device_id' {
+-	menuentry '$(echo "$title" | grub_quote)' --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-$LKERNEL-${recovery_params}-$boot_device_id' ${allowed_user_list}{
++	menuentry '$(echo "$title" | grub_quote)' --class ${CLASS} --class gnu-linux --class gnu --class os \$menuentry_id_option 'osprober-gnulinux-$LKERNEL-${recovery_params}-$boot_device_id' ${allowed_user_list}{
  EOF
  	save_default_entry | sed -e "s/^/$grub_tab$grub_tab/"
  	printf '%s\n' "${prepare_boot_cache}" | grub_add_tab

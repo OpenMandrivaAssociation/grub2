@@ -1,20 +1,7 @@
-diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
-index 8cd9a56..6f7042b 100644
---- a/util/grub-mkconfig.in
-+++ b/util/grub-mkconfig.in
-@@ -255,6 +255,7 @@ export GRUB_DEFAULT \
-   GRUB_SAVEDEFAULT \
-   GRUB_ENABLE_CRYPTODISK \
-   GRUB_BADRAM \
-+  GRUB_CMDLINE_LINUX_RECOVERY \
-   GRUB_OS_PROBER_SKIP_LIST \
-   GRUB_DISABLE_SUBMENU \
-   GRUB_FORCE_EFI_ALL_VIDEO
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 07649cd..fe892f9 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -29,9 +29,15 @@ export TEXTDOMAINDIR="@localedir@"
+@@ -29,9 +29,15 @@
  CLASS="--class gnu-linux --class gnu --class os"
  
  if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
@@ -32,7 +19,7 @@ index 07649cd..fe892f9 100644
    CLASS="--class $(echo ${GRUB_DISTRIBUTOR} | tr 'A-Z' 'a-z' | cut -d' ' -f1|LC_ALL=C sed 's,[^[:alnum:]_],_,g') ${CLASS}"
  fi
  
-@@ -67,11 +73,20 @@ fi
+@@ -67,11 +73,20 @@
  
  case x"$GRUB_FS" in
      xbtrfs)
@@ -53,43 +40,39 @@ index 07649cd..fe892f9 100644
      xzfs)
  	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || zdb -l ${GRUB_DEVICE} | awk -F \' '/ name/ { print $2 }'`
  	bootfs="`make_system_path_relative_to_its_root / | sed -e "s,@$,,"`"
-@@ -91,13 +106,22 @@ linux_entry ()
+@@ -97,12 +112,21 @@
    if [ -z "$boot_device_id" ]; then
        boot_device_id="$(grub_get_device_id "${GRUB_DEVICE}")"
    fi
-+
 +  # (crazy) do it that way so we have these translated
    if [ x$type != xsimple ] ; then
        case $type in
--	  recovery)
--	      title="$(gettext_printf "%s, with Linux %s (recovery mode)" "${os}" "${version}")" ;;
--	  *)
--	      title="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")" ;;
-+          recovery)
-+              title_r="(recovery mode)"
-+              title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
-+              title="${title_} ${title_r}" ;;
-+          console)
-+              title_c="(console mode)"
-+              title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
-+              title="${title_} ${title_c}" ;;
-+          *)
-+              title="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")" ;;
-       esac
-+
-       if [ x"$title" = x"$GRUB_ACTUAL_DEFAULT" ] || [ x"Previous Linux versions>$title" = x"$GRUB_ACTUAL_DEFAULT" ]; then
- 	  replacement_title="$(echo "Advanced options for ${OS}" | sed 's,>,>>,g')>$(echo "$title" | sed 's,>,>>,g')"
- 	  quoted="$(echo "$GRUB_ACTUAL_DEFAULT" | grub_quote)"
-@@ -107,7 +131,7 @@ linux_entry ()
-       echo "menuentry '$(echo "$title" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-$version-$type-$boot_device_id' {" | sed "s/^/$submenu_indentation/"
+ 	  recovery)
+-	      title="$(gettext_printf "%s, with Linux %s (recovery mode)" "${os}" "${version}")"
++	      title_r="(recovery mode)"
++	      title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
++	      title="${title_} ${title_r}"
+ 	      allowed_user_list="$(grub_get_auth_user_list $GRUB_RECOVERY_ACCESS_LEVEL)"
+ 	      ;;
++	  console)
++	      title_c="(console mode)"
++	      title_="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
++	      title="${title_} ${title_c}"
++	      allowed_user_list="$(grub_get_auth_user_list $GRUB_ADVANCED_ACCESS_LEVEL)"
++	      ;;
+ 	  *)
+ 	      title="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
+ 	      allowed_user_list="$(grub_get_auth_user_list $GRUB_ADVANCED_ACCESS_LEVEL)"
+@@ -118,7 +142,7 @@
    else
-       echo "menuentry '$(echo "$os" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-simple-$boot_device_id' {" | sed "s/^/$submenu_indentation/"
+       allowed_user_list="$(grub_get_auth_user_list $GRUB_SIMPLE_ACCESS_LEVEL)"
+       echo "menuentry '$(echo "$os" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-simple-$boot_device_id' ${allowed_user_list}{" | sed "s/^/$submenu_indentation/"
 -  fi      
 +  fi
    if [ x$type != xrecovery ] ; then
        save_default_entry | grub_add_tab
    fi
-@@ -213,7 +237,7 @@ for linux in ${reverse_sorted_list}; do
+@@ -226,7 +250,7 @@
    version=`echo $basename | sed -e "s,^[^0-9]*-,,g"`
    alt_version=`echo $version | sed -e "s,\.old$,,g"`
    linux_root_device_thisversion="${LINUX_ROOT_DEVICE}"
@@ -98,7 +81,7 @@ index 07649cd..fe892f9 100644
    initrd_early=
    for i in ${GRUB_EARLY_INITRD_LINUX_STOCK} \
  	   ${GRUB_EARLY_INITRD_LINUX_CUSTOM}; do
-@@ -292,16 +316,25 @@ for linux in ${reverse_sorted_list}; do
+@@ -305,16 +329,25 @@
      if [ -z "$boot_device_id" ]; then
  	boot_device_id="$(grub_get_device_id "${GRUB_DEVICE}")"
      fi
@@ -110,8 +93,8 @@ index 07649cd..fe892f9 100644
 +    atext="${atext_} ${atext_c}"
 +
      # TRANSLATORS: %s is replaced with an OS name
--    echo "submenu '$(gettext_printf "Advanced options for %s" "${OS}" | grub_quote)' \$menuentry_id_option 'gnulinux-advanced-$boot_device_id' {"
-+    echo "submenu '$atext' \$menuentry_id_option 'gnulinux-advanced-$boot_device_id' {"
+-    echo "submenu '$(gettext_printf "Advanced options for %s" "${OS}" | grub_quote)' \$menuentry_id_option 'gnulinux-advanced-$boot_device_id' $(grub_echo_unrestricted_maybe){"
++    echo "submenu '$atext' \$menuentry_id_option 'gnulinux-advanced-$boot_device_id' $(grub_echo_unrestricted_maybe){"
      is_top_level=false
    fi
  

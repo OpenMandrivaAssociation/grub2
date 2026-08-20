@@ -15,7 +15,9 @@
 %endif
 
 %define snapshot %{nil}
-#define beta rc1
+%define beta rc1
+# GitLab snapshot tarball does not include imported gnulib; bootstrap.conf pin.
+%define gnulib_rev 9f48fb992a3d7e96610c4ce8be969cff2d61a01b
 
 Summary:	GNU GRUB is a Multiboot boot loader
 Name:		grub2
@@ -23,19 +25,20 @@ Name:		grub2
 ## 'boot/grub' in the source , including Makefiles*
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
-Version:	2.14
-Release:	%{?beta:0.%{beta}.}3
+Version:	2.16
+Release:	%{?beta:0.%{beta}.}1
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		https://www.gnu.org/software/grub/
 %if 0%{?beta:1}
-Source0:	https://alpha.gnu.org/pub/pub/gnu/grub/grub-%{version}~%{beta}.tar.xz
+# Development moved to https://gitlab.freedesktop.org/gnu-grub/grub/
+Source0:	https://gitlab.freedesktop.org/gnu-grub/grub/-/archive/grub-%{version}-%{beta}/grub-grub-%{version}-%{beta}.tar.bz2
 %else
 %if "%{snapshot}" == ""
-Source0:	http://ftp.gnu.org/pub/gnu/grub/grub-%{version}%{?beta:-%{beta}}.tar.xz
+Source0:	https://ftp.gnu.org/gnu/grub/grub-%{version}%{?beta:-%{beta}}.tar.xz
 %else
-# git clone git://git.sv.gnu.org/grub.git
-# git archive --format=tar --prefix grub-2.02-$(date +%Y%m%d)/ HEAD | xz -vf > grub-2.02-$(date +%Y%m%d).tar.xz
+# git clone https://gitlab.freedesktop.org/gnu-grub/grub.git
+# git archive --format=tar --prefix grub-2.16-$(date +%Y%m%d)/ HEAD | xz -vf > grub-2.16-$(date +%Y%m%d).tar.xz
 Source0:	grub-%{version}-%{snapshot}.tar.xz
 %endif
 %endif
@@ -53,7 +56,9 @@ Source11:	grub2.rpmlintrc
 Source12:	grub-extras-20231020.tar.xz
 # documentation and simple test script for testing grub2 themes
 Source13:	grub2-theme-test.sh
+# Upstream 2.16 ships util/grub.d/30_uefi-firmware.in
 Source14:	30-uefi_firmware
+Source15:	https://github.com/coreutils/gnulib/archive/%{gnulib_rev}/gnulib-%{gnulib_rev}.tar.gz
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
 Patch2:		grub2-custom-color.patch
@@ -71,7 +76,8 @@ Patch6:		grub-2.06-enable-os-prober.patch
 Patch7:		omv-configuration.patch
 Patch9:		grub2-2.00-class-via-os-prober.patch
 Patch10:	grub-2.00-autoreconf-sucks.patch
-Patch11:	0468-Don-t-write-messages-to-the-screen.patch
+# Disabled while diagnosing blinking-cursor boot hang (errors were being swallowed)
+#Patch11:	0468-Don-t-write-messages-to-the-screen.patch
 Patch12:	grub-2.02-beta2-custom-vendor-config.patch
 #Patch13:	0001-Revert-Make-grub-install-check-for-errors-from-efibo.patch
 Patch15:	grub-2.02-20180620-disable-docs.patch
@@ -83,8 +89,9 @@ Patch17:	grub-2.04-grub-extras-lua-fix.patch
 # (crazy) these are 2 BAD patches , FIXME after Lx4
 # Patch7 prepares remove for that ( partially )
 # Patches from Mageia
-Patch100:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
-Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
+# Disabled while diagnosing blinking-cursor boot hang (errors were being swallowed)
+#Patch100:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
+#Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
 
 # Patches from SuSe
 
@@ -101,6 +108,9 @@ Patch2000:	grub-2.06-add-mitigations-off-mode.patch
 BuildRequires:	autoconf
 BuildRequires:	autoconf-archive
 BuildRequires:	automake
+BuildRequires:	python
+BuildRequires:	patch
+BuildRequires:	git-core
 BuildRequires:	slibtool
 BuildRequires:	libatomic-devel
 BuildRequires:	%{_lib}atomic-static-devel
@@ -221,7 +231,15 @@ Documentation for GRUB.
 %endif
 
 %prep
-%autosetup -p1 -n grub-2.14 -a12
+%autosetup -p1 -n grub-grub-%{version}-%{beta} -a12
+# Keep gnulib outside the source tree so autogen.sh does not add it to POTFILES
+tar -xf %{SOURCE15} -C ..
+
+# GitLab archive is a git snapshot: import gnulib and generate configure
+./bootstrap --no-git --skip-po --gnulib-srcdir=../gnulib-%{gnulib_rev}
+
+# VPATH builds run pot generation from $builddir/po
+sed -i -e 's|sed -f grub.d.sed|sed -f $(srcdir)/grub.d.sed|' po/Makefile.in.in
 
 sed -i -e "s|^FONT_SOURCE=.*|FONT_SOURCE=%{SOURCE6}|g" configure configure.ac
 sed -ri -e 's/-g"/"/g' -e "s/-Werror//g" configure.ac
@@ -237,19 +255,8 @@ rm -rf grub-extras/lua
 export GRUB_CONTRIB=./grub-extras
 sed -i -e 's,-I m4,-I m4 --dont-fix,g' autogen.sh
 
-# (tpg) pull latest translations
-./linguas.sh
-
-# Workaround for https://savannah.gnu.org/bugs/?57298.
-# A number of strings were unintentionally excluded from the translation catalogue in the
-# 2.04 release. Fortunately the omitted strings are just commented out in the .po files, so
-# we can easily restore them. This workaround should be removed if/when upstream fix the bug.
-cd po
-for po_file in *.po ; do
-    sed -i -e 's/^#~ //' -e 's/^#~|/#|/' $po_file
-    msgfmt -o ${po_file%.po}.gmo $po_file
-done
-cd ..
+# (tpg) pull latest translations (no-op / best-effort: ABF has no network)
+./linguas.sh || :
 
 #-----------------------------------------------------------------------
 %build
@@ -346,14 +353,14 @@ touch grub-core/extra_deps.lst
 %make_build -C grub-core
 
 # gfxterm_menu is a test module, not a boot module
-%define grub_modules_default all_video boot btrfs cat gettext chain configfile cryptodisk echo efifwsetup efinet ext2 f2fs fat font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep squash4 syslinuxcfg test tftp video xfs zstd
+%define grub_modules_default all_video boot btrfs cat gettext chain configfile cryptodisk echo efi_gop efifwsetup efinet ext2 f2fs fat font gcry_rijndael gcry_rsa gcry_serpent gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_background gzio halt hfsplus iso9660 jpeg loadenv loopback linux lsefi luks lvm mdraid09 mdraid1x minicmd normal part_apple part_gpt part_msdos password_pbkdf2 probe png reboot regexp search search_fs_file search_fs_uuid search_label serial sleep squash4 syslinuxcfg test tftp video xfs zstd
 
 %ifarch %{aarch64}
 %define grubefiarch arm64-efi
-%define grub_modules %{grub_modules_default} efi_gop
+%define grub_modules %{grub_modules_default}
 %elifarch %{riscv64}
 %define grubefiarch riscv64-efi
-%define grub_modules %{grub_modules_default} efi_gop
+%define grub_modules %{grub_modules_default}
 %else
 %define grubefiarch %{_arch}-efi
 %define grub_modules multiboot multiboot2 %{grub_modules_default}
@@ -382,7 +389,7 @@ cd -
 # (crazy) fixme? why so?
 # Script that makes part of grub.cfg persist across updates
 install -m755 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/grub.d/90_persistent
-install -m755 %{SOURCE14} -D %{buildroot}%{_sysconfdir}/grub.d/30_uefi_firmware
+# 2.16 ships 30_uefi-firmware; do not install the older 30_uefi_firmware copy
 
 # Ghost config file
 install -d %{buildroot}/boot/%{name}
@@ -498,6 +505,7 @@ fi
 %{_bindir}/%{name}-menulst2cfg
 %{_bindir}/%{name}-mkimage
 %{_bindir}/%{name}-mkpasswd-pbkdf2
+%{_bindir}/%{name}-mkpasswd-argon2
 %{_bindir}/%{name}-mkrelpath
 %{_bindir}/%{name}-mount
 %{_bindir}/%{name}-script-check

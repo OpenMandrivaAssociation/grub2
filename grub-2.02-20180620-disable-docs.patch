@@ -15,8 +15,8 @@ diff --git a/configure.ac b/configure.ac
 index 23f7886..3403316 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -2545,7 +2545,6 @@ AC_CONFIG_FILES([Makefile])
- AC_CONFIG_FILES([grub-core/Makefile])
+@@ -2610,7 +2610,6 @@ AC_CONFIG_FILES([grub-core/sbat.csv], [
+ ])
  AC_CONFIG_FILES([grub-core/lib/gnulib/Makefile])
  AC_CONFIG_FILES([po/Makefile.in])
 -AC_CONFIG_FILES([docs/Makefile])

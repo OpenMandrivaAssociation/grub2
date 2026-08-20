@@ -1,8 +1,7 @@
 diff --git a/Makefile.am b/Makefile.am
-index e788f6d..83e4175 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -434,7 +434,7 @@ if COND_i386_coreboot
+@@ -434,7 +434,7 @@
  FS_PAYLOAD_MODULES ?= $(shell cat grub-core/fs.lst)
  default_payload.elf: grub-mkstandalone grub-mkimage FORCE
  	test -f $@ && rm $@ || true
@@ -12,10 +11,9 @@ index e788f6d..83e4175 100644
  
  endif
 diff --git a/util/grub-install.c b/util/grub-install.c
-index 0602465..eb2b55c 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
-@@ -1696,7 +1696,7 @@ main (int argc, char *argv[])
+@@ -1704,7 +1704,7 @@
      case GRUB_INSTALL_PLATFORM_I386_IEEE1275:
      case GRUB_INSTALL_PLATFORM_POWERPC_IEEE1275:
        {
@@ -25,10 +23,9 @@ index 0602465..eb2b55c 100644
  	free (dst);
        }
 diff --git a/util/grub-mkimage.c b/util/grub-mkimage.c
-index fb14aa7..a4fa89f 100644
 --- a/util/grub-mkimage.c
 +++ b/util/grub-mkimage.c
-@@ -69,7 +69,7 @@ static struct argp_option options[] = {
+@@ -69,7 +69,7 @@
     /* TRANSLATORS: "memdisk" here isn't an identifier, it can be translated.
      "embed" is a verb (command description).  "*/
     N_("embed FILE as a memdisk image\n"
@@ -37,7 +34,7 @@ index fb14aa7..a4fa89f 100644
        " but the prefix itself can be overridden by later options"), 0},
    {"dtb",  'D', N_("FILE"), 0, N_("embed FILE as a device tree (DTB)\n"), 0},
     /* TRANSLATORS: "embed" is a verb (command description).  "*/
-@@ -195,7 +195,7 @@ argp_parser (int key, char *arg, struct argp_state *state)
+@@ -195,7 +195,7 @@
        if (arguments->prefix)
  	free (arguments->prefix);
  
@@ -47,10 +44,9 @@ index fb14aa7..a4fa89f 100644
  
      case 'D':
 diff --git a/util/grub-mkrescue.c b/util/grub-mkrescue.c
-index e7b9078..e84d2f0 100644
 --- a/util/grub-mkrescue.c
 +++ b/util/grub-mkrescue.c
-@@ -281,14 +281,14 @@ make_image_abs (enum grub_install_plat plat,
+@@ -281,14 +281,14 @@
  	fprintf (load_cfg_f, "search --set=root --fs-uuid %s\n", iso_uuid);
  	break;
      }
@@ -67,7 +63,7 @@ index e7b9078..e84d2f0 100644
  				0, load_cfg,
  				mkimage_target, 0);
    grub_install_pop_module ();
-@@ -327,7 +327,7 @@ make_image_fwdisk_abs (enum grub_install_plat plat,
+@@ -327,7 +327,7 @@
    fclose (load_cfg_f);
  
    grub_install_push_module ("iso9660");
@@ -76,7 +72,7 @@ index e7b9078..e84d2f0 100644
  				0, load_cfg, mkimage_target, 0);
    grub_install_pop_module ();
    grub_util_unlink (load_cfg);
-@@ -521,7 +521,7 @@ main (int argc, char *argv[])
+@@ -525,7 +525,7 @@
  
    iso9660_dir = grub_util_make_temporary_dir ();
    grub_util_info ("temporary iso9660 dir is `%s'", iso9660_dir);
@@ -85,7 +81,7 @@ index e7b9078..e84d2f0 100644
    grub_install_mkdir_p (boot_grub);
    romdir = grub_util_path_concat (2, boot_grub, "roms");
    grub_util_mkdir (romdir);
-@@ -621,12 +621,12 @@ main (int argc, char *argv[])
+@@ -625,12 +625,12 @@
        grub_install_push_module ("biosdisk");
        grub_install_push_module ("iso9660");
        grub_install_make_image_wrap (source_dirs[GRUB_INSTALL_PLATFORM_I386_PC],
@@ -100,7 +96,7 @@ index e7b9078..e84d2f0 100644
        xorriso_push ("-no-emul-boot");
        xorriso_push ("-boot-load-size");
        xorriso_push ("4");
-@@ -665,7 +665,7 @@ main (int argc, char *argv[])
+@@ -669,7 +669,7 @@
  	      fwrite (buf, 1, 512, sa);
  
  	      grub_install_make_image_wrap_file (source_dirs[GRUB_INSTALL_PLATFORM_I386_PC],
@@ -109,7 +105,7 @@ index e7b9078..e84d2f0 100644
  						 0, load_cfg,
  						 "i386-pc", 0);
  	      sz = ftello (sa);
-@@ -892,8 +892,8 @@ main (int argc, char *argv[])
+@@ -900,8 +900,8 @@
        grub_install_copy_file (grub_chrp, bootx, 1);
        grub_install_mkdir_p (ppc_chrp);
        grub_install_copy_file (bisrc, bitgt, 1);
@@ -120,7 +116,7 @@ index e7b9078..e84d2f0 100644
        /* FIXME: add PreP */
        if (system_area == SYS_AREA_COMMON)
  	{
-@@ -942,25 +942,25 @@ main (int argc, char *argv[])
+@@ -950,25 +950,25 @@
        xorriso_push ("-B");
        xorriso_push (",");
        xorriso_push ("--grub2-sparc-core");
@@ -154,19 +150,18 @@ index e7b9078..e84d2f0 100644
  
    make_image_fwdisk (GRUB_INSTALL_PLATFORM_MIPSEL_ARC, "mipsel-arc", "arc.exe");
 diff --git a/util/grub-mkstandalone.c b/util/grub-mkstandalone.c
-index 9009648..91a3516 100644
 --- a/util/grub-mkstandalone.c
 +++ b/util/grub-mkstandalone.c
-@@ -115,7 +115,7 @@ argp_parser (int key, char *arg, struct argp_state *state)
+@@ -115,7 +115,7 @@
  
  struct argp argp = {
    options, argp_parser, N_("[OPTION] SOURCE..."),
--  N_("Generate a standalone image (containing all modules) in the selected format")"\v"N_("Graft point syntax (E.g. /boot/grub/grub.cfg=./grub.cfg) is accepted"),
-+  N_("Generate a standalone image (containing all modules) in the selected format")"\v"N_("Graft point syntax (E.g. /boot/grub2/grub.cfg=./grub.cfg) is accepted"),
+-  N_("Generate a standalone image (containing all modules) in the selected format")"\v"N_("Graft point syntax (E.g. /boot/grub/grub.cfg=./grub.cfg) is accepted. The path on the right must point to a regular file."),
++  N_("Generate a standalone image (containing all modules) in the selected format")"\v"N_("Graft point syntax (E.g. /boot/grub2/grub.cfg=./grub.cfg) is accepted. The path on the right must point to a regular file."),
    NULL, help_filter, NULL
  };
  
-@@ -335,7 +335,7 @@ main (int argc, char *argv[])
+@@ -337,7 +337,7 @@
    enum grub_install_plat plat = grub_install_get_target (grub_install_source_directory);
  
    char *memdisk_dir = grub_util_make_temporary_dir ();
@@ -175,7 +170,7 @@ index 9009648..91a3516 100644
    grub_install_copy_files (grub_install_source_directory,
  			   boot_grub, plat);
  
-@@ -375,7 +375,7 @@ main (int argc, char *argv[])
+@@ -377,7 +377,7 @@
    grub_install_push_module ("tar");
  
    grub_install_make_image_wrap (grub_install_source_directory,
