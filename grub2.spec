@@ -59,6 +59,10 @@ Source13:	grub2-theme-test.sh
 # Upstream 2.16 ships util/grub.d/30_uefi-firmware.in
 Source14:	30-uefi_firmware
 Source15:	https://github.com/coreutils/gnulib/archive/%{gnulib_rev}/gnulib-%{gnulib_rev}.tar.gz
+# GitLab snapshot has no .po files; TP cannot be rsync'd at build time
+# rsync -Lrtvz translationproject.org::tp/latest/grub/ grub-po
+# tar cJf grub-po-$(date +%Y%m%d).tar.xz grub-po
+Source16:	grub-po-20260820.tar.xz
 Patch0:		grub2-locales.patch
 Patch1:		grub2-00_header.patch
 Patch2:		grub2-custom-color.patch
@@ -255,8 +259,12 @@ rm -rf grub-extras/lua
 export GRUB_CONTRIB=./grub-extras
 sed -i -e 's,-I m4,-I m4 --dont-fix,g' autogen.sh
 
-# (tpg) pull latest translations (no-op / best-effort: ABF has no network)
-./linguas.sh || :
+# GitLab snapshot has no catalogs; ship TP snapshot (ABF has no network)
+tar -xf %{SOURCE16} --strip-components=1 -C po
+{
+	ls po/*.po | xargs -L 100 basename -s .po -a
+	echo en@quot en@hebrew de@hebrew en@cyrillic en@greek en@arabic en@piglatin de_CH
+} | tr ' ' '\n' | sort -u | xargs > po/LINGUAS
 
 #-----------------------------------------------------------------------
 %build
