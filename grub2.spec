@@ -9,13 +9,9 @@
 
 %ifarch %{ix86} %{x86_64}
 %define platform pc
-%endif
-
-%ifarch armv7hnl
+%elifarch armv7hnl
 %define platform uboot
-%endif
-
-%ifarch %{aarch64} %{riscv64}
+%elifarch %{efi}
 %define platform efi
 %endif
 
@@ -373,12 +369,12 @@ touch grub-core/extra_deps.lst
 %ifarch %{aarch64}
 %define grubefiarch arm64-efi
 %define grub_modules %{grub_modules_default}
-%elifarch %{riscv64}
-%define grubefiarch riscv64-efi
-%define grub_modules %{grub_modules_default}
-%else
+%elifarch %{ix86} %{x86_64}
 %define grubefiarch %{_arch}-efi
 %define grub_modules multiboot multiboot2 %{grub_modules_default}
+%else
+%define grubefiarch %{_arch}-efi
+%define grub_modules %{grub_modules_default}
 %endif
 
 #This line loads all the modules but makes the efi image unstable.
@@ -512,9 +508,11 @@ fi
 
 %files  -f grub.lang
 %{libdir32}/grub/*-%{platform}
-%ifnarch %{aarch64} %{riscv64}
-#Files here are needed for install. Moved from efi package
+%ifarch %{efi}
+%if "%{platform}" != "efi"
+# grub2-install still needs the EFI modules when the primary platform is BIOS
 %{libdir32}/grub/%{_arch}-efi/
+%endif
 %endif
 %{_bindir}/%{name}-editenv
 %{_bindir}/%{name}-menulst2cfg
