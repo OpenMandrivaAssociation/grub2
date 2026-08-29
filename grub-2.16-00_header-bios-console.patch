@@ -1,0 +1,38 @@
+From: Bernhard Rosenkränzer <bero@lindev.ch>
+Subject: 00_header: keep VGA text on PC BIOS
+
+VBE EDID/mode-set hangs some legacy firmwares after the boot.S
+banner, before the menu. On grub_platform=pc do not switch to
+gfxterm; the native console already works. EFI is unchanged.
+
+---
+--- a/util/grub.d/00_header.in
++++ b/util/grub.d/00_header.in
+@@ -264,9 +264,11 @@
+ 	fi
+ 
+     cat << EOF
+-  set gfxmode=${GRUB_GFXMODE}
+-  load_video
+-  insmod gfxterm
++  if [ x\$grub_platform != xpc ]; then
++    set gfxmode=${GRUB_GFXMODE}
++    load_video
++    insmod gfxterm
++  fi
+ EOF
+ 
+ # Gettext variables and module
+@@ -300,7 +302,11 @@
+   ;;
+   x*)
+     cat << EOF
+-terminal_output ${GRUB_TERMINAL_OUTPUT}
++if [ x\$grub_platform = xpc ]; then
++  terminal_output console
++else
++  terminal_output ${GRUB_TERMINAL_OUTPUT}
++fi
+ EOF
+   ;;
+ esac

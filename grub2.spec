@@ -27,7 +27,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.16
-Release:	%{?beta:0.%{beta}.}4
+Release:	%{?beta:0.%{beta}.}5
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		https://www.gnu.org/software/grub/
@@ -114,6 +114,10 @@ Patch2000:	grub-2.06-add-mitigations-off-mode.patch
 Patch2001:	grub-2.16-i386-pc-tsc-no-hang.patch
 # BIOS: VBE page flipping draws the menu on a buffer the VBIOS never shows
 Patch2002:	grub2-i386-pc-no-pageflipping.patch
+# BIOS: INT 13h AH=41/42 hang after boot.S prints "GRUB "
+Patch2003:	grub-2.16-i386-pc-boot-skip-lba-probe.patch
+# BIOS: do not switch to gfxterm (VBE mode-set hang before the menu)
+Patch2004:	grub-2.16-00_header-bios-console.patch
 
 BuildRequires:	autoconf
 BuildRequires:	autoconf-archive
@@ -506,7 +510,8 @@ if [ -e %{_sysconfdir}/default/grub ]; then
 	boot_disk=$(%{_sbindir}/%{name}-probe -t disk /boot 2>/dev/null \
 	    || %{_sbindir}/%{name}-probe -t disk / 2>/dev/null)
 	if [ -n "$boot_disk" ] && [ -b "$boot_disk" ]; then
-	    %{_sbindir}/%{name}-install --target=i386-pc "$boot_disk" || :
+	    %{_sbindir}/%{name}-install --target=i386-pc "$boot_disk" \
+		>>/var/log/grub2-bios-install.log 2>&1 || :
 	fi
     fi
 %endif
@@ -529,7 +534,8 @@ if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
 		boot_disk=$(%{_sbindir}/%{name}-probe -t disk /boot 2>/dev/null \
 			|| %{_sbindir}/%{name}-probe -t disk / 2>/dev/null)
 		if [ -n "$boot_disk" ] && [ -b "$boot_disk" ]; then
-			%{_sbindir}/%{name}-install --target=i386-pc "$boot_disk" || :
+			%{_sbindir}/%{name}-install --target=i386-pc "$boot_disk" \
+				>>/var/log/grub2-bios-install.log 2>&1 || :
 		fi
 	fi
 %endif
