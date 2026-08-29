@@ -27,7 +27,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.16
-Release:	%{?beta:0.%{beta}.}2
+Release:	%{?beta:0.%{beta}.}3
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		https://www.gnu.org/software/grub/
@@ -109,6 +109,11 @@ Patch1000:	0009-util-bash-completion-Load-scripts-on-demand.patch
 
 # Additional OpenMandriva patches that need to be applied after upstream patches
 Patch2000:	grub-2.06-add-mitigations-off-mode.patch
+# BIOS: grub_pit_wait() can spin forever on a stuck 0x61 latch, hanging
+# after the boot.S "GRUB " banner and before "Welcome to GRUB!" / menu
+Patch2001:	grub-2.16-i386-pc-tsc-no-hang.patch
+# BIOS: VBE page flipping draws the menu on a buffer the VBIOS never shows
+Patch2002:	grub2-i386-pc-no-pageflipping.patch
 
 BuildRequires:	autoconf
 BuildRequires:	autoconf-archive
@@ -486,8 +491,25 @@ if [ -e %{_sysconfdir}/default/grub ]; then
     if ! grep -q "scsi_mod.use_blk_mq=1" %{_sysconfdir}/default/grub; then
 	sed -i -e "s#^GRUB_CMDLINE_LINUX_DEFAULT\=\"#GRUB_CMDLINE_LINUX_DEFAULT\=\" scsi_mod.use_blk_mq=1 #" %{_sysconfdir}/default/grub
     fi
+# Stock default used to start with auto; VBE EDID/native first hangs
+# some legacy BIOSes before the menu. Only rewrite that known prefix.
+    if grep -q '^GRUB_GFXMODE=auto,' %{_sysconfdir}/default/grub; then
+	sed -i -e 's/^GRUB_GFXMODE=auto,\(.*\)$/GRUB_GFXMODE=\1,auto/' %{_sysconfdir}/default/grub
+    fi
 # (tpg) regenerate grub2 at the end
     %{_bindir}/update-grub2
+%ifarch %{ix86} %{x86_64}
+    # core.img lives in the MBR gap / BIOS boot partition; mkconfig
+    # alone does not refresh it. Re-embed after i386-pc kernel fixes.
+    if [ ! -d /sys/firmware/efi ] \
+	&& [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
+	boot_disk=$(%{_sbindir}/%{name}-probe -t disk /boot 2>/dev/null \
+	    || %{_sbindir}/%{name}-probe -t disk / 2>/dev/null)
+	if [ -n "$boot_disk" ] && [ -b "$boot_disk" ]; then
+	    %{_sbindir}/%{name}-install --target=i386-pc "$boot_disk" || :
+	fi
+    fi
+%endif
 fi
 
 
@@ -502,6 +524,15 @@ os.execute("%{_bindir}/%{name}-mkconfig -o /boot/%{name}/grub.cfg")
 # better not to mess with the bootloader in chroot!
 if [ "$(stat -c %d:%i /)" = "$(stat -c %d:%i /proc/1/root/.)" ]; then
 	%{_sbindir}/update-grub2
+%ifarch %{ix86} %{x86_64}
+	if [ ! -d /sys/firmware/efi ]; then
+		boot_disk=$(%{_sbindir}/%{name}-probe -t disk /boot 2>/dev/null \
+			|| %{_sbindir}/%{name}-probe -t disk / 2>/dev/null)
+		if [ -n "$boot_disk" ] && [ -b "$boot_disk" ]; then
+			%{_sbindir}/%{name}-install --target=i386-pc "$boot_disk" || :
+		fi
+	fi
+%endif
 fi
 
 # ------------------------------------------------------------------------

@@ -1,0 +1,28 @@
+From: Michael Chang <mchang@suse.com>
+Subject: i386-pc/vbe: do not use page flipping
+
+In x86 Legacy BIOS mode, on some machines the GRUB menu is not visible
+although it has been drawn (bsc#1245636). Page flipping leaves the
+visible start on the back buffer; buggy VBIOS then never shows the
+front buffer.
+
+Force single-buffer mode in the VBE backend.
+
+---
+ grub-core/video/i386/pc/vbe.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/grub-core/video/i386/pc/vbe.c b/grub-core/video/i386/pc/vbe.c
+--- a/grub-core/video/i386/pc/vbe.c
++++ b/grub-core/video/i386/pc/vbe.c
+@@ -1154,7 +1154,9 @@ grub_video_vbe_setup (unsigned int width, unsigned int height,
+ 
+ 	page_size = framebuffer.mode_info.pitch * framebuffer.mode_info.height;
+ 
+-	if (vram_size >= 2 * page_size)
++	/* Avoid page flipping: some BIOSes leave the visible page on
++	   the back buffer so the menu is drawn but never shown. */
++	if (0 && vram_size >= 2 * page_size)
+ 	  err = grub_video_fb_setup (mode_type, mode_mask,
+ 				     &framebuffer.mode_info,
+ 				     framebuffer.ptr,
