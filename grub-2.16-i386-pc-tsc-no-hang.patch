@@ -11,29 +11,13 @@ diskboot's "loading") and then a blinking cursor forever. Other
 machines, with a working PIT, continue normally.
 
 Cap the wait with a TSC delta and an I/O iteration limit, then fall
-through to the hardcoded rate. Also try the ACPI PM timer first on
-PCBIOS (already compiled in, and already used on EFI/coreboot) so a
-working PM timer skips the PIT entirely.
+through to the hardcoded rate. Do not call the ACPI PM timer from the
+i386-pc kernel: that object lives in the random module, not kernel.img.
 
 ---
- grub-core/kern/i386/tsc.c     |  5 ++++-
  grub-core/kern/i386/tsc_pit.c | 24 ++++++++++++++++++++++--
- 2 files changed, 26 insertions(+), 3 deletions(-)
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/grub-core/kern/i386/tsc.c b/grub-core/kern/i386/tsc.c
---- a/grub-core/kern/i386/tsc.c
-+++ b/grub-core/kern/i386/tsc.c
-@@ -71,8 +71,10 @@ grub_tsc_init (void)
-   (void) (grub_tsc_calibrate_from_pmtimer () || grub_tsc_calibrate_from_pit () || grub_tsc_calibrate_from_efi() || calibrate_tsc_hardcode());
- #elif defined (GRUB_MACHINE_COREBOOT)
-   (void) (grub_tsc_calibrate_from_pmtimer () || grub_tsc_calibrate_from_pit () || calibrate_tsc_hardcode());
-+#elif defined (GRUB_MACHINE_PCBIOS)
-+  (void) (grub_tsc_calibrate_from_pmtimer () || grub_tsc_calibrate_from_pit () || calibrate_tsc_hardcode());
- #else
-   (void) (grub_tsc_calibrate_from_pit () || calibrate_tsc_hardcode());
- #endif
-   grub_install_get_time_ms (grub_tsc_get_time_ms);
- }
 diff --git a/grub-core/kern/i386/tsc_pit.c b/grub-core/kern/i386/tsc_pit.c
 --- a/grub-core/kern/i386/tsc_pit.c
 +++ b/grub-core/kern/i386/tsc_pit.c

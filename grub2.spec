@@ -27,7 +27,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.16
-Release:	%{?beta:0.%{beta}.}3
+Release:	%{?beta:0.%{beta}.}4
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		https://www.gnu.org/software/grub/
