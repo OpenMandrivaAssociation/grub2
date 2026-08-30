@@ -27,7 +27,7 @@ Name:		grub2
 ## and compare to grub2-2.02-unity-mkrescue-use-grub2-dir.patch
 ## do _NOT_ update without doing that .. we just go lucky until now.
 Version:	2.16
-Release:	%{?beta:0.%{beta}.}6
+Release:	%{?beta:0.%{beta}.}7
 Group:		System/Kernel and hardware
 License:	GPLv3+
 Url:		https://www.gnu.org/software/grub/
@@ -81,8 +81,7 @@ Patch6:		grub-2.06-enable-os-prober.patch
 Patch7:		omv-configuration.patch
 Patch9:		grub2-2.00-class-via-os-prober.patch
 Patch10:	grub-2.00-autoreconf-sucks.patch
-# Disabled while diagnosing blinking-cursor boot hang (errors were being swallowed)
-#Patch11:	0468-Don-t-write-messages-to-the-screen.patch
+Patch11:	0468-Don-t-write-messages-to-the-screen.patch
 Patch12:	grub-2.02-beta2-custom-vendor-config.patch
 #Patch13:	0001-Revert-Make-grub-install-check-for-errors-from-efibo.patch
 Patch15:	grub-2.02-20180620-disable-docs.patch
@@ -94,9 +93,8 @@ Patch17:	grub-2.04-grub-extras-lua-fix.patch
 # (crazy) these are 2 BAD patches , FIXME after Lx4
 # Patch7 prepares remove for that ( partially )
 # Patches from Mageia
-# Disabled while diagnosing blinking-cursor boot hang (errors were being swallowed)
-#Patch100:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
-#Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
+Patch100:	grub2-2.00-mga-dont_write_sparse_file_error_to_screen.patch
+Patch101:	grub2-2.00-mga-dont_write_diskfilter_error_to_screen.patch
 
 # Patches from SuSe
 
@@ -116,6 +114,8 @@ Patch2001:	grub-2.16-i386-pc-tsc-no-hang.patch
 Patch2002:	grub2-i386-pc-no-pageflipping.patch
 # BIOS: do not switch to gfxterm (VBE mode-set hang before the menu)
 Patch2003:	grub-2.16-00_header-bios-console.patch
+# Quiet remaining BIOS banners (loading dots, Welcome to GRUB!)
+Patch2004:	grub-2.16-quiet-bios-banner.patch
 
 BuildRequires:	autoconf
 BuildRequires:	autoconf-archive

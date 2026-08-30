@@ -1,0 +1,44 @@
+From: Bernhard Rosenkränzer <bero@lindev.ch>
+Subject: i386-pc: keep BIOS boot quiet after the hang is fixed
+
+0468 already drops the "GRUB " / "loading" strings. diskboot still
+prints a dot per read and a newline, and the kernel prints
+"Welcome to GRUB!" on non-EFI. Silence those too.
+
+---
+--- a/grub-core/boot/i386/pc/diskboot.S	2026-08-30 23:07:03.773421395 +0200
++++ b/grub-core/boot/i386/pc/diskboot.S	2026-08-30 23:07:03.744791377 +0200
+@@ -274,7 +274,6 @@
+ 	/* restore addressing regs and print a dot with correct DS
+ 	   (MSG modifies SI, which is saved, and unused AX and BX) */
+ 	popw	%ds
+-	MSG(notification_step)
+ 	popa
+ 
+ 	/* check if finished with this dataset */
+@@ -290,8 +289,6 @@
+ /* END OF MAIN LOOP */
+ 
+ LOCAL(bootit):
+-	/* print a newline */
+-	MSG(notification_done)
+ 	popw	%dx	/* this makes sure %dl is our "boot" drive */
+ 	ljmp	$0, $(GRUB_BOOT_MACHINE_KERNEL_ADDR + 0x200)
+ 
+--- a/grub-core/kern/main.c	2026-08-14 21:38:27.000000000 +0200
++++ b/grub-core/kern/main.c	2026-08-30 23:07:03.744847738 +0200
+@@ -318,13 +318,7 @@
+ 
+   grub_boot_time ("After machine init.");
+ 
+-  /* This breaks flicker-free boot on EFI systems, so disable it there. */
+-#ifndef GRUB_MACHINE_EFI
+-  /* Hello.  */
+-  grub_setcolorstate (GRUB_TERM_COLOR_HIGHLIGHT);
+-  grub_printf ("Welcome to GRUB!\n\n");
+-  grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
+-#endif
++  /* BIOS banner omitted: noisy, and EFI already skips it for flicker-free boot. */
+ 
+   /* Init verifiers API. */
+   grub_verifiers_init ();
